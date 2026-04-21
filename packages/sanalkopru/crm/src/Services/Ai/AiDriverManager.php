@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services\Ai;
+namespace Sanalkopru\Crm\Services\Ai;
 
-use App\Support\Ai\AiDriver;
 use InvalidArgumentException;
+use Sanalkopru\Crm\Support\Ai\AiDriver;
 
 class AiDriverManager
 {

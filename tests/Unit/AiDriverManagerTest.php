@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use App\Services\Ai\AiDriverManager;
-use App\Support\Ai\AiDriver;
 use InvalidArgumentException;
+use Sanalkopru\Crm\Services\Ai\AiDriverManager;
+use Sanalkopru\Crm\Support\Ai\AiDriver;
 use Tests\TestCase;
 
 class AiDriverManagerTest extends TestCase

@@ -8,7 +8,7 @@
 <body>
     <main>
         <h1>CRM Engine</h1>
-        <p>Admin CRM route is ready.</p>
+        <p>Package dashboard route is ready.</p>
     </main>
 </body>
 </html>

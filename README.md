@@ -107,6 +107,21 @@ Production dokumani `docs/production-deploy-no-docker.md` olarak ayri fazda yazi
 
 CRM admin ekranlari `/admin/crm` altinda izole calisir ve `sanalkopru/admin-panel` paketini kullanir. CRM assetleri public frontend'e karismaz; sadece admin CRM ekranlarinda yuklenir.
 
+## Package Development
+
+CRM cekirdegi `packages/sanalkopru/crm` altinda Laravel paketi olarak gelistirilir. Root uygulama bu paketi lokal path repository ve PSR-4 autoload ile yukler.
+
+Paket publish tag'leri:
+
+```bash
+make artisan CMD="vendor:publish --tag=crm-config"
+make artisan CMD="vendor:publish --tag=crm-views"
+make artisan CMD="vendor:publish --tag=crm-migrations"
+make artisan CMD="vendor:publish --tag=crm-assets"
+```
+
+Paket route'lari `/admin/crm` ve `/api/crm` altinda gelir. Controller'lar ince kalir; kalici is mantigi paket icindeki Actions, Services, Policies, Events, Jobs ve Notifications katmanlarina yazilir.
+
 ## Roadmap
 
 Tam uygulama plani `roadmap.md` dosyasindadir. Ilk hedef once cekirdegi ve admin CRM frontend'ini bitirmek, ardindan ihtiyaca gore public/customer frontend fazini eklemektir.

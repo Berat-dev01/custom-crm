@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Support\Ai;
+namespace Sanalkopru\Crm\Support\Ai;
 
 enum AiDriver: string
 {

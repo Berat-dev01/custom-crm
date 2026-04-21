@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace Sanalkopru\Crm\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Routing\Controller;
 
-class CrmDashboardController extends Controller
+class DashboardController extends Controller
 {
     public function __invoke(): View
     {
-        return view('admin.crm.dashboard');
+        return view('crm::dashboard.index');
     }
 }
