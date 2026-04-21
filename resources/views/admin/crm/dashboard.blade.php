@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CRM Engine</title>
+</head>
+<body>
+    <main>
+        <h1>CRM Engine</h1>
+        <p>Admin CRM route is ready.</p>
+    </main>
+</body>
+</html>
