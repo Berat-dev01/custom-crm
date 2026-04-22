@@ -33,11 +33,17 @@ class AdminCrmBootstrapTest extends TestCase
         $this->assertSame('admin/crm', config('crm.routes.admin_prefix'));
         $this->assertSame(['web'], config('crm.routes.middleware'));
         $this->assertSame('single', config('crm.tenancy.mode'));
-        $this->assertSame('TRY', config('crm.money.currency'));
+        $this->assertSame('TRY', config('crm.money.default_currency'));
+        $this->assertSame(['TRY', 'USD', 'EUR'], config('crm.money.supported_currencies'));
+        $this->assertSame(20.0, config('crm.money.default_tax_rate'));
+        $this->assertTrue(config('crm.modules.contacts'));
+        $this->assertTrue(config('crm.modules.quotes'));
         $this->assertSame('openai', config('crm.ai.driver'));
         $this->assertSame('gpt-4o-mini', config('crm.ai.drivers.openai.model'));
         $this->assertArrayHasKey('claude', config('crm.ai.drivers'));
         $this->assertArrayHasKey('gemini', config('crm.ai.drivers'));
+        $this->assertTrue(config('crm.notifications.task_reminders'));
+        $this->assertTrue(config('crm.permissions.enabled'));
     }
 
     public function test_crm_package_publish_tags_are_registered(): void

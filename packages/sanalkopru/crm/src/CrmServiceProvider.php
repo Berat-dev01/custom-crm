@@ -5,6 +5,9 @@ namespace Sanalkopru\Crm;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Sanalkopru\Crm\Services\Ai\AiDriverManager;
+use Sanalkopru\Crm\Services\Configuration\FeatureManager;
+use Sanalkopru\Crm\Services\Configuration\MoneySettings;
+use Sanalkopru\Crm\Services\Configuration\UiSettings;
 
 class CrmServiceProvider extends ServiceProvider
 {
@@ -13,6 +16,9 @@ class CrmServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/crm.php', 'crm');
 
         $this->app->singleton(AiDriverManager::class);
+        $this->app->singleton(FeatureManager::class);
+        $this->app->singleton(MoneySettings::class);
+        $this->app->singleton(UiSettings::class);
     }
 
     public function boot(): void

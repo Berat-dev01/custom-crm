@@ -14,7 +14,7 @@ class AiDriverManager
 
     public function selected(): AiDriver
     {
-        $driver = (string) config('crm.ai.driver', AiDriver::OpenAI->value);
+        $driver = (string) config('crm.ai.driver', config('crm.ai.provider', AiDriver::OpenAI->value));
 
         return AiDriver::tryFrom($driver)
             ?? throw new InvalidArgumentException(sprintf(
@@ -39,5 +39,15 @@ class AiDriverManager
         $model = $this->config($driver)['model'] ?? config('crm.ai.model');
 
         return $model ? (string) $model : null;
+    }
+
+    public function maxTokens(): int
+    {
+        return (int) config('crm.ai.max_tokens', 1200);
+    }
+
+    public function temperature(): float
+    {
+        return (float) config('crm.ai.temperature', 0.3);
     }
 }

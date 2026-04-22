@@ -122,6 +122,16 @@ make artisan CMD="vendor:publish --tag=crm-assets"
 
 Paket route'lari `/admin/crm` ve `/api/crm` altinda gelir. Controller'lar ince kalir; kalici is mantigi paket icindeki Actions, Services, Policies, Events, Jobs ve Notifications katmanlarina yazilir.
 
+Customization katmani config tabanlidir. Musteri projesinde asagidakiler `.env` veya publish edilmis `config/crm.php` uzerinden degistirilir:
+
+- route prefix ve middleware
+- contacts, companies, deals, tasks, quotes, activities ve AI modul flag'leri
+- default/supported para birimleri, KDV orani ve quote numara formati
+- AI provider, model, max token ve temperature
+- notification tercihleri
+- permission rolleri
+- admin UI app name ve primary color
+
 ## Roadmap
 
 Tam uygulama plani `roadmap.md` dosyasindadir. Ilk hedef once cekirdegi ve admin CRM frontend'ini bitirmek, ardindan ihtiyaca gore public/customer frontend fazini eklemektir.
