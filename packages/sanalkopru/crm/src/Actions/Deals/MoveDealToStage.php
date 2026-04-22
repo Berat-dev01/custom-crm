@@ -5,6 +5,7 @@ namespace Sanalkopru\Crm\Actions\Deals;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Sanalkopru\Crm\Events\DealMoved;
 use Sanalkopru\Crm\Models\Deal;
 use Sanalkopru\Crm\Models\DealStage;
 
@@ -20,6 +21,7 @@ class MoveDealToStage
         return DB::transaction(function () use ($deal, $stage, $position, $lostReason, $user): Deal {
             $deal = Deal::query()->lockForUpdate()->findOrFail($deal->id);
             $sourceStageId = $deal->stage_id;
+            $sourceStage = DealStage::query()->find($sourceStageId);
 
             $this->lockStageDeals($sourceStageId);
             if ((int) $sourceStageId !== (int) $stage->id) {
@@ -59,7 +61,10 @@ class MoveDealToStage
                 $this->normalizeStagePositions($sourceStageId);
             }
 
-            return $deal->refresh();
+            $deal = $deal->refresh();
+            event(new DealMoved($deal, $sourceStage, $stage, $user));
+
+            return $deal;
         });
     }
 

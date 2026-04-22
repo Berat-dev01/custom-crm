@@ -5,12 +5,21 @@ namespace Sanalkopru\Crm;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Sanalkopru\Crm\Console\SendTaskRemindersCommand;
+use Sanalkopru\Crm\Events\ContactCreated;
+use Sanalkopru\Crm\Events\DealMoved;
+use Sanalkopru\Crm\Events\QuoteSent;
+use Sanalkopru\Crm\Events\TaskCompleted;
 use Sanalkopru\Crm\Http\Middleware\EnsureCrmAccess;
+use Sanalkopru\Crm\Listeners\LogContactCreatedActivity;
+use Sanalkopru\Crm\Listeners\LogDealMovedActivity;
+use Sanalkopru\Crm\Listeners\LogQuoteSentActivity;
+use Sanalkopru\Crm\Listeners\LogTaskCompletedActivity;
 use Sanalkopru\Crm\Models\Activity;
 use Sanalkopru\Crm\Models\Company;
 use Sanalkopru\Crm\Models\Contact;
@@ -54,6 +63,7 @@ class CrmServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         $this->registerAuthorization();
+        $this->registerEvents();
         $this->loadWebRoutes();
         $this->loadApiRoutes();
 
@@ -91,6 +101,14 @@ class CrmServiceProvider extends ServiceProvider
         View::composer('crm::*', function ($view): void {
             $view->with('crmNavigation', $this->app->make(CrmNavigation::class)->items(request()));
         });
+    }
+
+    private function registerEvents(): void
+    {
+        Event::listen(ContactCreated::class, LogContactCreatedActivity::class);
+        Event::listen(DealMoved::class, LogDealMovedActivity::class);
+        Event::listen(QuoteSent::class, LogQuoteSentActivity::class);
+        Event::listen(TaskCompleted::class, LogTaskCompletedActivity::class);
     }
 
     private function loadWebRoutes(): void

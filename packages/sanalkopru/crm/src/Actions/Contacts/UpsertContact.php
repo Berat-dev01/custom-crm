@@ -4,6 +4,7 @@ namespace Sanalkopru\Crm\Actions\Contacts;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Arr;
+use Sanalkopru\Crm\Events\ContactCreated;
 use Sanalkopru\Crm\Models\Contact;
 
 class UpsertContact
@@ -14,6 +15,7 @@ class UpsertContact
     public function handle(Contact $contact, array $payload, ?Authenticatable $user = null): Contact
     {
         $tagIds = Arr::pull($payload, 'tag_ids', []);
+        $isNew = ! $contact->exists;
 
         $payload['full_name'] = $this->fullName($payload);
         $payload[$contact->exists ? 'updated_by' : 'created_by'] = $user?->getAuthIdentifier();
@@ -22,6 +24,10 @@ class UpsertContact
         $contact->save();
 
         $contact->tags()->sync($tagIds);
+
+        if ($isNew) {
+            event(new ContactCreated($contact->refresh(), $user));
+        }
 
         return $contact->refresh();
     }
