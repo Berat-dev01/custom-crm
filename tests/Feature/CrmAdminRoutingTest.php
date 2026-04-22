@@ -74,6 +74,7 @@ class CrmAdminRoutingTest extends TestCase
     {
         return [
             'crm.dashboard',
+            'crm.search',
             'crm.contacts.index',
             'crm.contacts.create',
             'crm.contacts.store',

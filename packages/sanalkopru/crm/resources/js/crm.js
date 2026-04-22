@@ -191,7 +191,58 @@
         });
     }
 
+    function initializeGlobalSearchShortcut() {
+        document.addEventListener('keydown', (event) => {
+            const isSearchShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
+
+            if (!isSearchShortcut) {
+                return;
+            }
+
+            const input = document.querySelector('[data-crm-global-search]');
+
+            if (!input) {
+                return;
+            }
+
+            event.preventDefault();
+            input.focus();
+            input.select();
+        });
+    }
+
+    function initializeFormStates() {
+        document.querySelectorAll('form').forEach((form) => {
+            form.addEventListener('submit', (event) => {
+                const submitter = event.submitter;
+                const message = submitter?.dataset?.crmConfirm || form.dataset.crmConfirm;
+
+                if (message && !window.confirm(message)) {
+                    event.preventDefault();
+                    return;
+                }
+
+                form.classList.add('crm-is-submitting');
+            });
+        });
+
+        const invalid = document.querySelector('.is-invalid, [aria-invalid="true"]');
+        invalid?.focus?.();
+    }
+
+    function initializeToasts() {
+        document.querySelectorAll('[data-crm-toast]').forEach((toast) => {
+            window.setTimeout(() => {
+                toast.style.transition = 'opacity 180ms ease';
+                toast.style.opacity = '0';
+            }, 5000);
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+        initializeGlobalSearchShortcut();
+        initializeFormStates();
+        initializeToasts();
         initializeDealKanban();
         initializeQuoteItems();
     });

@@ -10,6 +10,7 @@ use Sanalkopru\Crm\Http\Controllers\Admin\DealsController;
 use Sanalkopru\Crm\Http\Controllers\Admin\DealStagesController;
 use Sanalkopru\Crm\Http\Controllers\Admin\QuotesController;
 use Sanalkopru\Crm\Http\Controllers\Admin\SavedFiltersController;
+use Sanalkopru\Crm\Http\Controllers\Admin\SearchController;
 use Sanalkopru\Crm\Http\Controllers\Admin\TagsController;
 use Sanalkopru\Crm\Http\Controllers\Admin\TasksController;
 use Sanalkopru\Crm\Http\Controllers\DashboardController;
@@ -24,6 +25,7 @@ Route::middleware(config('crm.routes.middleware', ['web']))
             ->middleware('crm.access')
             ->group(function () {
                 Route::get('/', DashboardController::class)->name('dashboard');
+                Route::get('search', SearchController::class)->name('search');
 
                 Route::get('imports/{import:public_id}/errors', [DataTransferController::class, 'errors'])->name('imports.errors');
 

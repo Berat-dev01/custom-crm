@@ -10,7 +10,7 @@
                     {{ $savedFilter->name }}
                 </x-admin-panel::button>
                 @if($savedFilter->user_id === auth()->id())
-                    <form method="POST" action="{{ route('crm.saved-filters.destroy', $savedFilter) }}">
+                    <form method="POST" action="{{ route('crm.saved-filters.destroy', $savedFilter) }}" data-crm-confirm="Delete this saved filter?">
                         @csrf
                         @method('DELETE')
                         <x-admin-panel::button type="submit" size="sm" variant="ghost" icon="x" />

@@ -31,7 +31,7 @@
                     </x-admin-panel::button>
                 @endcan
                 @can('delete', $company)
-                    <form method="POST" action="{{ route('crm.companies.destroy', $company) }}">
+                    <form method="POST" action="{{ route('crm.companies.destroy', $company) }}" data-crm-confirm="Delete this company?">
                         @csrf
                         @method('DELETE')
                         <x-admin-panel::button type="submit" variant="ghost" icon="trash-2">
@@ -46,7 +46,7 @@
         </header>
 
         <div class="crm-admin-grid">
-            <x-admin-panel::stat-card label="Open Deal Value" :value="number_format($openDealsValue, 2).' '.config('crm.money.default_currency')" icon="circle-dollar-sign" variant="success" />
+            <x-admin-panel::stat-card label="Open Deal Value" :value="$crmFormat->money($openDealsValue)" icon="circle-dollar-sign" variant="success" />
             <x-admin-panel::stat-card label="Contacts" :value="$company->contacts->count()" icon="users" variant="primary" />
             <x-admin-panel::stat-card label="Open Deals" :value="$openDeals->count()" icon="kanban-square" variant="warning" />
             <x-admin-panel::stat-card label="Quotes" :value="$company->quotes->count()" icon="file-text" variant="info" />

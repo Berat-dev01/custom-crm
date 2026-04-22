@@ -75,7 +75,7 @@
                                 <div class="crm-row-actions">
                                     <x-admin-panel::button :href="route('crm.deal-stages.edit', $stage)" size="sm" variant="ghost" icon="pencil" />
 
-                                    <form method="POST" action="{{ route('crm.deal-stages.destroy', $stage) }}" class="crm-inline-form">
+                                    <form method="POST" action="{{ route('crm.deal-stages.destroy', $stage) }}" class="crm-inline-form" data-crm-confirm="Delete this deal stage?">
                                         @csrf
                                         @method('DELETE')
                                         @if($stage->deals_count > 0)

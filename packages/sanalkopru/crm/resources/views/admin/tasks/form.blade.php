@@ -9,6 +9,8 @@
 
 @section('content')
     <section class="crm-admin-page" data-crm-module="tasks">
+        @include('crm::admin.partials.status')
+
         <header class="crm-admin-header crm-admin-header-row">
             <div>
                 <p class="crm-admin-eyebrow">CRM / Tasks</p>

@@ -67,10 +67,10 @@
                             <strong>{{ $activity->subject }}</strong>
                             <div class="crm-muted">{{ $activity->body ? str($activity->body)->limit(80) : 'No body' }}</div>
                         </td>
-                        <td>{{ ucfirst(str_replace('_', ' ', $activity->type)) }}</td>
+                        <td>{{ $crmFormat->status($activity->type) }}</td>
                         <td>{{ $relatedLabel }}</td>
                         <td>{{ $activity->user?->name ?: 'System' }}</td>
-                        <td>{{ $activity->occurred_at?->format('Y-m-d H:i') ?: '-' }}</td>
+                        <td>{{ $crmFormat->datetime($activity->occurred_at) }}</td>
                         <td>
                             <div class="crm-row-actions">
                                 <x-admin-panel::button :href="route('crm.activities.show', $activity)" size="sm" variant="ghost" icon="eye" />
@@ -82,7 +82,15 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="crm-empty">No activities found.</td>
+                        <td colspan="6">
+                            @include('crm::admin.partials.empty-state', [
+                                'title' => 'No activities found.',
+                                'body' => 'Log calls, meetings and notes to keep the customer timeline useful.',
+                                'actionUrl' => route('crm.activities.create'),
+                                'actionLabel' => 'New Activity',
+                                'actionPermission' => 'crm.activities.create',
+                            ])
+                        </td>
                     </tr>
                 @endforelse
             </x-admin-panel::table>

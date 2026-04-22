@@ -69,7 +69,15 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="crm-empty">No tags found.</td>
+                        <td colspan="4">
+                            @include('crm::admin.partials.empty-state', [
+                                'title' => 'No tags found.',
+                                'body' => 'Use tags to segment accounts, opportunities and contacts.',
+                                'actionUrl' => route('crm.tags.create'),
+                                'actionLabel' => 'New Tag',
+                                'actionPermission' => 'crm.tags.create',
+                            ])
+                        </td>
                     </tr>
                 @endforelse
             </x-admin-panel::table>

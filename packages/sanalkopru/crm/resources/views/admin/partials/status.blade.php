@@ -1,5 +1,22 @@
+@once
+    @push('scripts')
+        <script src="{{ asset('vendor/crm/js/crm.js') }}"></script>
+    @endpush
+@endonce
+
+@include('crm::admin.partials.global-search')
+
 @if(session('crm_status'))
-    <x-admin-panel::alert variant="success">
+    <x-admin-panel::alert variant="success" class="crm-toast" data-crm-toast>
         {{ session('crm_status') }}
+    </x-admin-panel::alert>
+@endif
+
+@php($crmErrors = $errors->any() ? $errors : session('errors'))
+
+@if($crmErrors && $crmErrors->any())
+    <x-admin-panel::alert variant="danger" class="crm-error-state" data-crm-error-state>
+        <strong>Please review the highlighted fields.</strong>
+        <span>{{ $crmErrors->first() }}</span>
     </x-admin-panel::alert>
 @endif

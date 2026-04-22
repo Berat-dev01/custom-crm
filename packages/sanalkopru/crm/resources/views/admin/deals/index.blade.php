@@ -7,10 +7,6 @@
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
 @endpush
 
-@push('scripts')
-    <script src="{{ asset('vendor/crm/js/crm.js') }}"></script>
-@endpush
-
 @section('content')
     <section class="crm-admin-page" data-crm-module="deals">
         @include('crm::admin.partials.status')
@@ -93,8 +89,8 @@
                                 <div class="crm-muted">{{ $deal->company?->name ?: $deal->contact?->full_name ?: 'No account linked' }}</div>
                             </td>
                             <td>{{ $deal->stage?->name ?: '-' }}</td>
-                            <td>{{ $deal->currency }} {{ number_format((float) $deal->value, 2) }}</td>
-                            <td>{{ $deal->expected_close_date?->format('Y-m-d') ?: '-' }}</td>
+                            <td>{{ $crmFormat->money($deal->value, $deal->currency) }}</td>
+                            <td>{{ $crmFormat->date($deal->expected_close_date) }}</td>
                             <td>{{ $deal->owner?->name ?: '-' }}</td>
                             <td>
                                 <div class="crm-row-actions">
@@ -107,7 +103,15 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="crm-empty">No deals found.</td>
+                            <td colspan="6">
+                                @include('crm::admin.partials.empty-state', [
+                                    'title' => 'No deals found.',
+                                    'body' => 'Start a new opportunity or relax the current filters.',
+                                    'actionUrl' => route('crm.deals.create'),
+                                    'actionLabel' => 'New Deal',
+                                    'actionPermission' => 'crm.deals.create',
+                                ])
+                            </td>
                         </tr>
                     @endforelse
                 </x-admin-panel::table>
@@ -135,7 +139,7 @@
                                 </div>
                                 <div class="crm-kanban-column-meta">
                                     <span>{{ $stage->deals_count }} deals</span>
-                                    <span>{{ config('crm.money.default_currency', 'TRY') }} {{ number_format((float) $stage->pipeline_value, 2) }}</span>
+                            <span>{{ $crmFormat->money($stage->pipeline_value) }}</span>
                                 </div>
                             </header>
 
@@ -156,10 +160,10 @@
                                         </a>
                                         <div class="crm-kanban-card-meta">
                                             <span>{{ $deal->company?->name ?: $deal->contact?->full_name ?: 'No account' }}</span>
-                                            <span>{{ $deal->currency }} {{ number_format((float) $deal->value, 2) }}</span>
+                                            <span>{{ $crmFormat->money($deal->value, $deal->currency) }}</span>
                                         </div>
                                         <div class="crm-kanban-card-footer">
-                                            <span>{{ $deal->expected_close_date?->format('Y-m-d') ?: 'No close date' }}</span>
+                                            <span>{{ $deal->expected_close_date ? $crmFormat->date($deal->expected_close_date) : 'No close date' }}</span>
                                             <span>{{ $deal->owner?->name ?: 'No owner' }}</span>
                                             @if($deal->open_tasks_count > 0)
                                                 <span class="crm-kanban-badge">{{ $deal->open_tasks_count }} tasks</span>
@@ -167,7 +171,10 @@
                                         </div>
                                     </article>
                                 @empty
-                                    <div class="crm-empty">No deals.</div>
+                                    @include('crm::admin.partials.empty-state', [
+                                        'title' => 'No deals.',
+                                        'body' => 'Drag deals here as the pipeline develops.',
+                                    ])
                                 @endforelse
                             </div>
                         </section>

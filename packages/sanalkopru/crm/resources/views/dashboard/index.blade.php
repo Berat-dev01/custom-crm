@@ -9,7 +9,7 @@
 
 @section('content')
     @php
-        $money = fn (float|int $value): string => config('crm.money.default_currency', 'TRY').' '.number_format((float) $value, 2);
+        $money = fn (float|int|string|null $value, ?string $currency = null): string => $crmFormat->money($value, $currency);
         $maxPipeline = max(1, $pipelineByStage->max('pipeline_value') ?: 1);
         $maxQuoteStatus = max(1, $quoteStatusDistribution->max('total') ?: 1);
         $maxTrend = max(1, collect($monthlyTrend)->max(fn($row) => max($row['won_count'], $row['lost_count'])) ?: 1);
@@ -22,6 +22,8 @@
     @endphp
 
     <section class="crm-admin-page" data-crm-module="dashboard">
+        @include('crm::admin.partials.status')
+
         <header class="crm-admin-header crm-admin-header-row">
             <div>
                 <p class="crm-admin-eyebrow">CRM Engine</p>
@@ -110,7 +112,7 @@
                     @forelse($upcomingTasks as $task)
                         <div class="crm-list-item">
                             <strong>{{ $task->title }}</strong>
-                            <span>{{ $task->due_at?->format('Y-m-d H:i') ?: '-' }} / {{ ucfirst($task->priority) }} / {{ $task->assignee?->name ?: 'Unassigned' }}</span>
+                            <span>{{ $crmFormat->datetime($task->due_at) }} / {{ $crmFormat->status($task->priority) }} / {{ $task->assignee?->name ?: 'Unassigned' }}</span>
                         </div>
                     @empty
                         <p class="crm-muted">No upcoming tasks.</p>
@@ -127,7 +129,7 @@
                     @forelse($recentActivities as $activity)
                         <div class="crm-timeline-item">
                             <strong>{{ $activity->subject }}</strong>
-                            <span>{{ ucfirst(str_replace('_', ' ', $activity->type)) }} / {{ $activity->occurred_at?->format('Y-m-d H:i') }} / {{ $activity->user?->name ?: 'System' }}</span>
+                            <span>{{ $crmFormat->status($activity->type) }} / {{ $crmFormat->datetime($activity->occurred_at) }} / {{ $activity->user?->name ?: 'System' }}</span>
                             @if($activity->body)
                                 <p>{{ $activity->body }}</p>
                             @endif

@@ -7,10 +7,6 @@
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
 @endpush
 
-@push('scripts')
-    <script src="{{ asset('vendor/crm/js/crm.js') }}"></script>
-@endpush
-
 @section('content')
     @php
         $existingItems = $quote->exists
@@ -38,6 +34,8 @@
     @endphp
 
     <section class="crm-admin-page" data-crm-module="quotes">
+        @include('crm::admin.partials.status')
+
         <header class="crm-admin-header crm-admin-header-row">
             <div>
                 <p class="crm-admin-eyebrow">CRM / Quotes</p>

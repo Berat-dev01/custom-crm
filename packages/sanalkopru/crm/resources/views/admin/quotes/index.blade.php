@@ -73,8 +73,8 @@
                                 {{ ucfirst($quote->status) }}
                             </x-admin-panel::badge>
                         </td>
-                        <td>{{ $quote->currency }} {{ number_format((float) $quote->grand_total, 2) }}</td>
-                        <td>{{ $quote->valid_until?->format('Y-m-d') ?: '-' }}</td>
+                        <td>{{ $crmFormat->money($quote->grand_total, $quote->currency) }}</td>
+                        <td>{{ $crmFormat->date($quote->valid_until) }}</td>
                         <td>{{ $quote->owner?->name ?: '-' }}</td>
                         <td>
                             <div class="crm-row-actions">
@@ -90,7 +90,15 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="crm-empty">No quotes found.</td>
+                        <td colspan="7">
+                            @include('crm::admin.partials.empty-state', [
+                                'title' => 'No quotes found.',
+                                'body' => 'Create a quote from a deal or start one manually.',
+                                'actionUrl' => route('crm.quotes.create'),
+                                'actionLabel' => 'New Quote',
+                                'actionPermission' => 'crm.quotes.create',
+                            ])
+                        </td>
                     </tr>
                 @endforelse
             </x-admin-panel::table>

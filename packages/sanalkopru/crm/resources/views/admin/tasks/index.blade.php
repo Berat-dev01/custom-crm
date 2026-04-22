@@ -76,9 +76,9 @@
                         </td>
                         <td>{{ $relatedLabel }}</td>
                         <td>{{ $task->assignee?->name ?: '-' }}</td>
-                        <td>{{ $task->due_at?->format('Y-m-d H:i') ?: '-' }}</td>
-                        <td>{{ ucfirst($task->priority) }}</td>
-                        <td>{{ ucfirst(str_replace('_', ' ', $task->status)) }}</td>
+                        <td>{{ $crmFormat->datetime($task->due_at) }}</td>
+                        <td>{{ $crmFormat->status($task->priority) }}</td>
+                        <td>{{ $crmFormat->status($task->status) }}</td>
                         <td>
                             <div class="crm-row-actions">
                                 <x-admin-panel::button :href="route('crm.tasks.show', $task)" size="sm" variant="ghost" icon="eye" />
@@ -99,7 +99,15 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="crm-empty">No tasks found.</td>
+                        <td colspan="7">
+                            @include('crm::admin.partials.empty-state', [
+                                'title' => 'No tasks found.',
+                                'body' => 'Create a follow-up so the next sales action is visible.',
+                                'actionUrl' => route('crm.tasks.create'),
+                                'actionLabel' => 'New Task',
+                                'actionPermission' => 'crm.tasks.create',
+                            ])
+                        </td>
                     </tr>
                 @endforelse
             </x-admin-panel::table>

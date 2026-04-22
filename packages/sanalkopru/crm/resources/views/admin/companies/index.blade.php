@@ -107,7 +107,15 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="crm-empty">No companies found.</td>
+                        <td colspan="6">
+                            @include('crm::admin.partials.empty-state', [
+                                'title' => 'No companies found.',
+                                'body' => 'Add an account record or reset filters to see existing companies.',
+                                'actionUrl' => route('crm.companies.create'),
+                                'actionLabel' => 'New Company',
+                                'actionPermission' => 'crm.companies.create',
+                            ])
+                        </td>
                     </tr>
                 @endforelse
             </x-admin-panel::table>

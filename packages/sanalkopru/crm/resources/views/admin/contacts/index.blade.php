@@ -102,6 +102,7 @@
                         formaction="{{ route('crm.contacts.bulk-delete') }}"
                         name="_method"
                         value="DELETE"
+                        data-crm-confirm="Delete selected contacts?"
                     >
                         Delete Selected
                     </x-admin-panel::button>
@@ -154,7 +155,15 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="crm-empty">No contacts found.</td>
+                        <td colspan="7">
+                            @include('crm::admin.partials.empty-state', [
+                                'title' => 'No contacts found.',
+                                'body' => 'Create a contact or adjust filters to continue the sales workflow.',
+                                'actionUrl' => route('crm.contacts.create'),
+                                'actionLabel' => 'New Contact',
+                                'actionPermission' => 'crm.contacts.create',
+                            ])
+                        </td>
                     </tr>
                 @endforelse
             </x-admin-panel::table>

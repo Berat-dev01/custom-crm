@@ -26,6 +26,7 @@ class CrmNavigation
     {
         return [
             ['label' => 'Dashboard', 'route' => 'crm.dashboard', 'permission' => 'crm.dashboard.view'],
+            ['label' => 'Search', 'route' => 'crm.search', 'permission' => 'crm.dashboard.view'],
             ['label' => 'Contacts', 'route' => 'crm.contacts.index', 'permission' => 'crm.contacts.view'],
             ['label' => 'Companies', 'route' => 'crm.companies.index', 'permission' => 'crm.companies.view'],
             ['label' => 'Deals', 'route' => 'crm.deals.index', 'permission' => 'crm.deals.view'],

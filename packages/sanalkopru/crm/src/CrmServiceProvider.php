@@ -42,6 +42,7 @@ use Sanalkopru\Crm\Services\Configuration\FeatureManager;
 use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 use Sanalkopru\Crm\Services\Configuration\UiSettings;
 use Sanalkopru\Crm\Services\Navigation\CrmNavigation;
+use Sanalkopru\Crm\Support\CrmFormatter;
 
 class CrmServiceProvider extends ServiceProvider
 {
@@ -57,6 +58,7 @@ class CrmServiceProvider extends ServiceProvider
         $this->app->singleton(MoneySettings::class);
         $this->app->singleton(CrmNavigation::class);
         $this->app->singleton(UiSettings::class);
+        $this->app->singleton(CrmFormatter::class);
     }
 
     public function boot(): void
@@ -102,6 +104,7 @@ class CrmServiceProvider extends ServiceProvider
 
         View::composer('crm::*', function ($view): void {
             $view->with('crmNavigation', $this->app->make(CrmNavigation::class)->items(request()));
+            $view->with('crmFormat', $this->app->make(CrmFormatter::class));
         });
     }
 

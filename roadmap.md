@@ -1111,6 +1111,8 @@ Kabul kriterleri:
 
 ## ADIM 23 — Global Search, Filtreleme ve UX Detaylarini Tamamla
 
+**Durum:** Tamamlandi. Global CRM search, yetkiye gore modullu sonuc gruplari, ortak arama cubugu, bos state aksiyonlari, form loading/confirm/toast davranislari ve TR satis ekranlarina uygun para/tarih format helper'i eklendi.
+
 ```prompt
 CRM genelinde kullanici deneyimini profesyonel hale getir.
 
