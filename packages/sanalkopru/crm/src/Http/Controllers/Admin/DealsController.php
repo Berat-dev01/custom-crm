@@ -9,10 +9,17 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
+use Sanalkopru\Crm\Actions\Deals\AddDealActivity;
+use Sanalkopru\Crm\Actions\Deals\AddDealTask;
+use Sanalkopru\Crm\Actions\Deals\CreateDealQuote;
 use Sanalkopru\Crm\Actions\Deals\MoveDealToStage;
 use Sanalkopru\Crm\Actions\Deals\UpsertDeal;
+use Sanalkopru\Crm\Http\Requests\Deals\CloseDealAsLostRequest;
 use Sanalkopru\Crm\Http\Requests\Deals\MoveDealRequest;
+use Sanalkopru\Crm\Http\Requests\Deals\StoreDealActivityRequest;
+use Sanalkopru\Crm\Http\Requests\Deals\StoreDealQuoteRequest;
 use Sanalkopru\Crm\Http\Requests\Deals\StoreDealRequest;
+use Sanalkopru\Crm\Http\Requests\Deals\StoreDealTaskRequest;
 use Sanalkopru\Crm\Http\Requests\Deals\UpdateDealRequest;
 use Sanalkopru\Crm\Models\Company;
 use Sanalkopru\Crm\Models\Contact;
@@ -67,9 +74,12 @@ class DealsController extends Controller
             ->with('crm_status', 'Deal created.');
     }
 
-    public function show(Deal $deal): View
+    public function show(Request $request, Deal $deal): View
     {
         Gate::authorize('view', $deal);
+        $request->validate([
+            'activity_type' => ['nullable', 'string', 'in:note,call,email,meeting,task_completed,quote_sent,deal_moved,system'],
+        ]);
 
         $deal->load([
             'stage',
@@ -79,14 +89,30 @@ class DealsController extends Controller
             'tags',
             'tasks.assignee',
             'quotes',
-            'activities.user',
         ]);
+
+        $timeline = $deal->activities()
+            ->with('user')
+            ->when($request->filled('activity_type'), fn ($query) => $query->where('type', $request->string('activity_type')->toString()))
+            ->orderByDesc('occurred_at')
+            ->orderByDesc('id')
+            ->get();
 
         return view('crm::admin.deals.show', [
             'deal' => $deal,
             'openTasks' => $deal->tasks->whereNull('completed_at')->sortBy('due_at'),
-            'timeline' => $deal->activities->sortByDesc('occurred_at'),
+            'nextTask' => $deal->tasks->whereNull('completed_at')->sortBy('due_at')->first(),
+            'timeline' => $timeline,
             'weightedValue' => ((float) $deal->value) * ($deal->probability / 100),
+            'stages' => DealStage::query()->ordered()->get(['id', 'name', 'probability', 'is_won', 'is_lost']),
+            'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
+            'currencies' => array_combine(
+                config('crm.money.supported_currencies', ['TRY', 'USD', 'EUR']),
+                config('crm.money.supported_currencies', ['TRY', 'USD', 'EUR'])
+            ),
+            'activityTypes' => $this->activityTypes(),
+            'activityFilter' => $request->string('activity_type')->toString(),
+            'taskPriorities' => $this->taskPriorities(),
         ]);
     }
 
@@ -142,6 +168,80 @@ class DealsController extends Controller
         ]);
     }
 
+    public function stage(MoveDealRequest $request, Deal $deal, MoveDealToStage $moveDeal): RedirectResponse
+    {
+        Gate::authorize('move', $deal);
+
+        $moveDeal->handle(
+            $deal,
+            DealStage::query()->findOrFail($request->validated('stage_id')),
+            null,
+            $request->validated('lost_reason'),
+            $request->user()
+        );
+
+        return redirect()
+            ->route('crm.deals.show', $deal)
+            ->with('crm_status', 'Deal stage updated.');
+    }
+
+    public function closeWon(Deal $deal, MoveDealToStage $moveDeal): RedirectResponse
+    {
+        Gate::authorize('close', $deal);
+
+        $stage = DealStage::query()->where('is_won', true)->firstOrFail();
+        $moveDeal->handle($deal, $stage, null, null, request()->user());
+
+        return redirect()
+            ->route('crm.deals.show', $deal)
+            ->with('crm_status', 'Deal marked as won.');
+    }
+
+    public function closeLost(CloseDealAsLostRequest $request, Deal $deal, MoveDealToStage $moveDeal): RedirectResponse
+    {
+        Gate::authorize('close', $deal);
+
+        $stage = DealStage::query()->where('is_lost', true)->firstOrFail();
+        $moveDeal->handle($deal, $stage, null, $request->validated('lost_reason'), $request->user());
+
+        return redirect()
+            ->route('crm.deals.show', $deal)
+            ->with('crm_status', 'Deal marked as lost.');
+    }
+
+    public function storeTask(StoreDealTaskRequest $request, Deal $deal, AddDealTask $addTask): RedirectResponse
+    {
+        Gate::authorize('view', $deal);
+
+        $addTask->handle($deal, $request->validated(), $request->user());
+
+        return redirect()
+            ->route('crm.deals.show', $deal)
+            ->with('crm_status', 'Task added to deal.');
+    }
+
+    public function storeQuote(StoreDealQuoteRequest $request, Deal $deal, CreateDealQuote $createQuote): RedirectResponse
+    {
+        Gate::authorize('view', $deal);
+
+        $createQuote->handle($deal, $request->validated(), $request->user());
+
+        return redirect()
+            ->route('crm.deals.show', $deal)
+            ->with('crm_status', 'Quote created for deal.');
+    }
+
+    public function storeActivity(StoreDealActivityRequest $request, Deal $deal, AddDealActivity $addActivity): RedirectResponse
+    {
+        Gate::authorize('view', $deal);
+
+        $addActivity->handle($deal, $request->validated(), $request->user());
+
+        return redirect()
+            ->route('crm.deals.show', $deal)
+            ->with('crm_status', 'Activity added to deal.');
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -172,6 +272,36 @@ class DealsController extends Controller
             'open' => 'Open',
             'won' => 'Won',
             'lost' => 'Lost',
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function activityTypes(): array
+    {
+        return [
+            'note' => 'Note',
+            'call' => 'Call',
+            'email' => 'Email',
+            'meeting' => 'Meeting',
+            'task_completed' => 'Task Completed',
+            'quote_sent' => 'Quote Sent',
+            'deal_moved' => 'Deal Moved',
+            'system' => 'System',
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function taskPriorities(): array
+    {
+        return [
+            'low' => 'Low',
+            'normal' => 'Normal',
+            'high' => 'High',
+            'urgent' => 'Urgent',
         ];
     }
 }

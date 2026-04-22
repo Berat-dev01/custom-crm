@@ -333,6 +333,30 @@
         justify-content: flex-end;
     }
 
+    .crm-action-panel {
+        display: grid;
+        gap: 14px;
+    }
+
+    .crm-action-panel h3 {
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .crm-action-panel + .crm-action-panel {
+        border-top: 1px solid #e2e8f0;
+        padding-top: 16px;
+    }
+
+    .crm-highlight-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        display: grid;
+        gap: 6px;
+        padding: 12px;
+    }
+
     .crm-empty {
         color: #64748b;
         padding: 24px;

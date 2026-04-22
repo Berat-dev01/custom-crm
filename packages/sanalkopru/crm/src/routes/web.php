@@ -34,6 +34,12 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::resource('companies', CompaniesController::class);
                 Route::post('deal-stages/reorder', [DealStagesController::class, 'reorder'])->name('deal-stages.reorder');
                 Route::resource('deal-stages', DealStagesController::class)->except('show');
+                Route::post('deals/{deal}/tasks', [DealsController::class, 'storeTask'])->name('deals.tasks.store');
+                Route::post('deals/{deal}/quotes', [DealsController::class, 'storeQuote'])->name('deals.quotes.store');
+                Route::post('deals/{deal}/activities', [DealsController::class, 'storeActivity'])->name('deals.activities.store');
+                Route::patch('deals/{deal}/stage', [DealsController::class, 'stage'])->name('deals.stage');
+                Route::patch('deals/{deal}/close-won', [DealsController::class, 'closeWon'])->name('deals.close-won');
+                Route::patch('deals/{deal}/close-lost', [DealsController::class, 'closeLost'])->name('deals.close-lost');
                 Route::patch('deals/{deal}/move', [DealsController::class, 'move'])->name('deals.move');
                 Route::resource('deals', DealsController::class);
                 Route::resource('tasks', TasksController::class);
