@@ -25,6 +25,7 @@ class Task extends Model
         return [
             'due_at' => 'datetime',
             'reminder_at' => 'datetime',
+            'reminder_notified_at' => 'datetime',
             'completed_at' => 'datetime',
         ];
     }
@@ -60,5 +61,17 @@ class Task extends Model
     public function scopeOpen(Builder $query): Builder
     {
         return $query->where('status', 'open');
+    }
+
+    public function scopeIncomplete(Builder $query): Builder
+    {
+        return $query->whereNotIn('status', ['completed', 'cancelled'])
+            ->whereNull('completed_at');
+    }
+
+    public function scopeDueToday(Builder $query): Builder
+    {
+        return $query->whereNotNull('due_at')
+            ->whereBetween('due_at', [now()->startOfDay(), now()->endOfDay()]);
     }
 }

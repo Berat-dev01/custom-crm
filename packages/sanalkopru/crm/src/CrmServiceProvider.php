@@ -2,12 +2,14 @@
 
 namespace Sanalkopru\Crm;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Sanalkopru\Crm\Console\SendTaskRemindersCommand;
 use Sanalkopru\Crm\Http\Middleware\EnsureCrmAccess;
 use Sanalkopru\Crm\Models\Activity;
 use Sanalkopru\Crm\Models\Company;
@@ -57,7 +59,12 @@ class CrmServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->registerPublishables();
+            $this->commands([
+                SendTaskRemindersCommand::class,
+            ]);
         }
+
+        $this->scheduleCommands();
     }
 
     private function registerAuthorization(): void
@@ -116,5 +123,15 @@ class CrmServiceProvider extends ServiceProvider
             __DIR__.'/../resources/js' => public_path('vendor/crm/js'),
             __DIR__.'/../resources/css' => public_path('vendor/crm/css'),
         ], 'crm-assets');
+    }
+
+    private function scheduleCommands(): void
+    {
+        $this->app->booted(function (): void {
+            $this->app->make(Schedule::class)
+                ->command('crm:tasks:send-reminders')
+                ->everyFiveMinutes()
+                ->withoutOverlapping();
+        });
     }
 }

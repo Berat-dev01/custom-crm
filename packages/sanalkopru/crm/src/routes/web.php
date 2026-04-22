@@ -42,6 +42,10 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::patch('deals/{deal}/close-lost', [DealsController::class, 'closeLost'])->name('deals.close-lost');
                 Route::patch('deals/{deal}/move', [DealsController::class, 'move'])->name('deals.move');
                 Route::resource('deals', DealsController::class);
+                Route::get('tasks/my', [TasksController::class, 'my'])->name('tasks.my');
+                Route::get('tasks/overdue', [TasksController::class, 'overdue'])->name('tasks.overdue');
+                Route::get('tasks/today', [TasksController::class, 'today'])->name('tasks.today');
+                Route::patch('tasks/{task}/complete', [TasksController::class, 'complete'])->name('tasks.complete');
                 Route::resource('tasks', TasksController::class);
                 Route::resource('quotes', QuotesController::class);
                 Route::resource('activities', ActivitiesController::class);

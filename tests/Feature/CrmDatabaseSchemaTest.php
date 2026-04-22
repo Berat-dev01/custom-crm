@@ -114,6 +114,7 @@ class CrmDatabaseSchemaTest extends TestCase
             'assigned_to',
             'due_at',
             'reminder_at',
+            'reminder_notified_at',
             'completed_at',
             'priority',
             'status',
@@ -178,6 +179,15 @@ class CrmDatabaseSchemaTest extends TestCase
             'metadata',
             'ip_address',
             'user_agent',
+        ]);
+
+        $this->assertColumns('notifications', [
+            'id',
+            'type',
+            'notifiable_type',
+            'notifiable_id',
+            'data',
+            'read_at',
         ]);
     }
 
