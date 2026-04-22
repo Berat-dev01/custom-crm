@@ -48,6 +48,13 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::get('tasks/today', [TasksController::class, 'today'])->name('tasks.today');
                 Route::patch('tasks/{task}/complete', [TasksController::class, 'complete'])->name('tasks.complete');
                 Route::resource('tasks', TasksController::class);
+                Route::patch('quotes/{quote}/send', [QuotesController::class, 'send'])->name('quotes.send');
+                Route::patch('quotes/{quote}/accept', [QuotesController::class, 'accept'])->name('quotes.accept');
+                Route::patch('quotes/{quote}/reject', [QuotesController::class, 'reject'])->name('quotes.reject');
+                Route::patch('quotes/{quote}/expire', [QuotesController::class, 'expire'])->name('quotes.expire');
+                Route::post('quotes/{quote}/duplicate', [QuotesController::class, 'duplicate'])->name('quotes.duplicate');
+                Route::get('quotes/{quote}/preview', [QuotesController::class, 'preview'])->name('quotes.preview');
+                Route::get('quotes/{quote}/download', [QuotesController::class, 'download'])->name('quotes.download');
                 Route::resource('quotes', QuotesController::class);
                 Route::resource('activities', ActivitiesController::class);
                 Route::post('tags/bulk', [TagsController::class, 'bulk'])->name('tags.bulk');

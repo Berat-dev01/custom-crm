@@ -118,5 +118,81 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', initializeDealKanban);
+    function reindexQuoteItems(container) {
+        container.querySelectorAll('[data-crm-quote-item]').forEach((item, index) => {
+            item.querySelector('[data-crm-quote-item-number]').textContent = String(index + 1);
+            item.querySelector('[data-crm-quote-item-position]').value = String(index + 1);
+            item.querySelectorAll('[name^="items["]').forEach((field) => {
+                field.name = field.name.replace(/^items\[\d+\]/, `items[${index}]`);
+            });
+        });
+    }
+
+    function initializeQuoteItems() {
+        const form = document.querySelector('[data-crm-quote-form]');
+        const container = document.querySelector('[data-crm-quote-items]');
+
+        if (!form || !container) {
+            return;
+        }
+
+        const addButton = document.querySelector('[data-crm-add-quote-item]');
+        const defaultTaxRate = container.dataset.defaultTaxRate || '20';
+
+        addButton?.addEventListener('click', () => {
+            const template = container.querySelector('[data-crm-quote-item]');
+            const clone = template.cloneNode(true);
+
+            clone.querySelectorAll('input, textarea, select').forEach((field) => {
+                if (field.matches('[data-crm-quote-item-position]')) {
+                    return;
+                }
+
+                if (field.name.includes('[quantity]')) {
+                    field.value = '1.000';
+                } else if (field.name.includes('[unit_price]') || field.name.includes('[discount_value]')) {
+                    field.value = '0.00';
+                } else if (field.name.includes('[tax_rate]')) {
+                    field.value = defaultTaxRate;
+                } else {
+                    field.value = '';
+                }
+            });
+
+            container.appendChild(clone);
+            reindexQuoteItems(container);
+        });
+
+        container.addEventListener('click', (event) => {
+            const button = event.target.closest('button');
+
+            if (!button) {
+                return;
+            }
+
+            const item = button.closest('[data-crm-quote-item]');
+
+            if (button.matches('[data-crm-remove-quote-item]')) {
+                if (container.querySelectorAll('[data-crm-quote-item]').length > 1) {
+                    item.remove();
+                    reindexQuoteItems(container);
+                }
+            }
+
+            if (button.matches('[data-crm-quote-item-up]') && item.previousElementSibling) {
+                container.insertBefore(item, item.previousElementSibling);
+                reindexQuoteItems(container);
+            }
+
+            if (button.matches('[data-crm-quote-item-down]') && item.nextElementSibling) {
+                container.insertBefore(item.nextElementSibling, item);
+                reindexQuoteItems(container);
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeDealKanban();
+        initializeQuoteItems();
+    });
 })();

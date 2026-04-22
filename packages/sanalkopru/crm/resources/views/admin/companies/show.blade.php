@@ -129,7 +129,7 @@
                 <x-slot:header>Quotes</x-slot:header>
                 @forelse($company->quotes->sortByDesc('created_at') as $quote)
                     <div class="crm-list-item">
-                        <strong>{{ $quote->quote_number }}</strong>
+                        <strong><a href="{{ route('crm.quotes.show', $quote) }}">{{ $quote->quote_number }}</a></strong>
                         <span>{{ ucfirst($quote->status) }} / {{ number_format((float) $quote->grand_total, 2) }} {{ $quote->currency }}</span>
                     </div>
                 @empty
