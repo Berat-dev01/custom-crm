@@ -63,7 +63,9 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::get('saved-filters/{savedFilter}/apply', [SavedFiltersController::class, 'apply'])->name('saved-filters.apply');
                 Route::delete('saved-filters/{savedFilter}', [SavedFiltersController::class, 'destroy'])->name('saved-filters.destroy');
 
+                Route::post('ai/summarize', [AiController::class, 'summarize'])->name('ai.summarize');
                 Route::post('ai/summarize-note', [AiController::class, 'summarizeNote'])->name('ai.summarize-note');
                 Route::post('ai/draft-email', [AiController::class, 'draftEmail'])->name('ai.draft-email');
+                Route::post('ai/follow-up', [AiController::class, 'followUp'])->name('ai.follow-up');
             });
     });

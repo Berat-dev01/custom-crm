@@ -9,4 +9,6 @@ interface AiProviderContract
     public function draftEmail(string $brief, array $context = []): string;
 
     public function draftFollowUp(string $brief, array $context = []): string;
+
+    public function analyzeLostDeal(string $brief, array $context = []): string;
 }

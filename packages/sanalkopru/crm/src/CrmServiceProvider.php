@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Sanalkopru\Crm\Console\SendTaskRemindersCommand;
+use Sanalkopru\Crm\Contracts\AiProviderContract;
 use Sanalkopru\Crm\Events\ContactCreated;
 use Sanalkopru\Crm\Events\DealMoved;
 use Sanalkopru\Crm\Events\QuoteSent;
@@ -49,6 +50,7 @@ class CrmServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/crm.php', 'crm');
 
         $this->app->singleton(AiDriverManager::class);
+        $this->app->bind(AiProviderContract::class, fn ($app) => $app->make(AiDriverManager::class)->provider());
         $this->app->singleton(CrmAuthorization::class);
         $this->app->singleton(PermissionCatalog::class);
         $this->app->singleton(FeatureManager::class);

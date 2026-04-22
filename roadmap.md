@@ -1027,6 +1027,8 @@ Kabul kriterleri:
 
 ## ADIM 21 — AI: Not Ozetleme, Email Taslagi ve Takip Metni
 
+**Durum:** Tamamlandi. AI katmani OpenAI/Claude/Gemini/null driver'lariyla provider bagimsiz contract arkasinda calisir; `.env`/config secimine gore aktif olur, API key yoksa UI aksiyonlari disabled kalir ve tum ciktilar sadece taslak olarak gosterilir.
+
 ```prompt
 CRM icine AI yardimci ozelliklerini ekle.
 

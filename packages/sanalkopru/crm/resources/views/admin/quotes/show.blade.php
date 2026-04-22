@@ -11,6 +11,13 @@
     <section class="crm-admin-page" data-crm-module="quotes">
         @include('crm::admin.partials.status')
 
+        @if(session('crm_ai_draft'))
+            <div class="crm-highlight-box">
+                <strong>AI Follow-up Draft</strong>
+                <pre class="crm-muted" style="white-space: pre-wrap; margin: 0;">{{ session('crm_ai_draft') }}</pre>
+            </div>
+        @endif
+
         <header class="crm-admin-header crm-admin-header-row">
             <div>
                 <p class="crm-admin-eyebrow">CRM / Quotes</p>
@@ -116,6 +123,16 @@
                             <form method="POST" action="{{ route('crm.quotes.duplicate', $quote) }}">
                                 @csrf
                                 <x-admin-panel::button type="submit" variant="ghost" icon="copy">Duplicate</x-admin-panel::button>
+                            </form>
+                        @endcan
+                        @can('crm.ai.use')
+                            <form method="POST" action="{{ route('crm.ai.follow-up') }}">
+                                @csrf
+                                <input type="hidden" name="quote_id" value="{{ $quote->id }}">
+                                <input type="hidden" name="brief" value="Draft a polite follow-up for this quote.">
+                                <x-admin-panel::button type="submit" variant="outline" icon="sparkles" :disabled="!$aiAvailable" title="{{ $aiAvailable ? 'Draft with AI' : 'AI is disabled or missing provider credentials' }}">
+                                    AI Follow-up
+                                </x-admin-panel::button>
                             </form>
                         @endcan
                     </div>

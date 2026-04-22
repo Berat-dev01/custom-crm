@@ -27,6 +27,7 @@ use Sanalkopru\Crm\Models\Deal;
 use Sanalkopru\Crm\Models\DealStage;
 use Sanalkopru\Crm\Models\SavedFilter;
 use Sanalkopru\Crm\Models\Tag;
+use Sanalkopru\Crm\Services\Ai\AiDriverManager;
 use Sanalkopru\Crm\Services\Deals\DealQuery;
 
 class DealsController extends Controller
@@ -115,6 +116,7 @@ class DealsController extends Controller
             'activityTypes' => $this->activityTypes(),
             'activityFilter' => $request->string('activity_type')->toString(),
             'taskPriorities' => $this->taskPriorities(),
+            'aiAvailable' => app(AiDriverManager::class)->available(),
         ]);
     }
 

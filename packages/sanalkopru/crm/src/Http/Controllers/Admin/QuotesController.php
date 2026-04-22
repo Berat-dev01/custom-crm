@@ -23,6 +23,7 @@ use Sanalkopru\Crm\Models\Contact;
 use Sanalkopru\Crm\Models\Deal;
 use Sanalkopru\Crm\Models\Quote;
 use Sanalkopru\Crm\Models\Tag;
+use Sanalkopru\Crm\Services\Ai\AiDriverManager;
 use Sanalkopru\Crm\Services\Quotes\QuotePdfRenderer;
 use Sanalkopru\Crm\Services\Quotes\QuoteQuery;
 use Symfony\Component\HttpFoundation\Response;
@@ -67,6 +68,7 @@ class QuotesController extends Controller
 
         return view('crm::admin.quotes.show', [
             'quote' => $this->loadQuote($quote),
+            'aiAvailable' => app(AiDriverManager::class)->available(),
         ]);
     }
 

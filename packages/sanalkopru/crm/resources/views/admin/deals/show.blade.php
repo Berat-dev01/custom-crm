@@ -59,6 +59,13 @@
             </div>
         @endif
 
+        @if(session('crm_ai_summary'))
+            <div class="crm-highlight-box">
+                <strong>AI Summary</strong>
+                <pre class="crm-muted" style="white-space: pre-wrap; margin: 0;">{{ session('crm_ai_summary') }}</pre>
+            </div>
+        @endif
+
         <div class="crm-two-column">
             <x-admin-panel::card>
                 <x-slot:header>
@@ -123,10 +130,20 @@
                     @can('crm.ai.use')
                         <form method="POST" action="{{ route('crm.ai.draft-email') }}" class="crm-action-panel">
                             @csrf
+                            <input type="hidden" name="deal_id" value="{{ $deal->id }}">
                             <input type="hidden" name="deal_title" value="{{ $deal->title }}">
                             <input type="hidden" name="brief" value="Draft a follow-up email for this deal.">
-                            <x-admin-panel::button type="submit" variant="outline" icon="sparkles">
+                            <x-admin-panel::button type="submit" variant="outline" icon="sparkles" :disabled="!$aiAvailable" title="{{ $aiAvailable ? 'Draft with AI' : 'AI is disabled or missing provider credentials' }}">
                                 AI Email Draft
+                            </x-admin-panel::button>
+                        </form>
+
+                        <form method="POST" action="{{ route('crm.ai.summarize') }}" class="crm-action-panel">
+                            @csrf
+                            <input type="hidden" name="type" value="{{ $deal->status === 'lost' ? 'lost_deal' : 'deal_timeline' }}">
+                            <input type="hidden" name="deal_id" value="{{ $deal->id }}">
+                            <x-admin-panel::button type="submit" variant="ghost" icon="sparkles" :disabled="!$aiAvailable" title="{{ $aiAvailable ? 'Summarize with AI' : 'AI is disabled or missing provider credentials' }}">
+                                {{ $deal->status === 'lost' ? 'AI Lost Deal Analysis' : 'AI Timeline Summary' }}
                             </x-admin-panel::button>
                         </form>
                     @endcan

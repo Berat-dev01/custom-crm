@@ -3,7 +3,12 @@
 namespace Tests\Unit;
 
 use InvalidArgumentException;
+use Sanalkopru\Crm\Contracts\AiProviderContract;
 use Sanalkopru\Crm\Services\Ai\AiDriverManager;
+use Sanalkopru\Crm\Services\Ai\Providers\ClaudeProvider;
+use Sanalkopru\Crm\Services\Ai\Providers\GeminiProvider;
+use Sanalkopru\Crm\Services\Ai\Providers\NullAiProvider;
+use Sanalkopru\Crm\Services\Ai\Providers\OpenAiProvider;
 use Sanalkopru\Crm\Support\Ai\AiDriver;
 use Tests\TestCase;
 
@@ -47,6 +52,41 @@ class AiDriverManagerTest extends TestCase
         $this->assertFalse($manager->enabled());
         $this->assertSame(AiDriver::Null, $manager->selected());
         $this->assertNull($manager->model());
+    }
+
+    public function test_it_reports_availability_only_when_enabled_and_keyed(): void
+    {
+        config([
+            'crm.ai.enabled' => true,
+            'crm.ai.driver' => 'openai',
+            'crm.ai.drivers.openai.api_key' => null,
+        ]);
+
+        $manager = app(AiDriverManager::class);
+
+        $this->assertFalse($manager->available());
+
+        config(['crm.ai.drivers.openai.api_key' => 'test-key']);
+
+        $this->assertTrue($manager->available());
+    }
+
+    public function test_it_resolves_provider_classes(): void
+    {
+        $manager = app(AiDriverManager::class);
+
+        config(['crm.ai.driver' => 'openai']);
+        $this->assertInstanceOf(OpenAiProvider::class, $manager->provider());
+        $this->assertInstanceOf(OpenAiProvider::class, app(AiProviderContract::class));
+
+        config(['crm.ai.driver' => 'claude']);
+        $this->assertInstanceOf(ClaudeProvider::class, $manager->provider());
+
+        config(['crm.ai.driver' => 'gemini']);
+        $this->assertInstanceOf(GeminiProvider::class, $manager->provider());
+
+        config(['crm.ai.driver' => 'null']);
+        $this->assertInstanceOf(NullAiProvider::class, $manager->provider());
     }
 
     public function test_it_rejects_unknown_ai_drivers(): void

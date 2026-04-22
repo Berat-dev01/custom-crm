@@ -3,6 +3,11 @@
 namespace Sanalkopru\Crm\Services\Ai;
 
 use InvalidArgumentException;
+use Sanalkopru\Crm\Contracts\AiProviderContract;
+use Sanalkopru\Crm\Services\Ai\Providers\ClaudeProvider;
+use Sanalkopru\Crm\Services\Ai\Providers\GeminiProvider;
+use Sanalkopru\Crm\Services\Ai\Providers\NullAiProvider;
+use Sanalkopru\Crm\Services\Ai\Providers\OpenAiProvider;
 use Sanalkopru\Crm\Support\Ai\AiDriver;
 
 class AiDriverManager
@@ -10,6 +15,19 @@ class AiDriverManager
     public function enabled(): bool
     {
         return (bool) config('crm.ai.enabled', false);
+    }
+
+    public function available(): bool
+    {
+        if (! $this->enabled()) {
+            return false;
+        }
+
+        if ($this->selected() === AiDriver::Null) {
+            return false;
+        }
+
+        return $this->apiKey() !== null;
     }
 
     public function selected(): AiDriver
@@ -49,5 +67,22 @@ class AiDriverManager
     public function temperature(): float
     {
         return (float) config('crm.ai.temperature', 0.3);
+    }
+
+    public function apiKey(?AiDriver $driver = null): ?string
+    {
+        $apiKey = $this->config($driver)['api_key'] ?? null;
+
+        return $apiKey ? (string) $apiKey : null;
+    }
+
+    public function provider(): AiProviderContract
+    {
+        return match ($this->selected()) {
+            AiDriver::OpenAI => app(OpenAiProvider::class),
+            AiDriver::Claude => app(ClaudeProvider::class),
+            AiDriver::Gemini => app(GeminiProvider::class),
+            AiDriver::Null => app(NullAiProvider::class),
+        };
     }
 }
