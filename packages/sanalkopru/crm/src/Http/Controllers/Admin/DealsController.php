@@ -3,7 +3,10 @@
 namespace Sanalkopru\Crm\Http\Controllers\Admin;
 
 use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
+use Sanalkopru\Crm\Actions\Deals\MoveDealToStage;
+use Sanalkopru\Crm\Http\Requests\Deals\MoveDealRequest;
+use Sanalkopru\Crm\Models\Deal;
+use Sanalkopru\Crm\Models\DealStage;
 
 class DealsController extends CrmResourceController
 {
@@ -13,12 +16,28 @@ class DealsController extends CrmResourceController
 
     protected string $permissionPrefix = 'crm.deals';
 
-    public function move(string $deal): JsonResponse
+    public function move(MoveDealRequest $request, Deal $deal, MoveDealToStage $moveDeal): JsonResponse
     {
-        $this->authorizeAction('move');
+        $stage = DealStage::query()->findOrFail($request->validated('stage_id'));
+        $deal = $moveDeal->handle(
+            $deal,
+            $stage,
+            $request->integer('position') ?: null,
+            $request->validated('lost_reason'),
+            $request->user()
+        );
 
         return response()->json([
-            'message' => 'Deal move endpoint is registered and awaits pipeline implementation.',
-        ], Response::HTTP_NOT_IMPLEMENTED);
+            'message' => 'Deal moved.',
+            'deal' => [
+                'id' => $deal->id,
+                'stage_id' => $deal->stage_id,
+                'status' => $deal->status,
+                'position' => $deal->position,
+                'probability' => $deal->probability,
+                'closed_at' => $deal->closed_at?->toISOString(),
+                'lost_reason' => $deal->lost_reason,
+            ],
+        ]);
     }
 }

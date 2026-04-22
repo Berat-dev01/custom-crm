@@ -6,6 +6,7 @@ use Sanalkopru\Crm\Http\Controllers\Admin\AiController;
 use Sanalkopru\Crm\Http\Controllers\Admin\CompaniesController;
 use Sanalkopru\Crm\Http\Controllers\Admin\ContactsController;
 use Sanalkopru\Crm\Http\Controllers\Admin\DealsController;
+use Sanalkopru\Crm\Http\Controllers\Admin\DealStagesController;
 use Sanalkopru\Crm\Http\Controllers\Admin\QuotesController;
 use Sanalkopru\Crm\Http\Controllers\Admin\TagsController;
 use Sanalkopru\Crm\Http\Controllers\Admin\TasksController;
@@ -31,6 +32,8 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::resource('contacts', ContactsController::class);
                 Route::post('companies/{company}/contacts', [CompaniesController::class, 'attachContacts'])->name('companies.contacts.attach');
                 Route::resource('companies', CompaniesController::class);
+                Route::post('deal-stages/reorder', [DealStagesController::class, 'reorder'])->name('deal-stages.reorder');
+                Route::resource('deal-stages', DealStagesController::class)->except('show');
                 Route::patch('deals/{deal}/move', [DealsController::class, 'move'])->name('deals.move');
                 Route::resource('deals', DealsController::class);
                 Route::resource('tasks', TasksController::class);

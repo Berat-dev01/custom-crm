@@ -23,7 +23,7 @@ class CrmDemoSeederTest extends TestCase
     {
         $this->seed(CrmDemoSeeder::class);
 
-        $this->assertSame(6, DealStage::query()->count());
+        $this->assertSame(7, DealStage::query()->count());
         $this->assertGreaterThanOrEqual(4, Company::query()->count());
         $this->assertGreaterThanOrEqual(8, Contact::query()->count());
         $this->assertGreaterThanOrEqual(8, Deal::query()->count());

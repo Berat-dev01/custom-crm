@@ -20,6 +20,7 @@ class CrmDemoSeeder extends Seeder
     public function run(): void
     {
         $this->call(CrmPermissionSeeder::class);
+        $this->call(CrmDealStageSeeder::class);
 
         $users = collect([
             $this->user('CRM Owner', 'crm.owner@example.com', 'crm_owner'),
@@ -29,7 +30,7 @@ class CrmDemoSeeder extends Seeder
             $this->user('CRM Viewer', 'crm.viewer@example.com', 'crm_viewer'),
         ]);
 
-        $stages = collect($this->seedDealStages());
+        $stages = DealStage::query()->ordered()->get();
         $tags = collect($this->seedTags());
 
         $companies = collect([
@@ -143,28 +144,6 @@ class CrmDemoSeeder extends Seeder
         }
 
         return $user;
-    }
-
-    /**
-     * @return list<DealStage>
-     */
-    private function seedDealStages(): array
-    {
-        $stages = [
-            ['name' => 'Yeni', 'slug' => 'new', 'color' => '#64748b', 'position' => 1, 'probability' => 10],
-            ['name' => 'Nitelikli', 'slug' => 'qualified', 'color' => '#2563eb', 'position' => 2, 'probability' => 30],
-            ['name' => 'Teklif', 'slug' => 'proposal', 'color' => '#7c3aed', 'position' => 3, 'probability' => 55],
-            ['name' => 'Pazarlik', 'slug' => 'negotiation', 'color' => '#f59e0b', 'position' => 4, 'probability' => 75],
-            ['name' => 'Kazanildi', 'slug' => 'won', 'color' => '#16a34a', 'position' => 5, 'probability' => 100, 'is_won' => true],
-            ['name' => 'Kaybedildi', 'slug' => 'lost', 'color' => '#dc2626', 'position' => 6, 'probability' => 0, 'is_lost' => true],
-        ];
-
-        return collect($stages)
-            ->map(fn (array $stage): DealStage => DealStage::query()->updateOrCreate(
-                ['slug' => $stage['slug']],
-                $stage + ['is_won' => false, 'is_lost' => false]
-            ))
-            ->all();
     }
 
     /**
