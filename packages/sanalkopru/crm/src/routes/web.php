@@ -29,6 +29,7 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::post('contacts/bulk-tags', [ContactsController::class, 'bulkTags'])->name('contacts.bulk-tags');
                 Route::post('contacts/{contact}/notes', [ContactsController::class, 'storeNote'])->name('contacts.notes.store');
                 Route::resource('contacts', ContactsController::class);
+                Route::post('companies/{company}/contacts', [CompaniesController::class, 'attachContacts'])->name('companies.contacts.attach');
                 Route::resource('companies', CompaniesController::class);
                 Route::patch('deals/{deal}/move', [DealsController::class, 'move'])->name('deals.move');
                 Route::resource('deals', DealsController::class);
