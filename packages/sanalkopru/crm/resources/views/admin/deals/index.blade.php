@@ -30,6 +30,19 @@
                         List
                     </x-admin-panel::button>
                 </div>
+                @can('crm.deals.import')
+                    <x-admin-panel::button :href="route('crm.deals.template')" variant="ghost" icon="download">
+                        Template
+                    </x-admin-panel::button>
+                    <x-admin-panel::button :href="route('crm.deals.import')" variant="outline" icon="upload">
+                        Import
+                    </x-admin-panel::button>
+                @endcan
+                @can('crm.deals.export')
+                    <x-admin-panel::button :href="route('crm.deals.export', request()->query())" variant="outline" icon="download">
+                        Export CSV
+                    </x-admin-panel::button>
+                @endcan
                 @can('crm.deals.create')
                     <x-admin-panel::button :href="route('crm.deals.create')" icon="plus">
                         New Deal

@@ -1,0 +1,2 @@
+name,email,phone,website,tax_number,tax_office,sector,address_line_1,city,state,postal_code,country,owner_email,tags
+Acme A.S.,info@acme.test,+902121112233,https://acme.test,1234567890,Besiktas,Technology,Buyukdere Cad. No:1,Istanbul,Istanbul,34000,TR,sales@example.com,Enterprise

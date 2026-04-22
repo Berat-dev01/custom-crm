@@ -41,4 +41,14 @@ class DealPolicy extends CrmPolicy
     {
         return $this->can($user, 'crm.deals.close');
     }
+
+    public function export(Authenticatable $user): bool
+    {
+        return $this->can($user, 'crm.deals.export');
+    }
+
+    public function import(Authenticatable $user): bool
+    {
+        return $this->can($user, 'crm.deals.import');
+    }
 }

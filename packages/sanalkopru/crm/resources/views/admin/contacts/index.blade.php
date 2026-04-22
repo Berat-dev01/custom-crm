@@ -19,6 +19,9 @@
 
             <div class="crm-admin-actions">
                 @can('crm.contacts.import')
+                    <x-admin-panel::button :href="route('crm.contacts.template')" variant="ghost" icon="download">
+                        Template
+                    </x-admin-panel::button>
                     <x-admin-panel::button :href="route('crm.contacts.import')" variant="outline" icon="upload">
                         Import
                     </x-admin-panel::button>

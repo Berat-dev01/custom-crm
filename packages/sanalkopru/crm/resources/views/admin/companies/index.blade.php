@@ -17,11 +17,26 @@
                 <h1>Companies</h1>
             </div>
 
-            @can('crm.companies.create')
-                <x-admin-panel::button :href="route('crm.companies.create')" icon="plus">
-                    New Company
-                </x-admin-panel::button>
-            @endcan
+            <div class="crm-admin-actions">
+                @can('crm.companies.import')
+                    <x-admin-panel::button :href="route('crm.companies.template')" variant="ghost" icon="download">
+                        Template
+                    </x-admin-panel::button>
+                    <x-admin-panel::button :href="route('crm.companies.import')" variant="outline" icon="upload">
+                        Import
+                    </x-admin-panel::button>
+                @endcan
+                @can('crm.companies.export')
+                    <x-admin-panel::button :href="route('crm.companies.export', request()->query())" variant="outline" icon="download">
+                        Export CSV
+                    </x-admin-panel::button>
+                @endcan
+                @can('crm.companies.create')
+                    <x-admin-panel::button :href="route('crm.companies.create')" icon="plus">
+                        New Company
+                    </x-admin-panel::button>
+                @endcan
+            </div>
         </header>
 
         <x-admin-panel::card>

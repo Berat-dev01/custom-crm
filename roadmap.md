@@ -1072,6 +1072,8 @@ Kabul kriterleri:
 
 ## ADIM 22 — Import, Export ve Veri Tasima Ozelliklerini Tamamla
 
+**Durum:** Tamamlandi. Contacts, companies ve deals icin CSV/XLSX import; contacts, companies, deals ve quotes icin filtreli CSV export; preview, template, import log, indirilebilir hata raporu ve buyuk importlarda queue akisi eklendi.
+
 ```prompt
 CRM icin profesyonel import/export ozelliklerini ekle.
 

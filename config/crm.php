@@ -88,6 +88,11 @@ return [
         'quote_status_changes' => env('CRM_NOTIFY_QUOTE_STATUS_CHANGES', true),
     ],
 
+    'data_transfer' => [
+        'disk' => env('CRM_DATA_TRANSFER_DISK', 'local'),
+        'queue_threshold' => (int) env('CRM_IMPORT_QUEUE_THRESHOLD', 500),
+    ],
+
     'permissions' => [
         'enabled' => env('CRM_PERMISSIONS_ENABLED', true),
         'guard' => env('CRM_PERMISSIONS_GUARD', 'web'),
@@ -113,6 +118,8 @@ return [
             'crm.deals.delete',
             'crm.deals.move',
             'crm.deals.close',
+            'crm.deals.export',
+            'crm.deals.import',
             'crm.tasks.view',
             'crm.tasks.create',
             'crm.tasks.update',
@@ -167,6 +174,8 @@ return [
                     'crm.deals.delete',
                     'crm.deals.move',
                     'crm.deals.close',
+                    'crm.deals.export',
+                    'crm.deals.import',
                     'crm.tasks.view',
                     'crm.tasks.create',
                     'crm.tasks.update',
@@ -208,6 +217,7 @@ return [
                     'crm.deals.update',
                     'crm.deals.move',
                     'crm.deals.close',
+                    'crm.deals.export',
                     'crm.tasks.view',
                     'crm.tasks.create',
                     'crm.tasks.update',

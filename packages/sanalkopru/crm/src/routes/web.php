@@ -5,6 +5,7 @@ use Sanalkopru\Crm\Http\Controllers\Admin\ActivitiesController;
 use Sanalkopru\Crm\Http\Controllers\Admin\AiController;
 use Sanalkopru\Crm\Http\Controllers\Admin\CompaniesController;
 use Sanalkopru\Crm\Http\Controllers\Admin\ContactsController;
+use Sanalkopru\Crm\Http\Controllers\Admin\DataTransferController;
 use Sanalkopru\Crm\Http\Controllers\Admin\DealsController;
 use Sanalkopru\Crm\Http\Controllers\Admin\DealStagesController;
 use Sanalkopru\Crm\Http\Controllers\Admin\QuotesController;
@@ -24,13 +25,22 @@ Route::middleware(config('crm.routes.middleware', ['web']))
             ->group(function () {
                 Route::get('/', DashboardController::class)->name('dashboard');
 
-                Route::get('contacts/export', [ContactsController::class, 'export'])->name('contacts.export');
-                Route::get('contacts/import', [ContactsController::class, 'importForm'])->name('contacts.import');
-                Route::post('contacts/import', [ContactsController::class, 'import'])->name('contacts.import.store');
+                Route::get('imports/{import:public_id}/errors', [DataTransferController::class, 'errors'])->name('imports.errors');
+
+                Route::get('contacts/export', [DataTransferController::class, 'export'])->defaults('module', 'contacts')->name('contacts.export');
+                Route::get('contacts/import', [DataTransferController::class, 'importForm'])->defaults('module', 'contacts')->name('contacts.import');
+                Route::get('contacts/import/template', [DataTransferController::class, 'template'])->defaults('module', 'contacts')->name('contacts.template');
+                Route::post('contacts/import/preview', [DataTransferController::class, 'preview'])->defaults('module', 'contacts')->name('contacts.import.preview');
+                Route::post('contacts/import', [DataTransferController::class, 'import'])->defaults('module', 'contacts')->name('contacts.import.store');
                 Route::delete('contacts/bulk-delete', [ContactsController::class, 'bulkDelete'])->name('contacts.bulk-delete');
                 Route::post('contacts/bulk-tags', [ContactsController::class, 'bulkTags'])->name('contacts.bulk-tags');
                 Route::post('contacts/{contact}/notes', [ContactsController::class, 'storeNote'])->name('contacts.notes.store');
                 Route::resource('contacts', ContactsController::class);
+                Route::get('companies/export', [DataTransferController::class, 'export'])->defaults('module', 'companies')->name('companies.export');
+                Route::get('companies/import', [DataTransferController::class, 'importForm'])->defaults('module', 'companies')->name('companies.import');
+                Route::get('companies/import/template', [DataTransferController::class, 'template'])->defaults('module', 'companies')->name('companies.template');
+                Route::post('companies/import/preview', [DataTransferController::class, 'preview'])->defaults('module', 'companies')->name('companies.import.preview');
+                Route::post('companies/import', [DataTransferController::class, 'import'])->defaults('module', 'companies')->name('companies.import.store');
                 Route::post('companies/{company}/contacts', [CompaniesController::class, 'attachContacts'])->name('companies.contacts.attach');
                 Route::resource('companies', CompaniesController::class);
                 Route::post('deal-stages/reorder', [DealStagesController::class, 'reorder'])->name('deal-stages.reorder');
@@ -42,6 +52,11 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::patch('deals/{deal}/close-won', [DealsController::class, 'closeWon'])->name('deals.close-won');
                 Route::patch('deals/{deal}/close-lost', [DealsController::class, 'closeLost'])->name('deals.close-lost');
                 Route::patch('deals/{deal}/move', [DealsController::class, 'move'])->name('deals.move');
+                Route::get('deals/export', [DataTransferController::class, 'export'])->defaults('module', 'deals')->name('deals.export');
+                Route::get('deals/import', [DataTransferController::class, 'importForm'])->defaults('module', 'deals')->name('deals.import');
+                Route::get('deals/import/template', [DataTransferController::class, 'template'])->defaults('module', 'deals')->name('deals.template');
+                Route::post('deals/import/preview', [DataTransferController::class, 'preview'])->defaults('module', 'deals')->name('deals.import.preview');
+                Route::post('deals/import', [DataTransferController::class, 'import'])->defaults('module', 'deals')->name('deals.import.store');
                 Route::resource('deals', DealsController::class);
                 Route::get('tasks/my', [TasksController::class, 'my'])->name('tasks.my');
                 Route::get('tasks/overdue', [TasksController::class, 'overdue'])->name('tasks.overdue');
@@ -55,6 +70,7 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::post('quotes/{quote}/duplicate', [QuotesController::class, 'duplicate'])->name('quotes.duplicate');
                 Route::get('quotes/{quote}/preview', [QuotesController::class, 'preview'])->name('quotes.preview');
                 Route::get('quotes/{quote}/download', [QuotesController::class, 'download'])->name('quotes.download');
+                Route::get('quotes/export', [DataTransferController::class, 'export'])->defaults('module', 'quotes')->name('quotes.export');
                 Route::resource('quotes', QuotesController::class);
                 Route::resource('activities', ActivitiesController::class);
                 Route::post('tags/bulk', [TagsController::class, 'bulk'])->name('tags.bulk');

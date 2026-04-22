@@ -17,11 +17,18 @@
                 <h1>Quotes</h1>
             </div>
 
-            @can('crm.quotes.create')
-                <x-admin-panel::button :href="route('crm.quotes.create')" icon="plus">
-                    New Quote
-                </x-admin-panel::button>
-            @endcan
+            <div class="crm-admin-actions">
+                @can('crm.quotes.export')
+                    <x-admin-panel::button :href="route('crm.quotes.export', request()->query())" variant="outline" icon="download">
+                        Export CSV
+                    </x-admin-panel::button>
+                @endcan
+                @can('crm.quotes.create')
+                    <x-admin-panel::button :href="route('crm.quotes.create')" icon="plus">
+                        New Quote
+                    </x-admin-panel::button>
+                @endcan
+            </div>
         </header>
 
         <x-admin-panel::card>
