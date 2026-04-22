@@ -2,9 +2,27 @@
 
 namespace Sanalkopru\Crm;
 
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Sanalkopru\Crm\Models\Activity;
+use Sanalkopru\Crm\Models\Company;
+use Sanalkopru\Crm\Models\Contact;
+use Sanalkopru\Crm\Models\Deal;
+use Sanalkopru\Crm\Models\Quote;
+use Sanalkopru\Crm\Models\Tag;
+use Sanalkopru\Crm\Models\Task;
+use Sanalkopru\Crm\Policies\ActivityPolicy;
+use Sanalkopru\Crm\Policies\CompanyPolicy;
+use Sanalkopru\Crm\Policies\ContactPolicy;
+use Sanalkopru\Crm\Policies\DealPolicy;
+use Sanalkopru\Crm\Policies\QuotePolicy;
+use Sanalkopru\Crm\Policies\TagPolicy;
+use Sanalkopru\Crm\Policies\TaskPolicy;
 use Sanalkopru\Crm\Services\Ai\AiDriverManager;
+use Sanalkopru\Crm\Services\Authorization\CrmAuthorization;
+use Sanalkopru\Crm\Services\Authorization\PermissionCatalog;
 use Sanalkopru\Crm\Services\Configuration\FeatureManager;
 use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 use Sanalkopru\Crm\Services\Configuration\UiSettings;
@@ -16,6 +34,8 @@ class CrmServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/crm.php', 'crm');
 
         $this->app->singleton(AiDriverManager::class);
+        $this->app->singleton(CrmAuthorization::class);
+        $this->app->singleton(PermissionCatalog::class);
         $this->app->singleton(FeatureManager::class);
         $this->app->singleton(MoneySettings::class);
         $this->app->singleton(UiSettings::class);
@@ -26,11 +46,30 @@ class CrmServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'crm');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
+        $this->registerAuthorization();
         $this->loadWebRoutes();
         $this->loadApiRoutes();
 
         if ($this->app->runningInConsole()) {
             $this->registerPublishables();
+        }
+    }
+
+    private function registerAuthorization(): void
+    {
+        Gate::policy(Activity::class, ActivityPolicy::class);
+        Gate::policy(Company::class, CompanyPolicy::class);
+        Gate::policy(Contact::class, ContactPolicy::class);
+        Gate::policy(Deal::class, DealPolicy::class);
+        Gate::policy(Quote::class, QuotePolicy::class);
+        Gate::policy(Tag::class, TagPolicy::class);
+        Gate::policy(Task::class, TaskPolicy::class);
+
+        foreach ($this->app->make(PermissionCatalog::class)->permissions() as $permission) {
+            Gate::define(
+                $permission,
+                fn (?Authenticatable $user = null): bool => $this->app->make(CrmAuthorization::class)->can($user, $permission)
+            );
         }
     }
 

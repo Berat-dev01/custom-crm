@@ -2,12 +2,17 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\ServiceProvider;
 use Sanalkopru\Crm\CrmServiceProvider;
+use Sanalkopru\Crm\Database\Seeders\CrmPermissionSeeder;
 use Tests\TestCase;
 
 class AdminCrmBootstrapTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_admin_entry_redirects_to_crm_dashboard(): void
     {
         $this->get('/admin')
@@ -16,7 +21,12 @@ class AdminCrmBootstrapTest extends TestCase
 
     public function test_crm_dashboard_route_is_available(): void
     {
-        $this->get('/admin/crm')
+        $this->seed(CrmPermissionSeeder::class);
+
+        $user = User::factory()->create()->assignRole('crm_owner');
+
+        $this->actingAs($user)
+            ->get('/admin/crm')
             ->assertOk()
             ->assertSee('Package dashboard route is ready.');
     }
@@ -44,6 +54,9 @@ class AdminCrmBootstrapTest extends TestCase
         $this->assertArrayHasKey('gemini', config('crm.ai.drivers'));
         $this->assertTrue(config('crm.notifications.task_reminders'));
         $this->assertTrue(config('crm.permissions.enabled'));
+        $this->assertSame('web', config('crm.permissions.guard'));
+        $this->assertContains('crm.dashboard.view', config('crm.permissions.permissions'));
+        $this->assertSame('crm_owner', config('crm.permissions.roles.owner.name'));
     }
 
     public function test_crm_package_publish_tags_are_registered(): void
