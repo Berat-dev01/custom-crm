@@ -203,9 +203,63 @@ class CrmQuotesModuleTest extends TestCase
         $response = $this->actingAs($this->admin, 'admin')
             ->get(route('crm.quotes.download', $quote))
             ->assertOk()
-            ->assertHeader('Content-Type', 'application/pdf');
+            ->assertHeader('Content-Type', 'application/pdf')
+            ->assertHeader('Content-Disposition', 'attachment; filename="teklif-CRM-PDF-001.pdf"');
 
         $this->assertStringStartsWith('%PDF', $response->getContent());
+    }
+
+    public function test_quote_pdf_template_renders_company_customer_turkish_text_and_long_copy(): void
+    {
+        config([
+            'crm.quotes.company.name' => 'Sanal Köprü Teknoloji A.Ş.',
+            'crm.quotes.company.address' => 'Maslak Mah. Büyükdere Cad. No: 1 İstanbul',
+            'crm.quotes.company.phone' => '+90 212 000 00 00',
+            'crm.quotes.company.email' => 'teklif@sanalkopru.test',
+            'crm.quotes.company.website' => 'https://sanalkopru.test',
+            'crm.quotes.company.tax_office' => 'Şişli',
+            'crm.quotes.company.tax_number' => '1234567890',
+        ]);
+
+        $company = Company::factory()->create([
+            'name' => 'Çağdaş Üretim A.Ş.',
+            'address_line_1' => 'Atatürk Bulvarı No: 10',
+            'city' => 'İzmir',
+            'country' => 'Türkiye',
+        ]);
+        $contact = Contact::factory()->create([
+            'company_id' => $company->id,
+            'full_name' => 'İpek Çelik',
+            'email' => 'ipek@example.test',
+            'phone' => '+90 555 000 00 00',
+        ]);
+        $quote = Quote::factory()->create([
+            'quote_number' => 'CRM-TR-001',
+            'company_id' => $company->id,
+            'contact_id' => $contact->id,
+            'notes' => 'Çözüm kapsamı ölçülebilir çıktılar, güvenli geçiş ve eğitim oturumlarını içerir. '.str_repeat('Uzun açıklama düzeni bozmaz. ', 10),
+            'terms' => 'Ödeme koşulları: %50 peşin, %50 teslimatta. Teklif 15 gün geçerlidir.',
+        ]);
+        QuoteItem::factory()->create([
+            'quote_id' => $quote->id,
+            'name' => 'Kurumsal CRM Geçiş Hizmeti',
+            'description' => 'Türkçe karakterler: ç, ğ, ı, İ, ö, ş, ü. '.str_repeat('Detaylı kapsam satırı. ', 12),
+            'position' => 1,
+        ]);
+
+        $this->actingAs($this->admin, 'admin')
+            ->get(route('crm.quotes.preview', $quote))
+            ->assertOk()
+            ->assertSee('Teklif')
+            ->assertSee('Sanal Köprü Teknoloji A.Ş.')
+            ->assertSee('Maslak Mah. Büyükdere Cad. No: 1 İstanbul')
+            ->assertSee('Vergi Dairesi: Şişli')
+            ->assertSee('Çağdaş Üretim A.Ş.')
+            ->assertSee('İlgili kişi: İpek Çelik')
+            ->assertSee('Kurumsal CRM Geçiş Hizmeti')
+            ->assertSee('Türkçe karakterler')
+            ->assertSee('Genel Toplam')
+            ->assertSee('Ödeme koşulları');
     }
 
     public function test_quote_actions_are_policy_protected(): void

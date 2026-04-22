@@ -151,9 +151,12 @@ class QuotesController extends Controller
     public function preview(Quote $quote): View
     {
         Gate::authorize('export', $quote);
+        $renderer = app(QuotePdfRenderer::class);
 
         return view('crm::admin.quotes.pdf', [
             'quote' => $this->loadQuote($quote),
+            'company' => $renderer->companyProfile(),
+            'logoPath' => $renderer->logoPath(),
         ]);
     }
 
@@ -164,7 +167,7 @@ class QuotesController extends Controller
 
         return response($renderer->render($quote), 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="quote-'.$quote->quote_number.'.pdf"',
+            'Content-Disposition' => 'attachment; filename="'.$renderer->filename($quote).'"',
         ]);
     }
 
