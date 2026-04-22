@@ -1,0 +1,111 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Route;
+use Sanalkopru\Crm\Database\Seeders\CrmPermissionSeeder;
+use Tests\TestCase;
+
+class CrmAdminRoutingTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_crm_admin_module_routes_are_registered(): void
+    {
+        foreach ($this->routeNames() as $routeName) {
+            $this->assertTrue(Route::has($routeName), "Missing route [{$routeName}].");
+        }
+    }
+
+    public function test_crm_admin_routes_require_authenticated_user(): void
+    {
+        $this->get('/admin/crm/contacts')
+            ->assertForbidden();
+    }
+
+    public function test_authorized_user_can_open_module_indexes(): void
+    {
+        $this->seed(CrmPermissionSeeder::class);
+
+        $user = User::factory()->create()->assignRole('crm_owner');
+
+        foreach ($this->modulePaths() as $path => $label) {
+            $this->actingAs($user, 'admin')
+                ->get($path)
+                ->assertOk()
+                ->assertSee($label);
+        }
+    }
+
+    public function test_ai_admin_routes_are_registered_and_authorized(): void
+    {
+        $this->seed(CrmPermissionSeeder::class);
+
+        $user = User::factory()->create()->assignRole('crm_owner');
+
+        $this->actingAs($user, 'admin')
+            ->postJson('/admin/crm/ai/summarize-note')
+            ->assertAccepted();
+
+        $this->actingAs($user, 'admin')
+            ->postJson('/admin/crm/ai/draft-email')
+            ->assertAccepted();
+    }
+
+    public function test_public_frontend_does_not_load_crm_admin_shell(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertDontSee('crm-admin-shell')
+            ->assertDontSee('vendor/crm/css/crm.css');
+    }
+
+    public function test_admin_panel_layout_namespace_is_available(): void
+    {
+        $this->assertTrue(view()->exists('admin-panel::layouts.app'));
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function routeNames(): array
+    {
+        return [
+            'crm.dashboard',
+            'crm.contacts.index',
+            'crm.contacts.create',
+            'crm.contacts.store',
+            'crm.contacts.show',
+            'crm.contacts.edit',
+            'crm.contacts.update',
+            'crm.contacts.destroy',
+            'crm.companies.index',
+            'crm.deals.index',
+            'crm.deals.move',
+            'crm.tasks.index',
+            'crm.quotes.index',
+            'crm.activities.index',
+            'crm.tags.index',
+            'crm.ai.summarize-note',
+            'crm.ai.draft-email',
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function modulePaths(): array
+    {
+        return [
+            '/admin/crm/contacts' => 'Contacts',
+            '/admin/crm/companies' => 'Companies',
+            '/admin/crm/deals' => 'Deals',
+            '/admin/crm/tasks' => 'Tasks',
+            '/admin/crm/quotes' => 'Quotes',
+            '/admin/crm/activities' => 'Activities',
+            '/admin/crm/tags' => 'Tags',
+        ];
+    }
+}

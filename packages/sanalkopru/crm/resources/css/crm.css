@@ -2,4 +2,120 @@
     .crm-package-ready {
         display: block;
     }
+
+    .crm-admin-shell {
+        display: grid;
+        grid-template-columns: 240px minmax(0, 1fr);
+        min-height: 100vh;
+        background: #f8fafc;
+        color: #0f172a;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .crm-admin-sidebar {
+        border-right: 1px solid #e2e8f0;
+        background: #ffffff;
+        padding: 24px;
+    }
+
+    .crm-admin-brand {
+        display: inline-flex;
+        margin-bottom: 24px;
+        color: #0f172a;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .crm-admin-sidebar nav {
+        display: grid;
+        gap: 6px;
+    }
+
+    .crm-admin-sidebar nav a {
+        border-radius: 6px;
+        color: #334155;
+        padding: 10px 12px;
+        text-decoration: none;
+    }
+
+    .crm-admin-sidebar nav a.is-active,
+    .crm-admin-sidebar nav a:hover {
+        background: #e0f2fe;
+        color: #075985;
+    }
+
+    .crm-admin-main {
+        padding: 32px;
+    }
+
+    .crm-admin-page {
+        display: grid;
+        gap: 24px;
+        max-width: 1180px;
+    }
+
+    .crm-admin-header {
+        display: grid;
+        gap: 6px;
+    }
+
+    .crm-admin-eyebrow,
+    .crm-admin-card-label {
+        color: #64748b;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: uppercase;
+    }
+
+    .crm-admin-header h1 {
+        font-size: 2rem;
+        line-height: 1.2;
+        margin: 0;
+    }
+
+    .crm-admin-grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .crm-admin-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        display: grid;
+        gap: 8px;
+        padding: 18px;
+    }
+
+    .crm-admin-card strong {
+        font-size: 1rem;
+    }
+
+    .crm-admin-card p {
+        color: #475569;
+        margin: 0;
+    }
+}
+
+@media (max-width: 760px) {
+    @layer components {
+        .crm-admin-shell {
+            grid-template-columns: 1fr;
+        }
+
+        .crm-admin-sidebar {
+            border-bottom: 1px solid #e2e8f0;
+            border-right: 0;
+        }
+
+        .crm-admin-sidebar nav {
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        }
+
+        .crm-admin-main {
+            padding: 20px;
+        }
+    }
 }

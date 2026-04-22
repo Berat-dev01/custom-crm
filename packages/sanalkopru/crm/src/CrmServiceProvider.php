@@ -3,9 +3,12 @@
 namespace Sanalkopru\Crm;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Sanalkopru\Crm\Http\Middleware\EnsureCrmAccess;
 use Sanalkopru\Crm\Models\Activity;
 use Sanalkopru\Crm\Models\Company;
 use Sanalkopru\Crm\Models\Contact;
@@ -26,6 +29,7 @@ use Sanalkopru\Crm\Services\Authorization\PermissionCatalog;
 use Sanalkopru\Crm\Services\Configuration\FeatureManager;
 use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 use Sanalkopru\Crm\Services\Configuration\UiSettings;
+use Sanalkopru\Crm\Services\Navigation\CrmNavigation;
 
 class CrmServiceProvider extends ServiceProvider
 {
@@ -38,6 +42,7 @@ class CrmServiceProvider extends ServiceProvider
         $this->app->singleton(PermissionCatalog::class);
         $this->app->singleton(FeatureManager::class);
         $this->app->singleton(MoneySettings::class);
+        $this->app->singleton(CrmNavigation::class);
         $this->app->singleton(UiSettings::class);
     }
 
@@ -57,6 +62,8 @@ class CrmServiceProvider extends ServiceProvider
 
     private function registerAuthorization(): void
     {
+        $this->app['router']->aliasMiddleware('crm.access', EnsureCrmAccess::class);
+
         Gate::policy(Activity::class, ActivityPolicy::class);
         Gate::policy(Company::class, CompanyPolicy::class);
         Gate::policy(Contact::class, ContactPolicy::class);
@@ -71,6 +78,12 @@ class CrmServiceProvider extends ServiceProvider
                 fn (?Authenticatable $user = null): bool => $this->app->make(CrmAuthorization::class)->can($user, $permission)
             );
         }
+
+        Blade::if('feature', fn (string $feature): bool => (bool) data_get(config('features', []), $feature, false));
+
+        View::composer('crm::*', function ($view): void {
+            $view->with('crmNavigation', $this->app->make(CrmNavigation::class)->items(request()));
+        });
     }
 
     private function loadWebRoutes(): void
@@ -100,8 +113,8 @@ class CrmServiceProvider extends ServiceProvider
         ], 'crm-migrations');
 
         $this->publishes([
-            __DIR__.'/../resources/js' => resource_path('js/vendor/crm'),
-            __DIR__.'/../resources/css' => resource_path('css/vendor/crm'),
+            __DIR__.'/../resources/js' => public_path('vendor/crm/js'),
+            __DIR__.'/../resources/css' => public_path('vendor/crm/css'),
         ], 'crm-assets');
     }
 }

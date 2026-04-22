@@ -11,11 +11,15 @@
 /.phpunit.cache
 /.vscode
 /.zed
+/.composer-cache
 /auth.json
 /node_modules
 /public/build
 /public/hot
 /public/storage
+/public/vendor
+/resources/css/vendor
+/resources/js/vendor
 /storage/*.key
 /storage/pail
 /vendor

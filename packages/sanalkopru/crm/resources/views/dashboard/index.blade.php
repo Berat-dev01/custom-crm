@@ -1,14 +1,33 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CRM Engine</title>
-</head>
-<body>
-    <main>
-        <h1>CRM Engine</h1>
-        <p>Package dashboard route is ready.</p>
-    </main>
-</body>
-</html>
+@extends('admin-panel::layouts.app')
+
+@section('title', 'CRM Dashboard')
+@section('page-title', 'CRM Dashboard')
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
+@endpush
+
+@section('content')
+    <section class="crm-admin-page" data-crm-module="dashboard">
+        <header class="crm-admin-header">
+            <p class="crm-admin-eyebrow">CRM Engine</p>
+            <h1>Dashboard</h1>
+        </header>
+
+        <div class="crm-admin-grid">
+            <x-admin-panel::stat-card
+                label="Routing"
+                value="Package dashboard route is ready."
+                icon="route"
+                variant="primary"
+            />
+
+            <x-admin-panel::stat-card
+                label="Modules"
+                value="Admin navigation skeleton is ready."
+                icon="layout-dashboard"
+                variant="info"
+            />
+        </div>
+    </section>
+@endsection

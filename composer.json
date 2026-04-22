@@ -14,6 +14,13 @@
             }
         },
         {
+            "type": "path",
+            "url": "packages/sanalkopru/admin-panel",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
             "type": "vcs",
             "url": "https://github.com/ZyixQQ/admin-panel"
         }
@@ -25,6 +32,7 @@
         "laravel/tinker": "^2.10",
         "openai-php/laravel": "^0.19.1",
         "openspout/openspout": "^5.3",
+        "sanalkopru/admin-panel": "^1.0",
         "spatie/laravel-permission": "^7.3"
     },
     "require-dev": {
@@ -41,7 +49,10 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
             "Sanalkopru\\Crm\\": "packages/sanalkopru/crm/src/"
-        }
+        },
+        "files": [
+            "app/Support/admin_helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

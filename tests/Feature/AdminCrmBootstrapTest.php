@@ -25,7 +25,7 @@ class AdminCrmBootstrapTest extends TestCase
 
         $user = User::factory()->create()->assignRole('crm_owner');
 
-        $this->actingAs($user)
+        $this->actingAs($user, 'admin')
             ->get('/admin/crm')
             ->assertOk()
             ->assertSee('Package dashboard route is ready.');

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a4c8dd29a87be0f45823bd2b01c79fde",
+    "content-hash": "7d5a6459bfe948dbfbe2fba9419a873c",
     "packages": [
         {
             "name": "brick/math",
@@ -4003,6 +4003,37 @@
                 "source": "https://github.com/MyIntervals/PHP-CSS-Parser/tree/v9.3.0"
             },
             "time": "2026-03-03T17:31:43+00:00"
+        },
+        {
+            "name": "sanalkopru/admin-panel",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "packages/sanalkopru/admin-panel",
+                "reference": "a3293e641fd4aca5aa3f5274f5323239718a121a"
+            },
+            "require": {
+                "laravel/framework": "^10.0|^11.0|^12.0",
+                "php": "^8.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Sanalkopru\\AdminPanel\\AdminPanelServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Sanalkopru\\AdminPanel\\": "src/"
+                }
+            },
+            "description": "Sanal Köprü Admin Panel Package",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "spatie/laravel-package-tools",
