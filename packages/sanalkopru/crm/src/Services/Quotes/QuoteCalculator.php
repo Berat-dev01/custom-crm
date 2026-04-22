@@ -2,8 +2,12 @@
 
 namespace Sanalkopru\Crm\Services\Quotes;
 
+use Sanalkopru\Crm\Services\Configuration\MoneySettings;
+
 class QuoteCalculator
 {
+    public function __construct(private readonly ?MoneySettings $money = null) {}
+
     /**
      * @param  array<string, mixed>  $payload
      * @return array{quote: array<string, string>, items: list<array<string, mixed>>}
@@ -26,7 +30,7 @@ class QuoteCalculator
                 $item['discount_value'] ?? 0
             );
             $taxableBeforeQuoteDiscountCents = max(0, $baseCents - $itemDiscountCents);
-            $taxRateHundredths = $this->decimalToMinorUnits($item['tax_rate'] ?? config('crm.money.default_tax_rate', 20));
+            $taxRateHundredths = $this->decimalToMinorUnits($item['tax_rate'] ?? $this->defaultTaxRate());
             $lineTaxCents = $this->percentageOf($taxableBeforeQuoteDiscountCents, $taxRateHundredths);
 
             $subtotalCents += $baseCents;
@@ -56,7 +60,7 @@ class QuoteCalculator
         $taxTotalCents = $this->taxTotalAfterQuoteDiscount($items, $quoteDiscountCents, $baseAfterItemDiscountCents);
         $discountTotalCents = $lineDiscountCents + $quoteDiscountCents;
         $grandTotalCents = max(0, $subtotalCents - $discountTotalCents) + $taxTotalCents;
-        $quoteTaxRate = $payload['tax_rate'] ?? ($items[0]['tax_rate'] ?? config('crm.money.default_tax_rate', 20));
+        $quoteTaxRate = $payload['tax_rate'] ?? ($items[0]['tax_rate'] ?? $this->defaultTaxRate());
 
         return [
             'quote' => [
@@ -85,6 +89,11 @@ class QuoteCalculator
         }
 
         return 0;
+    }
+
+    private function defaultTaxRate(): float
+    {
+        return $this->money?->defaultTaxRate() ?? (float) config('crm.money.default_tax_rate', 20);
     }
 
     /**

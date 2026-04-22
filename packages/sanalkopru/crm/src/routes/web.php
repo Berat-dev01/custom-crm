@@ -11,6 +11,7 @@ use Sanalkopru\Crm\Http\Controllers\Admin\DealStagesController;
 use Sanalkopru\Crm\Http\Controllers\Admin\QuotesController;
 use Sanalkopru\Crm\Http\Controllers\Admin\SavedFiltersController;
 use Sanalkopru\Crm\Http\Controllers\Admin\SearchController;
+use Sanalkopru\Crm\Http\Controllers\Admin\SettingsController;
 use Sanalkopru\Crm\Http\Controllers\Admin\TagsController;
 use Sanalkopru\Crm\Http\Controllers\Admin\TasksController;
 use Sanalkopru\Crm\Http\Controllers\DashboardController;
@@ -80,6 +81,8 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::post('saved-filters', [SavedFiltersController::class, 'store'])->name('saved-filters.store');
                 Route::get('saved-filters/{savedFilter}/apply', [SavedFiltersController::class, 'apply'])->name('saved-filters.apply');
                 Route::delete('saved-filters/{savedFilter}', [SavedFiltersController::class, 'destroy'])->name('saved-filters.destroy');
+                Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
+                Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
 
                 Route::post('ai/summarize', [AiController::class, 'summarize'])->name('ai.summarize');
                 Route::post('ai/summarize-note', [AiController::class, 'summarizeNote'])->name('ai.summarize-note');

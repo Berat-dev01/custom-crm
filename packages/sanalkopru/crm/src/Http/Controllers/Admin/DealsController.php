@@ -28,6 +28,7 @@ use Sanalkopru\Crm\Models\DealStage;
 use Sanalkopru\Crm\Models\SavedFilter;
 use Sanalkopru\Crm\Models\Tag;
 use Sanalkopru\Crm\Services\Ai\AiDriverManager;
+use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 use Sanalkopru\Crm\Services\Deals\DealQuery;
 
 class DealsController extends Controller
@@ -117,6 +118,8 @@ class DealsController extends Controller
             'activityFilter' => $request->string('activity_type')->toString(),
             'taskPriorities' => $this->taskPriorities(),
             'aiAvailable' => app(AiDriverManager::class)->available(),
+            'defaultTaxRate' => app(MoneySettings::class)->defaultTaxRate(),
+            'defaultTerms' => app(MoneySettings::class)->quoteTerms(),
         ]);
     }
 
@@ -264,6 +267,9 @@ class DealsController extends Controller
                 config('crm.money.supported_currencies', ['TRY', 'USD', 'EUR']),
                 config('crm.money.supported_currencies', ['TRY', 'USD', 'EUR'])
             ),
+            'defaultCurrency' => app(MoneySettings::class)->defaultCurrency(),
+            'defaultTaxRate' => app(MoneySettings::class)->defaultTaxRate(),
+            'defaultTerms' => app(MoneySettings::class)->quoteTerms(),
         ];
     }
 

@@ -37,7 +37,7 @@
                 <x-admin-panel::select name="company_id" label="Company" :options="$companies" :selected="$deal->company_id" placeholder="No company" />
                 <x-admin-panel::select name="contact_id" label="Contact" :options="$contacts" :selected="$deal->contact_id" value-field="id" label-field="full_name" placeholder="No contact" />
                 <x-admin-panel::input name="value" label="Value" type="number" min="0" step="0.01" :value="$deal->value ?: 0" required />
-                <x-admin-panel::select name="currency" label="Currency" :options="$currencies" :selected="$deal->currency ?: config('crm.money.default_currency', 'TRY')" required />
+                <x-admin-panel::select name="currency" label="Currency" :options="$currencies" :selected="$deal->currency ?: $defaultCurrency" required />
                 <x-admin-panel::input name="probability" label="Probability" type="number" min="0" max="100" :value="$deal->probability ?? 0" required />
                 <x-admin-panel::input name="expected_close_date" label="Expected Close Date" type="date" :value="$deal->expected_close_date?->format('Y-m-d')" />
                 <x-admin-panel::select name="status" label="Status" :options="$statuses" :selected="$deal->status ?: 'open'" required />

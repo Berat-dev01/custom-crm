@@ -6,10 +6,14 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Sanalkopru\Crm\Actions\Quotes\UpsertQuote;
 use Sanalkopru\Crm\Models\Deal;
 use Sanalkopru\Crm\Models\Quote;
+use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 
 class CreateDealQuote
 {
-    public function __construct(private readonly UpsertQuote $upsertQuote) {}
+    public function __construct(
+        private readonly UpsertQuote $upsertQuote,
+        private readonly MoneySettings $money
+    ) {}
 
     /**
      * @param  array<string, mixed>  $payload
@@ -26,7 +30,7 @@ class CreateDealQuote
             'discount_value' => 0,
             'valid_until' => $payload['valid_until'] ?? null,
             'notes' => $payload['notes'] ?? null,
-            'terms' => $payload['terms'] ?? null,
+            'terms' => $payload['terms'] ?? $this->money->quoteTerms(),
             'owner_id' => $payload['owner_id'] ?? $deal->owner_id,
             'items' => [[
                 'name' => $payload['item_name'],
@@ -35,7 +39,7 @@ class CreateDealQuote
                 'unit_price' => $payload['unit_price'],
                 'discount_type' => null,
                 'discount_value' => 0,
-                'tax_rate' => $payload['tax_rate'] ?? config('crm.money.default_tax_rate', 20),
+                'tax_rate' => $payload['tax_rate'] ?? $this->money->defaultTaxRate(),
                 'position' => 1,
             ]],
         ], $user);

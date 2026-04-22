@@ -1144,6 +1144,8 @@ Kabul kriterleri:
 
 ## ADIM 24 — Settings Modulunu ve Marka Ozellestirmesini Ekle
 
+**Durum:** Tamamlandi. CRM settings ekrani, guvenli logo upload, yetkili ayar yonetimi, config default override akisi, teklif PDF marka bilgileri, varsayilan para/KDV/teklif sartlari ve AI driver/model ayarlari settings uzerinden calisir hale getirildi.
+
 ```prompt
 CRM settings ekranini ekle.
 

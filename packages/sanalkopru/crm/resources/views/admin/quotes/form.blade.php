@@ -68,7 +68,7 @@
                     <x-admin-panel::select name="deal_id" label="Deal" :options="$deals" :selected="old('deal_id', $quote->deal_id)" placeholder="No deal" />
                     <x-admin-panel::select name="owner_id" label="Owner" :options="$owners" :selected="old('owner_id', $quote->owner_id)" placeholder="No owner" />
                     <x-admin-panel::select name="status" label="Status" :options="$statuses" :selected="old('status', $quote->status ?: 'draft')" required />
-                    <x-admin-panel::select name="currency" label="Currency" :options="$currencies" :selected="old('currency', $quote->currency ?: config('crm.money.default_currency', 'TRY'))" required />
+                    <x-admin-panel::select name="currency" label="Currency" :options="$currencies" :selected="old('currency', $quote->currency ?: $defaultCurrency)" required />
                     <x-admin-panel::select name="discount_type" label="Quote Discount" :options="$discountTypes" :selected="old('discount_type', $quote->discount_type)" placeholder="No discount" />
                     <x-admin-panel::input name="discount_value" label="Discount Value" type="number" min="0" step="0.01" :value="old('discount_value', $quote->discount_value ?: 0)" />
                     <x-admin-panel::input name="valid_until" label="Valid Until" type="date" :value="old('valid_until', $quote->valid_until?->format('Y-m-d'))" />
@@ -85,7 +85,7 @@
                     </div>
 
                     <x-admin-panel::textarea name="notes" label="Notes" class="crm-span-2" :value="old('notes', $quote->notes)" rows="3" />
-                    <x-admin-panel::textarea name="terms" label="Terms" class="crm-span-2" :value="old('terms', $quote->terms)" rows="4" />
+                    <x-admin-panel::textarea name="terms" label="Terms" class="crm-span-2" :value="old('terms', $quote->terms ?: $defaultTerms)" rows="4" />
                 </div>
             </x-admin-panel::card>
 

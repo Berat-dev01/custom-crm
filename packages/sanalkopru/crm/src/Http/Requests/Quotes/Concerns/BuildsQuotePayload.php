@@ -2,6 +2,8 @@
 
 namespace Sanalkopru\Crm\Http\Requests\Quotes\Concerns;
 
+use Sanalkopru\Crm\Services\Configuration\MoneySettings;
+
 trait BuildsQuotePayload
 {
     /**
@@ -16,7 +18,7 @@ trait BuildsQuotePayload
                 $item['position'] = (int) ($item['position'] ?? ($index + 1));
                 $item['discount_type'] = $item['discount_type'] ?? null;
                 $item['discount_value'] = $item['discount_value'] ?? 0;
-                $item['tax_rate'] = $item['tax_rate'] ?? config('crm.money.default_tax_rate', 20);
+                $item['tax_rate'] = $item['tax_rate'] ?? app(MoneySettings::class)->defaultTaxRate();
 
                 return $item;
             })
@@ -26,6 +28,7 @@ trait BuildsQuotePayload
         $validated['tag_ids'] = $validated['tag_ids'] ?? [];
         $validated['discount_type'] = $validated['discount_type'] ?? null;
         $validated['discount_value'] = $validated['discount_value'] ?? 0;
+        $validated['terms'] = $validated['terms'] ?? app(MoneySettings::class)->quoteTerms();
 
         return $validated;
     }

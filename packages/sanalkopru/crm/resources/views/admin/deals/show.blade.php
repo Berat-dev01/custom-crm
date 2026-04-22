@@ -203,12 +203,12 @@
                         <x-admin-panel::input name="item_name" label="Item" :value="$deal->title" required />
                         <x-admin-panel::input name="quantity" label="Quantity" type="number" min="0.001" step="0.001" value="1" required />
                         <x-admin-panel::input name="unit_price" label="Unit Price" type="number" min="0" step="0.01" :value="$deal->value" required />
-                        <x-admin-panel::input name="tax_rate" label="Tax Rate" type="number" min="0" max="100" step="0.01" :value="config('crm.money.default_tax_rate', 20)" />
+                        <x-admin-panel::input name="tax_rate" label="Tax Rate" type="number" min="0" max="100" step="0.01" :value="$defaultTaxRate" />
                         <x-admin-panel::select name="currency" label="Currency" :options="$currencies" :selected="$deal->currency" required />
                         <x-admin-panel::input name="valid_until" label="Valid Until" type="date" />
                         <x-admin-panel::textarea name="item_description" label="Item Description" class="crm-span-2" rows="2" />
                         <x-admin-panel::textarea name="notes" label="Notes" class="crm-span-2" rows="2" />
-                        <x-admin-panel::textarea name="terms" label="Terms" class="crm-span-2" rows="2" />
+                        <x-admin-panel::textarea name="terms" label="Terms" class="crm-span-2" :value="$defaultTerms" rows="2" />
                         <div class="crm-form-actions crm-span-2">
                             <x-admin-panel::button type="submit" icon="file-plus">Create Quote</x-admin-panel::button>
                         </div>

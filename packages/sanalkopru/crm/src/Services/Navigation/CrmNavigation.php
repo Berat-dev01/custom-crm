@@ -35,6 +35,7 @@ class CrmNavigation
             ['label' => 'Quotes', 'route' => 'crm.quotes.index', 'permission' => 'crm.quotes.view'],
             ['label' => 'Activities', 'route' => 'crm.activities.index', 'permission' => 'crm.activities.view'],
             ['label' => 'Tags', 'route' => 'crm.tags.index', 'permission' => 'crm.tags.view'],
+            ['label' => 'Settings', 'route' => 'crm.settings.index', 'permission' => 'crm.settings.manage'],
         ];
     }
 }

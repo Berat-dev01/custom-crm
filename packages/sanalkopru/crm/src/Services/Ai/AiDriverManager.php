@@ -8,13 +8,16 @@ use Sanalkopru\Crm\Services\Ai\Providers\ClaudeProvider;
 use Sanalkopru\Crm\Services\Ai\Providers\GeminiProvider;
 use Sanalkopru\Crm\Services\Ai\Providers\NullAiProvider;
 use Sanalkopru\Crm\Services\Ai\Providers\OpenAiProvider;
+use Sanalkopru\Crm\Services\Settings\CrmSettingsManager;
 use Sanalkopru\Crm\Support\Ai\AiDriver;
 
 class AiDriverManager
 {
+    public function __construct(private readonly CrmSettingsManager $settings) {}
+
     public function enabled(): bool
     {
-        return (bool) config('crm.ai.enabled', false);
+        return (bool) $this->settings->get('ai_enabled', config('crm.ai.enabled', false));
     }
 
     public function available(): bool
@@ -32,7 +35,7 @@ class AiDriverManager
 
     public function selected(): AiDriver
     {
-        $driver = (string) config('crm.ai.driver', config('crm.ai.provider', AiDriver::OpenAI->value));
+        $driver = (string) $this->settings->get('ai_driver', config('crm.ai.driver', config('crm.ai.provider', AiDriver::OpenAI->value)));
 
         return AiDriver::tryFrom($driver)
             ?? throw new InvalidArgumentException(sprintf(
@@ -54,7 +57,7 @@ class AiDriverManager
 
     public function model(?AiDriver $driver = null): ?string
     {
-        $model = $this->config($driver)['model'] ?? config('crm.ai.model');
+        $model = $this->settings->get('ai_model') ?: ($this->config($driver)['model'] ?? config('crm.ai.model'));
 
         return $model ? (string) $model : null;
     }

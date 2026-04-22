@@ -163,6 +163,8 @@ class CrmAdminRoutingTest extends TestCase
             'crm.saved-filters.store',
             'crm.saved-filters.apply',
             'crm.saved-filters.destroy',
+            'crm.settings.index',
+            'crm.settings.update',
             'crm.imports.errors',
             'crm.ai.summarize',
             'crm.ai.summarize-note',

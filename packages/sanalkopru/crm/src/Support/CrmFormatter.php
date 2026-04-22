@@ -5,12 +5,15 @@ namespace Sanalkopru\Crm\Support;
 use Carbon\CarbonInterface;
 use DateTimeInterface;
 use Illuminate\Support\Carbon;
+use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 
 class CrmFormatter
 {
+    public function __construct(private readonly MoneySettings $money) {}
+
     public function money(float|int|string|null $amount, ?string $currency = null): string
     {
-        $currency ??= config('crm.money.default_currency', 'TRY');
+        $currency ??= $this->money->defaultCurrency();
 
         return number_format((float) ($amount ?? 0), 2, ',', '.').' '.$currency;
     }

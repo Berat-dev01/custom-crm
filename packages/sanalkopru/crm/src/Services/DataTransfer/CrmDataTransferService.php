@@ -24,6 +24,7 @@ use Sanalkopru\Crm\Models\CrmImport;
 use Sanalkopru\Crm\Models\Deal;
 use Sanalkopru\Crm\Models\DealStage;
 use Sanalkopru\Crm\Models\Quote;
+use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CrmDataTransferService
@@ -36,7 +37,8 @@ class CrmDataTransferService
         private readonly TabularFileReader $reader,
         private readonly UpsertContact $upsertContact,
         private readonly UpsertCompany $upsertCompany,
-        private readonly UpsertDeal $upsertDeal
+        private readonly UpsertDeal $upsertDeal,
+        private readonly MoneySettings $money
     ) {}
 
     /**
@@ -347,7 +349,7 @@ class CrmDataTransferService
             'contact_id' => $contact?->id,
             'stage_id' => $stage?->id,
             'value' => $payload['value'] ?? 0,
-            'currency' => $payload['currency'] ?: config('crm.money.default_currency', 'TRY'),
+            'currency' => $payload['currency'] ?: $this->money->defaultCurrency(),
             'probability' => $payload['probability'] ?: ($stage?->probability ?? 0),
             'expected_close_date' => $payload['expected_close_date'] ?? null,
             'status' => $payload['status'] ?: 'open',

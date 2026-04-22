@@ -36,6 +36,7 @@ return [
     'quotes' => [
         'number_prefix' => env('CRM_QUOTE_NUMBER_PREFIX', 'CRM-'),
         'number_padding' => (int) env('CRM_QUOTE_NUMBER_PADDING', 6),
+        'default_terms' => env('CRM_QUOTE_DEFAULT_TERMS'),
         'company' => [
             'name' => env('CRM_QUOTE_COMPANY_NAME', env('APP_NAME', 'CRM')),
             'logo_path' => env('CRM_QUOTE_COMPANY_LOGO_PATH'),

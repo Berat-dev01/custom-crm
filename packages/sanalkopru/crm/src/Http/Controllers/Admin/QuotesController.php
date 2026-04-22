@@ -24,6 +24,7 @@ use Sanalkopru\Crm\Models\Deal;
 use Sanalkopru\Crm\Models\Quote;
 use Sanalkopru\Crm\Models\Tag;
 use Sanalkopru\Crm\Services\Ai\AiDriverManager;
+use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 use Sanalkopru\Crm\Services\Quotes\QuotePdfRenderer;
 use Sanalkopru\Crm\Services\Quotes\QuoteQuery;
 use Symfony\Component\HttpFoundation\Response;
@@ -192,7 +193,9 @@ class QuotesController extends Controller
                 config('crm.money.supported_currencies', ['TRY', 'USD', 'EUR']),
                 config('crm.money.supported_currencies', ['TRY', 'USD', 'EUR'])
             ),
-            'defaultTaxRate' => config('crm.money.default_tax_rate', 20),
+            'defaultCurrency' => app(MoneySettings::class)->defaultCurrency(),
+            'defaultTaxRate' => app(MoneySettings::class)->defaultTaxRate(),
+            'defaultTerms' => app(MoneySettings::class)->quoteTerms(),
         ];
     }
 
