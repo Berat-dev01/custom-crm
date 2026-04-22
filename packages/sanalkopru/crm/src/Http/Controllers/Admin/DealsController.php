@@ -25,6 +25,7 @@ use Sanalkopru\Crm\Models\Company;
 use Sanalkopru\Crm\Models\Contact;
 use Sanalkopru\Crm\Models\Deal;
 use Sanalkopru\Crm\Models\DealStage;
+use Sanalkopru\Crm\Models\SavedFilter;
 use Sanalkopru\Crm\Models\Tag;
 use Sanalkopru\Crm\Services\Deals\DealQuery;
 
@@ -54,6 +55,7 @@ class DealsController extends Controller
             'filters' => $this->deals->filters($request),
             'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
             'tags' => Tag::query()->orderBy('name')->get(['id', 'name', 'color']),
+            'savedFilters' => SavedFilter::query()->forModule('deals')->visibleTo($request->user())->orderBy('name')->get(),
             'statuses' => $this->statuses(),
         ]);
     }

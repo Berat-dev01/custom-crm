@@ -15,6 +15,7 @@ use Sanalkopru\Crm\Http\Requests\Companies\StoreCompanyRequest;
 use Sanalkopru\Crm\Http\Requests\Companies\UpdateCompanyRequest;
 use Sanalkopru\Crm\Models\Company;
 use Sanalkopru\Crm\Models\Contact;
+use Sanalkopru\Crm\Models\SavedFilter;
 use Sanalkopru\Crm\Models\Tag;
 use Sanalkopru\Crm\Services\Companies\CompanyQuery;
 
@@ -31,6 +32,7 @@ class CompaniesController extends Controller
             'filters' => $this->companies->filters($request),
             'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
             'tags' => Tag::query()->orderBy('name')->get(['id', 'name', 'color']),
+            'savedFilters' => SavedFilter::query()->forModule('companies')->visibleTo($request->user())->orderBy('name')->get(),
             'sectors' => Company::query()
                 ->whereNotNull('sector')
                 ->distinct()

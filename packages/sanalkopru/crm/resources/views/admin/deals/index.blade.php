@@ -57,6 +57,8 @@
             </form>
         </x-admin-panel::card>
 
+        @include('crm::admin.partials.saved-filters', ['module' => 'deals', 'savedFilters' => $savedFilters, 'filters' => $filters])
+
         @if($filters['view'] === 'list')
             <x-admin-panel::card>
                 <x-slot:header>

@@ -50,6 +50,8 @@
             </form>
         </x-admin-panel::card>
 
+        @include('crm::admin.partials.saved-filters', ['module' => 'companies', 'savedFilters' => $savedFilters, 'filters' => $filters])
+
         <x-admin-panel::card>
             <x-slot:header>
                 Companies

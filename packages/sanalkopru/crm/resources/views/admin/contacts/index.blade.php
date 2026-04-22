@@ -62,6 +62,8 @@
             </form>
         </x-admin-panel::card>
 
+        @include('crm::admin.partials.saved-filters', ['module' => 'contacts', 'savedFilters' => $savedFilters, 'filters' => $filters])
+
         <form id="crm-contact-bulk" method="POST" action="{{ route('crm.contacts.bulk-tags') }}">
             @csrf
 
@@ -81,6 +83,11 @@
                         <x-admin-panel::button type="submit" size="sm" variant="outline" icon="tag">
                             Assign Tags
                         </x-admin-panel::button>
+                        <x-admin-panel::button type="submit" size="sm" variant="ghost" icon="tag" formaction="{{ route('crm.tags.bulk') }}">
+                            Remove Tags
+                        </x-admin-panel::button>
+                        <input type="hidden" name="taggable_type" value="contact">
+                        <input type="hidden" name="mode" value="detach">
                     </div>
                 @endcan
                 @can('crm.contacts.delete')

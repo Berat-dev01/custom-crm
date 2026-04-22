@@ -181,6 +181,18 @@ class CrmDatabaseSchemaTest extends TestCase
             'user_agent',
         ]);
 
+        $this->assertColumns('crm_saved_filters', [
+            'public_id',
+            'organization_id',
+            'name',
+            'module',
+            'filters',
+            'visibility',
+            'is_default',
+            'user_id',
+            'deleted_at',
+        ]);
+
         $this->assertColumns('notifications', [
             'id',
             'type',

@@ -18,6 +18,7 @@ use Sanalkopru\Crm\Http\Requests\Contacts\StoreContactRequest;
 use Sanalkopru\Crm\Http\Requests\Contacts\UpdateContactRequest;
 use Sanalkopru\Crm\Models\Company;
 use Sanalkopru\Crm\Models\Contact;
+use Sanalkopru\Crm\Models\SavedFilter;
 use Sanalkopru\Crm\Models\Tag;
 use Sanalkopru\Crm\Services\Contacts\ContactCsvExporter;
 use Sanalkopru\Crm\Services\Contacts\ContactImportService;
@@ -38,6 +39,7 @@ class ContactsController extends Controller
             'companies' => Company::query()->orderBy('name')->limit(250)->get(['id', 'name']),
             'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
             'tags' => Tag::query()->orderBy('name')->get(['id', 'name', 'color']),
+            'savedFilters' => SavedFilter::query()->forModule('contacts')->visibleTo($request->user())->orderBy('name')->get(),
             'lifecycleStages' => $this->lifecycleStages(),
         ]);
     }
