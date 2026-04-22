@@ -488,6 +488,52 @@
         border-bottom: 0;
         font-size: 1.08rem;
     }
+
+    .crm-dashboard-row {
+        display: grid;
+        gap: 7px;
+    }
+
+    .crm-dashboard-row-head {
+        align-items: center;
+        display: flex;
+        gap: 12px;
+        justify-content: space-between;
+    }
+
+    .crm-dashboard-row-head span {
+        color: #64748b;
+        font-size: 0.86rem;
+    }
+
+    .crm-dashboard-bar,
+    .crm-dashboard-split-bars {
+        background: #f1f5f9;
+        border-radius: 999px;
+        height: 10px;
+        overflow: hidden;
+    }
+
+    .crm-dashboard-bar span,
+    .crm-dashboard-split-bars span {
+        background: #0ea5e9;
+        display: block;
+        height: 100%;
+    }
+
+    .crm-dashboard-split-bars {
+        align-items: stretch;
+        display: flex;
+        gap: 3px;
+    }
+
+    .crm-dashboard-split-bars .is-won {
+        background: #16a34a;
+    }
+
+    .crm-dashboard-split-bars .is-lost {
+        background: #dc2626;
+    }
 }
 
 @media (max-width: 760px) {
