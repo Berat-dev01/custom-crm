@@ -1355,6 +1355,8 @@ Kabul kriterleri:
 
 ## ADIM 30 — Docker'siz Production Deploy Rehberini Yaz ve Hazirla
 
+**Durum:** Tamamlandi. `docs/production-deploy-no-docker.md` musteri sunucusuna Docker kullanmadan kurulum yapilabilecek seviyeye genisletildi; server paketleri, PHP extension'lari, env, private package auth, first deploy, release akisi, zorunlu CRM seed'leri, asset build stratejisi, permissions, Nginx HTTPS, PHP-FPM pool, Supervisor queue worker, cron scheduler, log rotation, backup, rollback ve smoke test adimlari yazildi.
+
 ```prompt
 Production'da Docker kullanmadan CRM deploy rehberini hazirla.
 

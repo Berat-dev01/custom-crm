@@ -54,3 +54,17 @@
 - Dogrulama: `git diff --check` temiz.
 - Dogrulama: Root ve package `composer validate --strict` Docker icinde basarili.
 - Dogrulama: `CrmDemoSeederTest` Docker icinde basarili: `1 passed (19 assertions)`.
+
+## Adim 30 - Docker'siz Production Deploy Rehberini Yaz ve Hazirla
+
+- Baslangic: Roadmap Adim 30 kabul kriterleri ve mevcut `docs/production-deploy-no-docker.md` incelendi.
+- Bulgu: Dokuman temel basliklari iceriyordu; ancak musteri sunucusuna uygulanabilir ilk deploy akisi, zorunlu CRM seed'leri, private package auth, HTTPS server block, release/symlink akisi ve security/smoke test detaylari daha net yazilmaliydi.
+- Uygulama: Production rehberi bastan genisletildi. Docker/Compose production icin onerilmedi; hedef mimari Ubuntu, Nginx, PHP-FPM, Composer, MySQL, Redis, Supervisor, Cron ve SSL/TLS olarak netlestirildi.
+- Uygulama: Server requirements ve PHP extension listesi yanina Ubuntu paket kurulum ornegi eklendi.
+- Uygulama: Release directory layout, shared `.env`/storage, MySQL database/user ornegi ve private `sanalkopru/admin-panel` Composer auth notu eklendi.
+- Uygulama: First deploy akisi yazildi: clone, shared dosya linkleri, `composer install --no-dev`, `key:generate`, `migrate --force`, `CrmPermissionSeeder`, `CrmDealStageSeeder`, `storage:link`, cache komutlari ve `current` symlink.
+- Uygulama: Subsequent deploy akisi, asset build stratejisi, file permissions, HTTPS Nginx block, PHP-FPM pool, Supervisor queue worker, cron scheduler, log rotation, backup, rollback, security checklist ve smoke test bolumleri eklendi.
+- Uygulama: `roadmap.md` icinde Adim 30 tamamlandi olarak isaretlendi.
+- Dogrulama: `git diff --check` temiz.
+- Dogrulama: Production deploy dokumani icinde Docker/Compose referansi sadece "kullanilmaz" kararinda ve baslikta kaldi; production komutlari Docker kullanmiyor.
+- Dogrulama: Root ve package `composer validate --strict` Docker icinde basarili.
