@@ -198,4 +198,49 @@ class CrmActivitiesModuleTest extends TestCase
             ])
             ->assertForbidden();
     }
+
+    public function test_activities_index_uses_admin_panel_pagination_markup(): void
+    {
+        $contact = Contact::factory()->create();
+
+        Activity::factory()
+            ->count(30)
+            ->sequence(fn ($sequence) => [
+                'activityable_type' => $contact::class,
+                'activityable_id' => $contact->id,
+                'user_id' => $this->admin->id,
+                'subject' => 'Paged Activity #'.str_pad((string) ($sequence->index + 1), 3, '0', STR_PAD_LEFT),
+                'occurred_at' => now()->subMinutes($sequence->index),
+            ])
+            ->create();
+
+        $this->actingAs($this->admin, 'admin')
+            ->get(route('crm.activities.index'))
+            ->assertOk()
+            ->assertSee('crm-pagination', false)
+            ->assertSee('pagination-wrapper', false)
+            ->assertSee('pagination-wrapper-compact', false)
+            ->assertSee('name="per_page"', false)
+            ->assertSee('Rows')
+            ->assertSee('class="pagination-nav"', false)
+            ->assertSee('class="pagination"', false)
+            ->assertSee('1-25')
+            ->assertSee('/')
+            ->assertSee('Page 1/2')
+            ->assertSee('Paged Activity #001')
+            ->assertDontSee('Paged Activity #030');
+
+        $this->actingAs($this->admin, 'admin')
+            ->get(route('crm.activities.index', ['page' => 2]))
+            ->assertOk()
+            ->assertSee('Paged Activity #030')
+            ->assertDontSee('Paged Activity #001');
+
+        $this->actingAs($this->admin, 'admin')
+            ->get(route('crm.activities.index', ['page' => 2, 'per_page' => 10]))
+            ->assertOk()
+            ->assertSee('Paged Activity #011')
+            ->assertDontSee('Paged Activity #001')
+            ->assertDontSee('Paged Activity #021');
+    }
 }

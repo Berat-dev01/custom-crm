@@ -131,9 +131,7 @@
                         @endforelse
                     </x-admin-panel::table>
 
-                    <div class="crm-pagination">
-                        {{ $deals->links() }}
-                    </div>
+                    <x-admin-panel::pagination :paginator="$deals" class="crm-pagination" />
                 </x-admin-panel::card>
             @else
                 <div class="crm-kanban-scroll">

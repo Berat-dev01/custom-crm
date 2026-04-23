@@ -166,3 +166,29 @@
 - Dogrulama: Hedefli testler basarili: `CrmUiSmokeTest`, `CrmTagsSavedFiltersModuleTest`, `CrmContactsModuleTest`, `CrmTasksModuleTest`, `CrmDealsPipelineModuleTest` => `26 passed (188 assertions)`.
 - Dogrulama: `php artisan route:cache`, `php artisan config:cache` ve `php artisan view:cache` basarili; ardindan dev cache temizligi icin `php artisan optimize:clear` calistirildi.
 - Dogrulama: Full test suite Docker icinde basarili: `133 passed (1076 assertions)`.
+
+## Faz 6 - Admin User/Role Management
+
+- Baslangic: `/admin/users` icin artik redirect degil, gercek bir CRM user management modulu gereksinimi devreye alindi.
+- Uygulama: Root `routes/web.php` altindaki `/admin/users` girdisi CRM package icindeki users index rotasina yonlenecek sekilde korundu.
+- Uygulama: `UsersController` ile users index/create/edit/update/destroy ve `toggleActive` aksiyonlari eklendi.
+- Uygulama: `users` tablosuna `is_active` alani eklendi.
+- Uygulama: User formu CRM rol secimi, password set/change ve danger zone aksiyonlarini icerir hale geldi.
+- Uygulama: Son owner rolunu kaldirma, son owner'i pasiflestirme ve kullanicinin kendi hesabini pasiflestirme durumlari controller seviyesinde engellendi.
+- Uygulama: `EnsureCrmAccess` middleware'i pasif kullanicilari CRM disinda tutacak sekilde guncellendi.
+- Uygulama: Navigation tarafinda Users linki permission-aware hale getirildi.
+- Dogrulama: `CrmUsersModuleTest` eklendi ve users CRUD, role atama, toggle active, own-account protection, last-owner protection ve inactive-user block senaryolari kapsandi.
+
+## Faz 7 - UI Polish
+
+- Baslangic: Faz 7'de satilabilir urun hissini guclendirmek icin show/timeline/form polish takip commitleri uygulandi.
+- Uygulama: Ortak `admin/partials/_timeline.blade.php` partial'i ile timeline item header, type badge, system activity ayrimi ve meta satiri standartlastirildi.
+- Uygulama: Contact, company, deal, task ve activity show ekranlari iliskili kayit linkleri, badge kullanimi ve daha okunabilir listelerle guncellendi.
+- Uygulama: Contact/company/deal/quote formlarinda action alanlari, multiple select stilleri ve genel spacing polish iyilestirildi.
+- Uygulama: Saved filters paneli filter-shell yapisiyla daha temiz entegre edildi; deal stage reorder ekraninda UX duzeltmesi yapildi.
+- Uygulama: Admin-panel select paneli icin iki follow-up submodule fix commit'i ile panel/portal davranisi toparlandi.
+- Dogrulama: Kullanici smoke testlerinin basarili oldugu bildirildi.
+- Dogrulama: Root ve package composer strict validate basarili.
+- Dogrulama: `php artisan test` Docker icinde basarili: `145 passed (1104 assertions)`.
+- Dogrulama: `php artisan route:cache`, `php artisan config:cache`, `php artisan view:cache` basarili; ardindan `php artisan optimize:clear` calistirildi.
+- Dogrulama: `git diff --check` temiz.

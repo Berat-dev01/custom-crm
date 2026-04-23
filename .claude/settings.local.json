@@ -15,7 +15,11 @@
       "Read(//var/run/**)",
       "Read(//run/**)",
       "Read(//Users/zyix/.docker/run/**)",
-      "Bash(DOCKER_HOST=unix:///Users/zyix/.docker/run/docker.sock docker exec crm-app-1 *)"
+      "Bash(DOCKER_HOST=unix:///Users/zyix/.docker/run/docker.sock docker exec crm-app-1 *)",
+      "Bash(DOCKER_HOST=unix:///Users/zyix/.docker/run/docker.sock docker compose *)",
+      "Bash(xargs cat *)",
+      "Bash(xargs ls *)",
+      "Bash(git *)"
     ]
   }
 }

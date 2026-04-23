@@ -612,6 +612,11 @@
         margin-top: 18px;
     }
 
+    .crm-pagination .pagination-nav {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
     .crm-two-column,
     .crm-three-column {
         display: grid;

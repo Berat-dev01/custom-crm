@@ -29,7 +29,7 @@ class TagsController extends Controller
                 ->withCount(['contacts', 'companies', 'deals', 'quotes'])
                 ->search($request->string('search')->toString())
                 ->orderBy('name')
-                ->paginate(25)
+                ->paginate($this->perPage($request))
                 ->withQueryString(),
             'filters' => [
                 'search' => $request->string('search')->toString(),
@@ -106,5 +106,13 @@ class TagsController extends Controller
         );
 
         return back()->with('crm_status', "{$count} record(s) updated.");
+    }
+
+    private function perPage(Request $request): int
+    {
+        $default = (int) config('crm.api.default_per_page', 20);
+        $max = (int) config('crm.api.max_per_page', 100);
+
+        return min(max(1, $request->integer('per_page', $default)), $max);
     }
 }

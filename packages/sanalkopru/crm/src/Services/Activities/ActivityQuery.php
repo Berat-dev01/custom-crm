@@ -18,7 +18,7 @@ class ActivityQuery
         return $this->baseQuery($request)
             ->orderByDesc('occurred_at')
             ->orderByDesc('id')
-            ->paginate(25)
+            ->paginate($this->perPage($request, 25))
             ->withQueryString();
     }
 
@@ -65,5 +65,12 @@ class ActivityQuery
             'quote' => Quote::class,
             default => null,
         };
+    }
+
+    private function perPage(Request $request, int $default): int
+    {
+        $max = (int) config('crm.api.max_per_page', 100);
+
+        return min(max(1, $request->integer('per_page', $default)), $max);
     }
 }

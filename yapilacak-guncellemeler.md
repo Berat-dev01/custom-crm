@@ -345,6 +345,47 @@ Dogrulama:
 - Route/config/view cache basarili; ardindan dev cache temizlendi.
 - `git diff --check` temiz.
 
+### 2026-04-24 - Faz 6 Kapanis
+
+Durum:
+
+- Faz 6 tamamlandi.
+- `/admin/users` artik CRM user management modulune yonleniyor; users index, create ve edit ekranlari aktif.
+- CRM rol atama akisi `crm_owner`, `crm_manager`, `crm_sales`, `crm_support` ve `crm_viewer` rollerini destekliyor.
+- Kullanici olusturma ve guncellemede password set/change akisi aktif.
+- Kullanici aktif/pasif durumu `is_active` alani ve toggle aksiyonu ile yonetiliyor.
+- Son owner rolu kaldirma, son owner'i pasiflestirme ve kullanicinin kendi hesabini pasiflestirme engelleri uygulandi.
+- Pasif kullanicilar `EnsureCrmAccess` middleware'i ile CRM'den bloke edilip login ekranina yonlendiriliyor.
+- Sidebar Users linki permission-aware navigation icinde gosteriliyor.
+- Feature test kapsaminda user management ve inactive account senaryolari koruma altina alindi.
+
+Dogrulama:
+
+- `CrmUsersModuleTest` dahil full test suite basarili: `145 passed (1104 assertions)`.
+- Root `composer.json` ve package `packages/sanalkopru/crm/composer.json` strict validate basarili.
+- `php artisan route:cache`, `php artisan config:cache`, `php artisan view:cache` basarili; ardindan dev cache temizlendi.
+- `git diff --check` temiz.
+
+### 2026-04-24 - Faz 7 Kapanis
+
+Durum:
+
+- Faz 7 tamamlandi.
+- Contact, company, deal, task ve activity show ekranlari daha okunabilir badge/link/timeline yapisina tasindi.
+- Ortak `_timeline.blade.php` partial'i ile activity type badge, system activity ayrimi ve daha okunabilir meta satiri standartlastirildi.
+- Create/edit ekranlarinda action ayrimi, select/multiple select stilleri ve genel spacing polish guncellendi.
+- Empty state kullanimi liste ve detay ekranlarinda ortak partial uzerinden korunuyor.
+- Deal stage reorder ekraninda ve saved filter panelinde UX follow-up duzeltmeleri yapildi.
+- Admin-panel custom select icin panel/portal fixleri son iki submodule commit ile toparlandi.
+
+Dogrulama:
+
+- Kullanici manuel smoke testleri basarili bildirildi.
+- Full test suite basarili: `145 passed (1104 assertions)`.
+- Root ve package composer validate basarili.
+- Route/config/view cache basarili; ardindan dev cache temizlendi.
+- `git diff --check` temiz.
+
 ### Faz 5 - CRM Dinamik Aksiyonlar
 
 Bu faz hibrit AJAX kararini CRM'e uygular.

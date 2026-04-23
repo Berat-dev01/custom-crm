@@ -135,9 +135,7 @@
                     @endforelse
                 </x-admin-panel::table>
 
-                <div class="crm-pagination">
-                    {{ $companies->links() }}
-                </div>
+                <x-admin-panel::pagination :paginator="$companies" class="crm-pagination" />
             </x-admin-panel::card>
         </div>
     </section>
