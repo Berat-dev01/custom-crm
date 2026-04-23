@@ -76,6 +76,12 @@
         gap: 10px;
     }
 
+
+    .crm-inline-form {
+        flex-direction: column-reverse;
+        align-items: flex-start;
+        flex: 1;
+    }
     .crm-filter-grid,
     .crm-form-grid {
         display: grid;
@@ -147,6 +153,9 @@
     .crm-muted {
         color: #64748b;
         font-size: 0.875rem;
+    }
+    .crm-row-actions {
+        align-items: flex-start !important;
     }
 
     .crm-import-summary {

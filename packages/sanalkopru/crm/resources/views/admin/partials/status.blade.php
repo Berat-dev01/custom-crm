@@ -4,8 +4,6 @@
     @endpush
 @endonce
 
-@include('crm::admin.partials.global-search')
-
 @if(session('crm_status'))
     <x-admin-panel::alert variant="success" class="crm-toast" data-crm-toast>
         {{ session('crm_status') }}

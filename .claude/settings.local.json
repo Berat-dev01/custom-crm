@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker compose *)",
+      "Bash(make up *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(php artisan *)",
+      "Bash(php8.3 artisan *)",
+      "Read(//usr/local/bin/**)",
+      "Read(//opt/homebrew/bin/**)",
+      "Read(//usr/bin/**)",
+      "Read(//opt/**)",
+      "Bash(docker exec crm-app-1 *)"
+    ]
+  }
+}
