@@ -52,6 +52,8 @@ class CrmUiSmokeTest extends TestCase
             ->assertSee('data-crm-quote-form', false)
             ->assertSee('data-crm-add-quote-item', false)
             ->assertSee('data-crm-quote-items', false)
+            ->assertSee('data-admin-select', false)
+            ->assertSee('data-admin-select-native', false)
             ->assertSee('data-default-tax-rate', false)
             ->assertSee('name="items[0][name]"', false)
             ->assertSee('name="items[0][quantity]"', false)

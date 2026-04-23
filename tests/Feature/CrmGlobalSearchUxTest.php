@@ -81,6 +81,11 @@ class CrmGlobalSearchUxTest extends TestCase
         $this->actingAs($this->admin, 'admin')
             ->get(route('crm.contacts.index'))
             ->assertOk()
+            ->assertSee('data-admin-command-palette', false)
+            ->assertSee('Overview')
+            ->assertSee('Sales')
+            ->assertSee('Customers')
+            ->assertSee('Operations')
             ->assertSee('Search contacts, companies, deals or quotes')
             ->assertSee('No contacts found.')
             ->assertSee('New Contact');

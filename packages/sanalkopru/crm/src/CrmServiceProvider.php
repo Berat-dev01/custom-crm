@@ -117,7 +117,10 @@ class CrmServiceProvider extends ServiceProvider
         Blade::if('feature', fn (string $feature): bool => (bool) data_get(config('features', []), $feature, false));
 
         View::composer('crm::*', function ($view): void {
-            $view->with('crmNavigation', $this->app->make(CrmNavigation::class)->items(request()));
+            $navigation = $this->app->make(CrmNavigation::class);
+
+            $view->with('crmNavigation', $navigation->items(request()));
+            $view->with('crmNavigationGroups', $navigation->groups(request()));
             $view->with('crmFormat', $this->app->make(CrmFormatter::class));
         });
     }

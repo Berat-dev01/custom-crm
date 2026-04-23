@@ -195,7 +195,7 @@
         document.addEventListener('keydown', (event) => {
             const isSearchShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
 
-            if (!isSearchShortcut) {
+            if (!isSearchShortcut || document.querySelector('[data-admin-command-palette]')) {
                 return;
             }
 
@@ -214,8 +214,29 @@
     function initializeFormStates() {
         document.querySelectorAll('form').forEach((form) => {
             form.addEventListener('submit', (event) => {
+                if (form.dataset.crmConfirmed === '1') {
+                    form.classList.add('crm-is-submitting');
+                    return;
+                }
+
                 const submitter = event.submitter;
                 const message = submitter?.dataset?.crmConfirm || form.dataset.crmConfirm;
+
+                if (message && window.AdminPanel?.confirm) {
+                    event.preventDefault();
+
+                    window.AdminPanel.confirm(message).then((ok) => {
+                        if (!ok) {
+                            return;
+                        }
+
+                        form.dataset.crmConfirmed = '1';
+                        form.classList.add('crm-is-submitting');
+                        form.requestSubmit(submitter || undefined);
+                    });
+
+                    return;
+                }
 
                 if (message && !window.confirm(message)) {
                     event.preventDefault();
