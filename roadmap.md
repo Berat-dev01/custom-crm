@@ -1285,6 +1285,8 @@ Kabul kriterleri:
 
 ## ADIM 28 — Performance, Index ve Query Optimizasyonu Yap
 
+**Durum:** Tamamlandi. Kanban stage basina limitli hale getirildi, dashboard monthly trend tek aggregate sorguya indirildi, sik kullanilan filtre/siralama alanlari icin composite index migration'i eklendi, 10k contact/2k company/5k deal performans seed'i yazildi ve performans notlari `docs/performance.md` icine eklendi.
+
 ```prompt
 CRM'i buyuyen musteri verisine hazir hale getir.
 

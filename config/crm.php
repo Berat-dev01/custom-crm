@@ -101,6 +101,11 @@ return [
         'max_per_page' => (int) env('CRM_API_MAX_PER_PAGE', 100),
     ],
 
+    'performance' => [
+        'kanban_per_stage_limit' => (int) env('CRM_KANBAN_PER_STAGE_LIMIT', 50),
+        'kanban_per_stage_max_limit' => (int) env('CRM_KANBAN_PER_STAGE_MAX_LIMIT', 100),
+    ],
+
     'permissions' => [
         'enabled' => env('CRM_PERMISSIONS_ENABLED', true),
         'guard' => env('CRM_PERMISSIONS_GUARD', 'web'),

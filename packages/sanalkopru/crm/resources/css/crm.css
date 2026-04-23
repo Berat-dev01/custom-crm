@@ -364,6 +364,15 @@
         padding: 3px 7px;
     }
 
+    .crm-kanban-more {
+        border: 1px dashed #cbd5e1;
+        border-radius: 8px;
+        color: #475569;
+        font-size: 0.875rem;
+        padding: 0.75rem;
+        text-align: center;
+    }
+
     .crm-dialog {
         border: 0;
         border-radius: 8px;

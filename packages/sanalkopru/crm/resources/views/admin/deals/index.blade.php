@@ -176,6 +176,11 @@
                                         'body' => 'Drag deals here as the pipeline develops.',
                                     ])
                                 @endforelse
+                                @if($stage->has_more_deals)
+                                    <div class="crm-kanban-more">
+                                        Showing {{ $stage->deals->count() }} of {{ $stage->deals_count }} deals. Use filters or list view for the full stage.
+                                    </div>
+                                @endif
                             </div>
                         </section>
                     @endforeach

@@ -24,19 +24,36 @@ class DealQuery
      */
     public function pipeline(Request $request): Collection
     {
-        $deals = $this->baseQuery($request)
-            ->orderBy('position')
-            ->orderBy('id')
-            ->get()
-            ->groupBy('stage_id');
+        $perStageLimit = $this->kanbanPerStageLimit($request);
+        $stages = DealStage::query()->ordered()->get();
+        $deals = $stages->mapWithKeys(function (DealStage $stage) use ($request, $perStageLimit): array {
+            $stageDeals = $this->baseQuery($request)
+                ->where('stage_id', $stage->id)
+                ->orderBy('position')
+                ->orderBy('id')
+                ->limit($perStageLimit)
+                ->get();
 
-        return DealStage::query()
-            ->withCount(['deals' => fn (Builder $query) => $this->applyFilters($query, $request)])
-            ->ordered()
+            return [$stage->id => $stageDeals];
+        });
+        $counts = $this->applyFilters(
+            Deal::query()->selectRaw('stage_id, COUNT(*) as deals_count, COALESCE(SUM(value), 0) as pipeline_value'),
+            $request
+        )
+            ->groupBy('stage_id')
             ->get()
-            ->map(function (DealStage $stage) use ($deals): DealStage {
+            ->keyBy('stage_id');
+
+        return $stages
+            ->map(function (DealStage $stage) use ($counts, $deals, $perStageLimit): DealStage {
+                $aggregate = $counts->get($stage->id);
+                $dealsCount = (int) ($aggregate?->deals_count ?? 0);
+
                 $stage->setRelation('deals', $deals->get($stage->id, collect()));
-                $stage->setAttribute('pipeline_value', $stage->deals->sum(fn (Deal $deal): float => (float) $deal->value));
+                $stage->setAttribute('deals_count', $dealsCount);
+                $stage->setAttribute('pipeline_value', (float) ($aggregate?->pipeline_value ?? 0));
+                $stage->setAttribute('kanban_limit', $perStageLimit);
+                $stage->setAttribute('has_more_deals', $dealsCount > $stage->deals->count());
 
                 return $stage;
             });
@@ -98,5 +115,13 @@ class DealQuery
         $max = (int) config('crm.api.max_per_page', 100);
 
         return min(max(1, $request->integer('per_page', $default)), $max);
+    }
+
+    private function kanbanPerStageLimit(Request $request): int
+    {
+        $default = (int) config('crm.performance.kanban_per_stage_limit', 50);
+        $max = (int) config('crm.performance.kanban_per_stage_max_limit', 100);
+
+        return min(max(1, $request->integer('per_stage', $default)), $max);
     }
 }

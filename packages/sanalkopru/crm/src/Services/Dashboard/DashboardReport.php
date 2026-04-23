@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Sanalkopru\Crm\Models\Activity;
 use Sanalkopru\Crm\Models\Company;
 use Sanalkopru\Crm\Models\Contact;
@@ -158,21 +159,34 @@ class DashboardReport
      */
     private function monthlyTrend(Authenticatable $user, bool $canViewAll, CarbonImmutable $end): array
     {
-        return collect(range(5, 0))
-            ->map(function (int $monthsBack) use ($user, $canViewAll, $end): array {
-                $month = $end->subMonths($monthsBack);
-                $start = $month->startOfMonth();
-                $finish = $month->endOfMonth();
-                $won = $this->scopeOwner(Deal::query()->where('status', 'won'), $user, $canViewAll)
-                    ->whereBetween('closed_at', [$start, $finish]);
-                $lost = $this->scopeOwner(Deal::query()->where('status', 'lost'), $user, $canViewAll)
-                    ->whereBetween('closed_at', [$start, $finish]);
+        $months = collect(range(5, 0))
+            ->map(fn (int $monthsBack): CarbonImmutable => $end->subMonths($monthsBack)->startOfMonth());
+        $start = $months->first()->startOfMonth();
+        $finish = $months->last()->endOfMonth();
+        $periodExpression = $this->monthExpression('closed_at');
+        $aggregates = $this->scopeOwner(
+            Deal::query()
+                ->whereIn('status', ['won', 'lost'])
+                ->whereBetween('closed_at', [$start, $finish]),
+            $user,
+            $canViewAll
+        )
+            ->selectRaw("{$periodExpression} as period, status, COUNT(*) as deals_count, COALESCE(SUM(value), 0) as total_value")
+            ->groupBy('period', 'status')
+            ->get()
+            ->groupBy(fn (Deal $deal): string => $deal->getAttribute('period').':'.$deal->status);
+
+        return $months
+            ->map(function (CarbonImmutable $month) use ($aggregates): array {
+                $period = $month->format('Y-m');
+                $won = $aggregates->get($period.':won')?->first();
+                $lost = $aggregates->get($period.':lost')?->first();
 
                 return [
                     'label' => $month->format('M Y'),
-                    'won_count' => (clone $won)->count(),
-                    'won_value' => (float) (clone $won)->sum('value'),
-                    'lost_count' => (clone $lost)->count(),
+                    'won_count' => (int) ($won?->deals_count ?? 0),
+                    'won_value' => (float) ($won?->total_value ?? 0),
+                    'lost_count' => (int) ($lost?->deals_count ?? 0),
                 ];
             })
             ->all();
@@ -262,5 +276,12 @@ class DashboardReport
     private function withinDateRange(Builder $query, string $column, array $range): Builder
     {
         return $query->whereBetween($column, [$range['start'], $range['end']]);
+    }
+
+    private function monthExpression(string $column): string
+    {
+        return DB::connection()->getDriverName() === 'sqlite'
+            ? "strftime('%Y-%m', {$column})"
+            : "DATE_FORMAT({$column}, '%Y-%m')";
     }
 }
