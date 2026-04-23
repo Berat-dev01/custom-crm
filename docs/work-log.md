@@ -37,3 +37,20 @@
 - Dogrulama: Root `composer validate --strict` ve package `composer validate --strict packages/sanalkopru/crm/composer.json` basarili.
 - Dogrulama: SQLite fresh migration + `CrmPerformanceSeeder` basarili. Ayni PHP surecinde sayilar dogrulandi: `companies=2000`, `contacts=10000`, `deals=5000`.
 - Dogrulama: `git diff --check` temiz. `docker compose ps` ciktisinda acik servis kalmadi.
+
+## Adim 29 - Dokumantasyon ve Demo Paketini Hazirla
+
+- Baslangic: `roadmap.md`, mevcut README ve `docs/` klasoru incelendi.
+- Bulgu: README urun kararlarini anlatiyordu; ancak Adim 29'un istedigi installation, Docker development, production Docker'siz deploy, modules, customization, QA checklist ve troubleshooting dosyalari ayrik dokumanlar olarak eksikti.
+- Uygulama: README merkez giris sayfasi olacak sekilde yenilendi. Urun tanimi, ozellik listesi, Docker development quick start, demo kullanicilari, admin-panel entegrasyonu, publish komutlari, test komutlari, AI driver secimi ve production linkleri eklendi.
+- Uygulama: `docs/installation.md` eklendi. Development kurulumu, demo/performance seed komutlari, demo kullanicilari, admin-panel private repo notu, musteri projesine paket kurulumu ve env ayarlari yazildi.
+- Uygulama: `docs/development-docker.md` eklendi. Servisler, portlar, make komutlari, fresh setup, log/debug, scheduler ve reminder notlari yazildi.
+- Uygulama: `docs/production-deploy-no-docker.md` eklendi. Production'da Docker kullanmadan Ubuntu, Nginx, PHP-FPM, MySQL, Redis, Supervisor, Cron, SSL/TLS, backup ve rollback rehberi yazildi.
+- Uygulama: `docs/modules.md` eklendi. Dashboard, contacts, companies, deals, stages, tasks, quotes, activities, tags, import/export, AI, settings ve API modulleri ozetlendi.
+- Uygulama: `docs/customization.md` eklendi. Config/view/asset publish, route, module flags, quote marka bilgileri, roller, AI provider, import/export limitleri, performance limitleri ve tenant-ready kurallari yazildi.
+- Uygulama: `docs/qa-checklist.md` eklendi. Manual kabul testleri login/yetki, contacts, companies, deals, tasks, quotes, activities, AI, API, performance ve production hazirlik basliklariyla listelendi.
+- Uygulama: `docs/troubleshooting.md` eklendi. Docker, Composer private repo, autoload, migration, permission, admin 403/404, assets, PDF, import, reminders, AI, API, Kanban ve dashboard sorunlari icin kontrol listeleri yazildi.
+- Uygulama: `roadmap.md` icinde Adim 29 tamamlandi olarak isaretlendi.
+- Dogrulama: `git diff --check` temiz.
+- Dogrulama: Root ve package `composer validate --strict` Docker icinde basarili.
+- Dogrulama: `CrmDemoSeederTest` Docker icinde basarili: `1 passed (19 assertions)`.

@@ -1315,6 +1315,8 @@ Kabul kriterleri:
 
 ## ADIM 29 — Dokumantasyon ve Demo Paketini Hazirla
 
+**Durum:** Tamamlandi. README merkez dokuman olarak yenilendi; installation, development Docker, production Docker'siz deploy, modules, customization, QA checklist ve troubleshooting dokumanlari eklendi. Demo seed komutu, demo kullanicilari, admin panel entegrasyonu, publish komutlari ve test komutlari dokumante edildi.
+
 ```prompt
 CRM'i satilabilir urun gibi dokumante et.
 

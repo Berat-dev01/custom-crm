@@ -1,137 +1,131 @@
 # CRM Engine
 
-`sanalkopru/crm`, Sanal Kopru'nun tekrar satilabilir CRM altyapisidir. Hedef; bir musterinin "isyerim icin CRM modulune ihtiyacim var" talebinde, hazir ve production seviyesine yakin bir cekirdegi alip 1-2 gun icinde kurabilmek, markalayabilmek ve gerekirse musteriye ozel gelistirmeler ekleyebilmektir.
+`sanalkopru/crm`, Sanal Kopru projelerine kurulabilen tekrar satilabilir Laravel CRM paketidir. Amac, musteri CRM istediginde sifirdan proje yazmak yerine, admin paneli hazir, testleri olan, customize edilebilir ve production deploy'a hazir bir cekirdegi hizla teslim etmektir.
 
-## Kapsam
+Urun varsayilan olarak single-tenant kurulur. Her musteri kendi kurulumu, veritabani ve domainiyle calisir. Kod yapisi tenant-ready tutulur; ileride public portal, mobil uygulama veya SaaS yuzeyi eklenirken is mantigi yeniden yazilmaz.
 
-CRM Engine ilk fazda sirket calisanlarinin kullanacagi admin CRM arayuzunu ve onun altindaki is motorunu sunar:
+## Ozellikler
 
-- Contacts ve Companies yonetimi
-- Deals Kanban pipeline
-- Tasks, reminder ve notification sistemi
-- Quotes, KDV/iskonto hesaplama ve PDF export
-- Activities timeline
-- Tags, import/export, dashboard ve settings
-- Driver tabanli AI ile not ozetleme, email taslagi ve teklif takip metni
+- Admin CRM paneli: `/admin/crm`
+- Contacts ve companies yonetimi
+- Deals Kanban pipeline, drag-drop ve won/lost akislari
+- Tasks, reminder, queue ve scheduler destegi
+- Quotes, KDV/iskonto hesaplama, PDF preview/download
+- Activities timeline ve otomatik sistem aktiviteleri
+- Tags, saved filters, import/export
+- Dashboard, raporlama ve performans odakli aggregate sorgular
+- Settings, marka bilgileri, quote varsayilanlari ve logo upload
+- Token korumali `/api/crm` API katmani
+- Audit log, policy tabanli yetki sistemi ve rate limitler
+- Driver tabanli AI: `openai`, `claude`, `gemini`, `null`
 
-Public/customer frontend bu fazin ana kapsami degildir. Teklif onay linki, musteri portali, SaaS onboarding veya ayri React/Vue panel gibi yuzeyler, cekirdek tamamlandiktan sonra ayni servis katmanlari uzerine eklenebilir.
+## Hizli Development Kurulumu
 
-## Tenancy Karari
-
-CRM Engine varsayilan olarak her musteriye ayri kurulan single-tenant bir urundur. Bu, ilk satislar icin daha hizli, daha sade ve desteklemesi daha kolay bir modeldir.
-
-Kod mimarisi yine de tenant-ready tasarlanir. Yani ileride SaaS modeline gecmek istersek veriyi ayirmak icin `organization_id` / `workspace_id` benzeri bir sahiplik katmanina hazir olunur. Full SaaS multi-tenancy, subdomain, tenant provisioning, abonelik ve tenant database yonetimi bu urunun ilk kapsamina alinmaz; bunlar ileride `saas-starter` urunuyle birlestirilebilir.
-
-## Mimari Prensip
-
-Admin panel bir arayuzdur; CRM'in asil degeri cekirdektedir.
-
-Bu nedenle kritik is mantigi controller, Blade veya JavaScript icine gomulmez. Controller'lar ince kalir: request validate eder, yetki kontrolu yapar, ilgili Action/Service sinifini cagirir ve response dondurur. Hesaplama, durum gecisi, bildirim, audit log ve AI orkestrasyonu Services, Actions, Events, Jobs ve Policies katmanlarinda tutulur.
-
-Bu karar sayesinde ayni CRM motoru daha sonra su yuzeylere kolayca acilabilir:
-
-- Admin panel
-- Public quote approval page
-- Customer portal
-- Mobil uygulama
-- React/Vue tabanli ozel panel
-- Ucuncu parti entegrasyon API'lari
-
-## Development
-
-Development Docker ile yapilir. PHP, Composer, npm, Artisan, queue worker ve scheduler container icinde calisir.
-
-Host makinede su komutlar calistirilmaz:
-
-```bash
-php
-composer
-npm
-php artisan
-```
-
-Docker development stack'i bu dizindeki `docker-compose.yml`, `docker/php/Dockerfile`, `docker/nginx/default.conf` ve `Makefile` ile yonetilir.
-
-Laravel 12 hatti kullanilir. Bunun nedeni `sanalkopru/admin-panel` paketinin mevcut surumunun Laravel 10/11/12 desteklemesi ve CRM'in bu admin altyapisi uzerine kurulacak olmasidir.
-
-Baslangic:
+Development tamamen Docker ile calisir. Host makinede `php`, `composer`, `npm` veya `php artisan` calistirilmaz.
 
 ```bash
 cp .env.example .env
 make up
-```
-
-Kullanilacak komutlar:
-
-```bash
-make bash
 make composer CMD="install"
-make artisan CMD="about"
-make npm CMD="install"
-make migrate
-make test
-make logs
+make artisan CMD="key:generate"
+make fresh
 ```
 
-Private GitHub paketleri icin token repoya yazilmaz. `sanalkopru/admin-panel` kurulacagi zaman Composer auth bilgisi shell uzerinden veya lokal `.env` dosyasindan verilir:
+Uygulama: `http://localhost:8081`
+
+Demo kullanicilari:
+
+- `crm.owner@example.com` / `password`
+- `crm.manager@example.com` / `password`
+- `crm.sales@example.com` / `password`
+- `crm.support@example.com` / `password`
+- `crm.viewer@example.com` / `password`
+
+Demo verisi tek komutla gelir:
 
 ```bash
-COMPOSER_AUTH='{"github-oauth":{"github.com":"GITHUB_TOKEN"}}' make composer CMD="require sanalkopru/admin-panel"
+make artisan CMD="db:seed --class=Sanalkopru\\Crm\\Database\\Seeders\\CrmDemoSeeder"
 ```
 
-AI saglayicisi driver mantigi ile secilir. `.env` icinde `CRM_AI_DRIVER=openai`, `CRM_AI_DRIVER=claude`, `CRM_AI_DRIVER=gemini` veya `CRM_AI_DRIVER=null` kullanilabilir. Provider anahtarlari ve modelleri kendi env bloklarinda tutulur; is mantigi belirli bir provider SDK'sina gomulmez.
+Performans veri seti:
 
-Development portlari:
+```bash
+make artisan CMD="db:seed --class=Sanalkopru\\Crm\\Database\\Seeders\\CrmPerformanceSeeder"
+```
 
-- Uygulama: `http://localhost:8081`
-- MySQL host portu: `3307`
-- Redis host portu: `6380`
-- Mailpit: `http://localhost:8026`
+Detayli kurulum: [docs/installation.md](docs/installation.md)
 
-## Production
+## Admin Panel Entegrasyonu
 
-Production'da Docker kullanilmaz. Hedef deploy mimarisi:
+CRM view katmani `sanalkopru/admin-panel` paketinin layout ve admin guard yapisini kullanir. Root `composer.json` icinde admin panel private repository tanimlidir:
 
-- Nginx
-- PHP-FPM
-- MySQL
-- Redis
-- Supervisor queue worker
-- Cron ile Laravel scheduler
-- SSL/TLS
-- Log rotation ve backup stratejisi
+```json
+{
+  "type": "vcs",
+  "url": "https://github.com/ZyixQQ/admin-panel"
+}
+```
 
-Production dokumani `docs/production-deploy-no-docker.md` olarak ayri fazda yazilacaktir.
+Private GitHub erisimi gerekiyorsa token repoya yazilmaz; lokal ortamdan `COMPOSER_AUTH` ile verilir.
 
-## Admin Panel
+CRM ekranlari admin panelden izole sekilde `/admin/crm` altinda calisir. Public frontend'e CRM assetleri yuklenmez.
 
-CRM admin ekranlari `/admin/crm` altinda izole calisir ve `sanalkopru/admin-panel` paketini kullanir. CRM assetleri public frontend'e karismaz; sadece admin CRM ekranlarinda yuklenir.
-
-## Package Development
-
-CRM cekirdegi `packages/sanalkopru/crm` altinda Laravel paketi olarak gelistirilir. Root uygulama bu paketi lokal path repository ve PSR-4 autoload ile yukler.
-
-Paket publish tag'leri:
+## Paket Publish Komutlari
 
 ```bash
 make artisan CMD="vendor:publish --tag=crm-config"
 make artisan CMD="vendor:publish --tag=crm-views"
 make artisan CMD="vendor:publish --tag=crm-migrations"
 make artisan CMD="vendor:publish --tag=crm-assets"
+make artisan CMD="migrate"
 ```
 
-Paket route'lari `/admin/crm` ve `/api/crm` altinda gelir. Controller'lar ince kalir; kalici is mantigi paket icindeki Actions, Services, Policies, Events, Jobs ve Notifications katmanlarina yazilir.
+Kurulum ve paket entegrasyonu icin: [docs/installation.md](docs/installation.md)
 
-Customization katmani config tabanlidir. Musteri projesinde asagidakiler `.env` veya publish edilmis `config/crm.php` uzerinden degistirilir:
+## Test ve QA
 
-- route prefix ve middleware
-- contacts, companies, deals, tasks, quotes, activities ve AI modul flag'leri
-- default/supported para birimleri, KDV orani ve quote numara formati
-- AI provider, model, max token ve temperature
-- notification tercihleri
-- permission rolleri
-- admin UI app name ve primary color
+```bash
+make test
+make artisan CMD="migrate:fresh --seed --force"
+make composer CMD="validate --strict"
+```
+
+Test kapsami: [docs/qa/test-suite.md](docs/qa/test-suite.md)
+
+Manual QA checklist: [docs/qa-checklist.md](docs/qa-checklist.md)
+
+## AI Provider Secimi
+
+`.env` icinden provider secilir:
+
+```env
+CRM_AI_ENABLED=false
+CRM_AI_DRIVER=openai
+```
+
+Desteklenen driver'lar: `openai`, `claude`, `gemini`, `null`. AI katmani taslak/ozet uretir; CRM kayitlarini kullanici onayi olmadan degistirmez.
+
+## Production
+
+Production'da Docker kullanilmaz. Hedef mimari Nginx, PHP-FPM, MySQL, Redis, Supervisor queue worker, Cron scheduler ve SSL/TLS uzerinedir.
+
+Production rehberi: [docs/production-deploy-no-docker.md](docs/production-deploy-no-docker.md)
+
+## Dokumanlar
+
+- [Installation](docs/installation.md)
+- [Development Docker](docs/development-docker.md)
+- [Production Deploy No Docker](docs/production-deploy-no-docker.md)
+- [Modules](docs/modules.md)
+- [Customization](docs/customization.md)
+- [API](docs/api.md)
+- [Performance](docs/performance.md)
+- [Security Checklist](docs/security-checklist.md)
+- [QA Checklist](docs/qa-checklist.md)
+- [Troubleshooting](docs/troubleshooting.md)
+- [Architecture](docs/architecture.md)
+- [Product Scope](docs/product-scope.md)
 
 ## Roadmap
 
-Tam uygulama plani `roadmap.md` dosyasindadir. Ilk hedef once cekirdegi ve admin CRM frontend'ini bitirmek, ardindan ihtiyaca gore public/customer frontend fazini eklemektir.
+Tam uygulama plani ve adim durumlari [roadmap.md](roadmap.md) dosyasindadir.
