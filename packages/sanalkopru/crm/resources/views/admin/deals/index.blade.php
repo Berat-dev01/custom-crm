@@ -8,6 +8,13 @@
 @endpush
 
 @section('content')
+    @php
+        $activeFilterCount = collect($filters)
+            ->except(['view'])
+            ->filter(fn ($value) => $value !== null && $value !== '')
+            ->count();
+    @endphp
+
     <section class="crm-admin-page" data-crm-module="deals">
         @include('crm::admin.partials.status')
 
@@ -19,10 +26,10 @@
 
             <div class="crm-admin-actions">
                 <div class="crm-view-switch">
-                    <x-admin-panel::button :href="route('crm.deals.index', array_merge(request()->except('view', 'page'), ['view' => 'kanban']))" variant="{{ $filters['view'] === 'list' ? 'ghost' : 'outline' }}" icon="columns-3">
+                    <x-admin-panel::button :href="route('crm.deals.index', array_merge(request()->except('view', 'page'), ['view' => 'kanban']))" variant="{{ $filters['view'] === 'list' ? 'ghost' : 'outline' }}" icon="columns-3" data-admin-ajax-link data-admin-ajax-target="crm-deals-list">
                         Kanban
                     </x-admin-panel::button>
-                    <x-admin-panel::button :href="route('crm.deals.index', array_merge(request()->except('view', 'page'), ['view' => 'list']))" variant="{{ $filters['view'] === 'list' ? 'outline' : 'ghost' }}" icon="list">
+                    <x-admin-panel::button :href="route('crm.deals.index', array_merge(request()->except('view', 'page'), ['view' => 'list']))" variant="{{ $filters['view'] === 'list' ? 'outline' : 'ghost' }}" icon="list" data-admin-ajax-link data-admin-ajax-target="crm-deals-list">
                         List
                     </x-admin-panel::button>
                 </div>
@@ -47,89 +54,88 @@
             </div>
         </header>
 
-        <x-admin-panel::card>
-            <form method="GET" action="{{ route('crm.deals.index') }}" class="crm-filter-grid">
-                <input type="hidden" name="view" value="{{ $filters['view'] }}">
-                <x-admin-panel::input name="search" label="Search" :value="$filters['search']" placeholder="Title, company or contact" />
-                <x-admin-panel::select name="owner_id" label="Owner" :options="$owners" :selected="$filters['owner_id']" placeholder="All owners" />
-                <x-admin-panel::select name="tag_id" label="Tag" :options="$tags" :selected="$filters['tag_id']" placeholder="All tags" />
-                <x-admin-panel::select name="status" label="Status" :options="$statuses" :selected="$filters['status']" placeholder="All statuses" />
-                <x-admin-panel::input name="expected_from" label="Expected From" type="date" :value="$filters['expected_from']" />
-                <x-admin-panel::input name="expected_to" label="Expected To" type="date" :value="$filters['expected_to']" />
-                <x-admin-panel::input name="value_min" label="Min Value" type="number" min="0" step="0.01" :value="$filters['value_min']" />
-                <x-admin-panel::input name="value_max" label="Max Value" type="number" min="0" step="0.01" :value="$filters['value_max']" />
+        <div id="crm-deals-list" class="admin-ajax-region" data-admin-ajax-list>
+            <x-admin-panel::filter-shell :action="route('crm.deals.index')" :reset-url="route('crm.deals.index', ['view' => $filters['view']])" :active-count="$activeFilterCount">
+                <x-slot:compact>
+                    <input type="hidden" name="view" value="{{ $filters['view'] }}">
+                    <x-admin-panel::input name="search" label="Search" :value="$filters['search']" placeholder="Title, company or contact" />
+                    <x-admin-panel::select name="owner_id" label="Owner" :options="$owners" :selected="$filters['owner_id']" placeholder="All owners" />
+                    <x-admin-panel::select name="status" label="Status" :options="$statuses" :selected="$filters['status']" placeholder="All statuses" />
+                </x-slot:compact>
 
-                <div class="crm-filter-actions">
-                    <x-admin-panel::button type="submit" icon="search">Apply</x-admin-panel::button>
-                    <x-admin-panel::button :href="route('crm.deals.index', ['view' => $filters['view']])" variant="ghost">Reset</x-admin-panel::button>
-                </div>
-            </form>
-        </x-admin-panel::card>
+                <x-slot:advanced>
+                    <x-admin-panel::select name="tag_id" label="Tag" :options="$tags" :selected="$filters['tag_id']" placeholder="All tags" />
+                    <x-admin-panel::input name="expected_from" label="Expected From" type="date" :value="$filters['expected_from']" />
+                    <x-admin-panel::input name="expected_to" label="Expected To" type="date" :value="$filters['expected_to']" />
+                    <x-admin-panel::input name="value_min" label="Min Value" type="number" min="0" step="0.01" :value="$filters['value_min']" />
+                    <x-admin-panel::input name="value_max" label="Max Value" type="number" min="0" step="0.01" :value="$filters['value_max']" />
+                </x-slot:advanced>
+            </x-admin-panel::filter-shell>
 
-        @include('crm::admin.partials.saved-filters', ['module' => 'deals', 'savedFilters' => $savedFilters, 'filters' => $filters])
+            @include('crm::admin.partials.saved-filters', ['module' => 'deals', 'savedFilters' => $savedFilters, 'filters' => $filters])
 
-        @if($filters['view'] === 'list')
-            <x-admin-panel::card>
-                <x-slot:header>
-                    Deals
-                </x-slot:header>
+            @if($filters['view'] === 'list')
+                <x-admin-panel::card>
+                    <x-slot:header>
+                        Deals
+                    </x-slot:header>
 
-                <x-admin-panel::table :headers="[
-                    ['label' => 'Deal'],
-                    ['label' => 'Stage'],
-                    ['label' => 'Value'],
-                    ['label' => 'Expected Close'],
-                    ['label' => 'Owner'],
-                    ['label' => 'Actions', 'width' => '220px'],
-                ]">
-                    @forelse($deals as $deal)
-                        <tr>
-                            <td>
-                                <strong>{{ $deal->title }}</strong>
-                                <div class="crm-muted">{{ $deal->company?->name ?: $deal->contact?->full_name ?: 'No account linked' }}</div>
-                            </td>
-                            <td>{{ $deal->stage?->name ?: '-' }}</td>
-                            <td>{{ $crmFormat->money($deal->value, $deal->currency) }}</td>
-                            <td>{{ $crmFormat->date($deal->expected_close_date) }}</td>
-                            <td>{{ $deal->owner?->name ?: '-' }}</td>
-                            <td>
-                                <div class="crm-row-actions">
-                                    <x-admin-panel::button :href="route('crm.deals.show', $deal)" size="sm" variant="ghost" icon="eye" />
-                                    @can('update', $deal)
-                                        <x-admin-panel::button :href="route('crm.deals.edit', $deal)" size="sm" variant="ghost" icon="pencil" />
-                                    @endcan
-                                    @can('delete', $deal)
-                                        <form method="POST" action="{{ route('crm.deals.destroy', $deal) }}" class="crm-inline-form" data-crm-confirm="Delete this deal?">
-                                            @csrf
-                                            @method('DELETE')
-                                            <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" />
-                                        </form>
-                                    @endcan
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6">
-                                @include('crm::admin.partials.empty-state', [
-                                    'title' => 'No deals found.',
-                                    'body' => 'Start a new opportunity or relax the current filters.',
-                                    'actionUrl' => route('crm.deals.create'),
-                                    'actionLabel' => 'New Deal',
-                                    'actionPermission' => 'crm.deals.create',
-                                ])
-                            </td>
-                        </tr>
-                    @endforelse
-                </x-admin-panel::table>
+                    <x-admin-panel::table :headers="[
+                        ['label' => 'Deal'],
+                        ['label' => 'Stage'],
+                        ['label' => 'Value'],
+                        ['label' => 'Expected Close'],
+                        ['label' => 'Owner'],
+                        ['label' => 'Actions', 'width' => '220px'],
+                    ]">
+                        @forelse($deals as $deal)
+                            <tr>
+                                <td>
+                                    <strong>{{ $deal->title }}</strong>
+                                    <div class="crm-muted">{{ $deal->company?->name ?: $deal->contact?->full_name ?: 'No account linked' }}</div>
+                                </td>
+                                <td>{{ $deal->stage?->name ?: '-' }}</td>
+                                <td>{{ $crmFormat->money($deal->value, $deal->currency) }}</td>
+                                <td>{{ $crmFormat->date($deal->expected_close_date) }}</td>
+                                <td>{{ $deal->owner?->name ?: '-' }}</td>
+                                <td>
+                                    <div class="crm-row-actions">
+                                        <x-admin-panel::button :href="route('crm.deals.show', $deal)" size="sm" variant="ghost" icon="eye" />
+                                        @can('update', $deal)
+                                            <x-admin-panel::button :href="route('crm.deals.edit', $deal)" size="sm" variant="ghost" icon="pencil" />
+                                        @endcan
+                                        @can('delete', $deal)
+                                            <form method="POST" action="{{ route('crm.deals.destroy', $deal) }}" class="crm-inline-form" data-crm-confirm="Delete this deal?">
+                                                @csrf
+                                                @method('DELETE')
+                                                <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" />
+                                            </form>
+                                        @endcan
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6">
+                                    @include('crm::admin.partials.empty-state', [
+                                        'title' => 'No deals found.',
+                                        'body' => 'Start a new opportunity or relax the current filters.',
+                                        'actionUrl' => route('crm.deals.create'),
+                                        'actionLabel' => 'New Deal',
+                                        'actionPermission' => 'crm.deals.create',
+                                    ])
+                                </td>
+                            </tr>
+                        @endforelse
+                    </x-admin-panel::table>
 
-                <div class="crm-pagination">
-                    {{ $deals->links() }}
-                </div>
-            </x-admin-panel::card>
-        @else
-            <div class="crm-kanban-scroll">
-                <div class="crm-kanban-board" data-crm-kanban-board>
+                    <div class="crm-pagination">
+                        {{ $deals->links() }}
+                    </div>
+                </x-admin-panel::card>
+            @else
+                <div class="crm-kanban-scroll">
+                    <div class="crm-kanban-board" data-crm-kanban-board>
                     @foreach($pipeline as $stage)
                         <section class="crm-kanban-column">
                             <header class="crm-kanban-column-header">
@@ -198,26 +204,27 @@
                             </div>
                         </section>
                     @endforeach
+                    </div>
                 </div>
-            </div>
 
-            <dialog class="crm-dialog" data-crm-lost-dialog>
-                <form method="dialog" class="crm-dialog-body">
-                    <h2>Lost Reason</h2>
-                    <div class="form-group">
-                        <label class="form-label" for="crm-lost-reason">Reason</label>
-                        <textarea id="crm-lost-reason" name="lost_reason" class="form-control" rows="4"></textarea>
-                    </div>
-                    <div class="crm-dialog-actions">
-                        <x-admin-panel::button type="button" variant="ghost" onclick="this.closest('dialog').close('cancel')">
-                            Cancel
-                        </x-admin-panel::button>
-                        <x-admin-panel::button type="submit" icon="save">
-                            Save
-                        </x-admin-panel::button>
-                    </div>
-                </form>
-            </dialog>
-        @endif
+                <dialog class="crm-dialog" data-crm-lost-dialog>
+                    <form method="dialog" class="crm-dialog-body">
+                        <h2>Lost Reason</h2>
+                        <div class="form-group">
+                            <label class="form-label" for="crm-lost-reason">Reason</label>
+                            <textarea id="crm-lost-reason" name="lost_reason" class="form-control" rows="4"></textarea>
+                        </div>
+                        <div class="crm-dialog-actions">
+                            <x-admin-panel::button type="button" variant="ghost" onclick="this.closest('dialog').close('cancel')">
+                                Cancel
+                            </x-admin-panel::button>
+                            <x-admin-panel::button type="submit" icon="save">
+                                Save
+                            </x-admin-panel::button>
+                        </div>
+                    </form>
+                </dialog>
+            @endif
+        </div>
     </section>
 @endsection

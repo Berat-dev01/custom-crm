@@ -22,6 +22,7 @@ use Sanalkopru\Crm\Models\Company;
 use Sanalkopru\Crm\Models\Contact;
 use Sanalkopru\Crm\Models\Deal;
 use Sanalkopru\Crm\Models\Quote;
+use Sanalkopru\Crm\Models\SavedFilter;
 use Sanalkopru\Crm\Models\Tag;
 use Sanalkopru\Crm\Services\Ai\AiDriverManager;
 use Sanalkopru\Crm\Services\Configuration\MoneySettings;
@@ -44,6 +45,7 @@ class QuotesController extends Controller
             'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
             'tags' => Tag::query()->orderBy('name')->get(['id', 'name', 'color']),
             'statuses' => $this->statuses(),
+            'savedFilters' => SavedFilter::query()->forModule('quotes')->visibleTo($request->user())->orderBy('name')->get(),
         ]);
     }
 

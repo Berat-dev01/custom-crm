@@ -59,6 +59,9 @@ class SavedFiltersController extends Controller
             'contacts' => 'crm.contacts.index',
             'companies' => 'crm.companies.index',
             'deals' => 'crm.deals.index',
+            'tasks' => 'crm.tasks.index',
+            'quotes' => 'crm.quotes.index',
+            'activities' => 'crm.activities.index',
         };
     }
 }

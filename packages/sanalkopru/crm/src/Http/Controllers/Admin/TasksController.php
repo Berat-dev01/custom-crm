@@ -16,6 +16,7 @@ use Sanalkopru\Crm\Models\Company;
 use Sanalkopru\Crm\Models\Contact;
 use Sanalkopru\Crm\Models\Deal;
 use Sanalkopru\Crm\Models\Quote;
+use Sanalkopru\Crm\Models\SavedFilter;
 use Sanalkopru\Crm\Models\Task;
 use Sanalkopru\Crm\Services\Tasks\TaskQuery;
 
@@ -125,6 +126,7 @@ class TasksController extends Controller
             'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
             'priorities' => $this->priorities(),
             'statuses' => $this->statuses(),
+            'savedFilters' => SavedFilter::query()->forModule('tasks')->visibleTo($request->user())->orderBy('name')->get(),
         ]);
     }
 

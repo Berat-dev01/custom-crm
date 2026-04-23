@@ -6,7 +6,7 @@
     <div class="crm-stack">
         <div class="crm-row-actions">
             @forelse($savedFilters as $savedFilter)
-                <x-admin-panel::button :href="route('crm.saved-filters.apply', $savedFilter)" size="sm" variant="outline" icon="filter">
+                <x-admin-panel::button :href="route('crm.saved-filters.apply', $savedFilter)" size="sm" variant="outline" icon="filter" data-admin-ajax-link>
                     {{ $savedFilter->name }}
                 </x-admin-panel::button>
                 @if($savedFilter->user_id === auth()->id())

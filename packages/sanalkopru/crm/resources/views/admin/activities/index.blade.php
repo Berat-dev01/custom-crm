@@ -8,6 +8,12 @@
 @endpush
 
 @section('content')
+    @php
+        $activeFilterCount = collect($filters)
+            ->filter(fn ($value) => $value !== null && $value !== '')
+            ->count();
+    @endphp
+
     <section class="crm-admin-page" data-crm-module="activities">
         @include('crm::admin.partials.status')
 
@@ -22,36 +28,37 @@
             @endcan
         </header>
 
-        <x-admin-panel::card>
-            <form method="GET" action="{{ route('crm.activities.index') }}" class="crm-filter-grid">
-                <x-admin-panel::input name="search" label="Search" :value="$filters['search']" placeholder="Subject or body" />
-                <x-admin-panel::select name="type" label="Type" :options="$types" :selected="$filters['type']" placeholder="All types" />
-                <x-admin-panel::select name="activityable_type" label="Related Type" :options="$activityableTypes" :selected="$filters['activityable_type']" placeholder="All related records" />
-                <x-admin-panel::select name="user_id" label="User" :options="$users" :selected="$filters['user_id']" placeholder="All users" />
-                <x-admin-panel::input name="occurred_from" label="Occurred From" type="date" :value="$filters['occurred_from']" />
-                <x-admin-panel::input name="occurred_to" label="Occurred To" type="date" :value="$filters['occurred_to']" />
+        <div id="crm-activities-list" class="admin-ajax-region" data-admin-ajax-list>
+            <x-admin-panel::filter-shell :action="route('crm.activities.index')" :reset-url="route('crm.activities.index')" :active-count="$activeFilterCount">
+                <x-slot:compact>
+                    <x-admin-panel::input name="search" label="Search" :value="$filters['search']" placeholder="Subject or body" />
+                    <x-admin-panel::select name="type" label="Type" :options="$types" :selected="$filters['type']" placeholder="All types" />
+                    <x-admin-panel::select name="user_id" label="User" :options="$users" :selected="$filters['user_id']" placeholder="All users" />
+                </x-slot:compact>
 
-                <div class="crm-filter-actions">
-                    <x-admin-panel::button type="submit" icon="search">Apply</x-admin-panel::button>
-                    <x-admin-panel::button :href="route('crm.activities.index')" variant="ghost">Reset</x-admin-panel::button>
-                </div>
-            </form>
-        </x-admin-panel::card>
+                <x-slot:advanced>
+                    <x-admin-panel::select name="activityable_type" label="Related Type" :options="$activityableTypes" :selected="$filters['activityable_type']" placeholder="All related records" />
+                    <x-admin-panel::input name="occurred_from" label="Occurred From" type="date" :value="$filters['occurred_from']" />
+                    <x-admin-panel::input name="occurred_to" label="Occurred To" type="date" :value="$filters['occurred_to']" />
+                </x-slot:advanced>
+            </x-admin-panel::filter-shell>
 
-        <x-admin-panel::card>
-            <x-slot:header>
-                Timeline
-            </x-slot:header>
+            @include('crm::admin.partials.saved-filters', ['module' => 'activities', 'savedFilters' => $savedFilters, 'filters' => $filters])
 
-            <x-admin-panel::table :headers="[
-                ['label' => 'Activity'],
-                ['label' => 'Type'],
-                ['label' => 'Related'],
-                ['label' => 'User'],
-                ['label' => 'Occurred'],
-                ['label' => 'Actions', 'width' => '150px'],
-            ]">
-                @forelse($activities as $activity)
+            <x-admin-panel::card>
+                <x-slot:header>
+                    Timeline
+                </x-slot:header>
+
+                <x-admin-panel::table :headers="[
+                    ['label' => 'Activity'],
+                    ['label' => 'Type'],
+                    ['label' => 'Related'],
+                    ['label' => 'User'],
+                    ['label' => 'Occurred'],
+                    ['label' => 'Actions', 'width' => '150px'],
+                ]">
+                    @forelse($activities as $activity)
                     @php
                         $related = $activity->activityable;
                         $relatedLabel = match(true) {
@@ -92,12 +99,13 @@
                             ])
                         </td>
                     </tr>
-                @endforelse
-            </x-admin-panel::table>
+                    @endforelse
+                </x-admin-panel::table>
 
-            <div class="crm-pagination">
-                {{ $activities->links() }}
-            </div>
-        </x-admin-panel::card>
+                <div class="crm-pagination">
+                    {{ $activities->links() }}
+                </div>
+            </x-admin-panel::card>
+        </div>
     </section>
 @endsection

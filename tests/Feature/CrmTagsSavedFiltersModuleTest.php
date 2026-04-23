@@ -156,6 +156,35 @@ class CrmTagsSavedFiltersModuleTest extends TestCase
             ->assertRedirect(route('crm.contacts.index', $savedFilter->filters));
     }
 
+    public function test_saved_filters_support_tasks_quotes_and_activities_modules(): void
+    {
+        $modules = [
+            'tasks' => ['status' => 'open', 'scope' => 'my'],
+            'quotes' => ['status' => 'draft'],
+            'activities' => ['type' => 'note'],
+        ];
+
+        foreach ($modules as $module => $filters) {
+            $this->actingAs($this->admin, 'admin')
+                ->post(route('crm.saved-filters.store'), [
+                    'module' => $module,
+                    'name' => strtoupper($module).' Filter',
+                    'visibility' => 'private',
+                    'filters' => $filters,
+                ])
+                ->assertRedirect();
+
+            $savedFilter = SavedFilter::query()->where('module', $module)->latest('id')->firstOrFail();
+
+            $this->assertSame($module, $savedFilter->module);
+            $this->assertSame($filters, $savedFilter->filters);
+
+            $this->actingAs($this->admin, 'admin')
+                ->get(route('crm.saved-filters.apply', $savedFilter))
+                ->assertRedirect(route("crm.{$module}.index", $filters));
+        }
+    }
+
     public function test_private_saved_filter_is_not_visible_to_other_users(): void
     {
         $savedFilter = SavedFilter::query()->create([

@@ -59,4 +59,27 @@ class CrmUiSmokeTest extends TestCase
             ->assertSee('name="items[0][quantity]"', false)
             ->assertSee('name="items[0][unit_price]"', false);
     }
+
+    public function test_list_views_expose_filter_ajax_and_bulk_hooks(): void
+    {
+        $this->actingAs($this->owner, 'admin')
+            ->get(route('crm.contacts.index'))
+            ->assertOk()
+            ->assertSee('id="crm-contacts-list"', false)
+            ->assertSee('data-admin-ajax-list', false)
+            ->assertSee('data-admin-ajax-filter-form', false)
+            ->assertSee('data-admin-filter-toggle', false)
+            ->assertSee('data-admin-bulk-actions', false)
+            ->assertSee('data-admin-bulk-toggle-all', false);
+
+        $this->actingAs($this->owner, 'admin')
+            ->get(route('crm.tasks.today'))
+            ->assertOk()
+            ->assertSee('data-admin-ajax-target="crm-tasks-list"', false);
+
+        $this->actingAs($this->owner, 'admin')
+            ->get(route('crm.deals.index', ['view' => 'kanban']))
+            ->assertOk()
+            ->assertSee('data-admin-ajax-target="crm-deals-list"', false);
+    }
 }

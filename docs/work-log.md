@@ -148,3 +148,21 @@
 - Dogrulama: `php artisan view:cache`, `php artisan route:cache`, `php artisan config:cache` basarili; ardindan `php artisan optimize:clear` calistirildi.
 - Dogrulama: Full test suite basarili: `131 passed (1050 assertions)`.
 - Dogrulama: `git diff --check` temiz.
+
+## Faz 4 - Liste UX Sistemi
+
+- Baslangic: Faz 4'te admin-panel seviyesinde yazilan liste UX altyapisinin CRM liste ekranlarina uygulanmasi hedeflendi. Karar geregi genel UI mantigi admin-panel package icinde tutuldu, CRM tarafinda sadece ekran entegrasyonlari yapildi.
+- Uygulama: `x-admin-panel::filter-shell` componenti compact filter bar + advanced filters davranisini reusable hale getirdi.
+- Uygulama: `x-admin-panel::bulk-actions` componenti secim sayaci, select-all ve custom action slot mantigiyla eklendi.
+- Uygulama: Admin-panel JS icine region bazli progressive AJAX liste altyapisi eklendi. Filter form submit, select/date/number degisimi, search debounce, pagination linkleri ve `data-admin-ajax-link` isaretli linkler full page refresh olmadan ayni listeyi yeniliyor.
+- Uygulama: Header disindaki linklerin de ayni regionu guncelleyebilmesi icin `data-admin-ajax-target` destegi eklendi.
+- Uygulama: Contacts, companies, deals, tasks, quotes ve activities index sayfalari compact filter shell yapisina tasindi; active filter count, clear filters ve saved filters bloklari bu standarda baglandi.
+- Uygulama: Deals ekraninda list/kanban switch, tasks ekraninda all/my/today/overdue scope butonlari AJAX hedefli hale getirildi.
+- Uygulama: Contacts listesinde bulk quick action bar devreye alindi. Tag atama, tag kaldirma ve bulk delete aksiyonlari secili kayit sayisina bagli gorunur oluyor.
+- Uygulama: Saved filter request/controller tarafinda `tasks`, `quotes` ve `activities` modulleri de resmi olarak desteklenir hale getirildi.
+- Uygulama: Contacts listesinde table header checkbox icin Blade compile kirigi olusturmayan header degiskeni yapisina gecildi.
+- Dogrulama: `php artisan vendor:publish --tag=admin-panel-assets --force` ve `php artisan vendor:publish --tag=crm-assets --force` Docker icinde basarili.
+- Dogrulama: Pint formatter basarili.
+- Dogrulama: Hedefli testler basarili: `CrmUiSmokeTest`, `CrmTagsSavedFiltersModuleTest`, `CrmContactsModuleTest`, `CrmTasksModuleTest`, `CrmDealsPipelineModuleTest` => `26 passed (188 assertions)`.
+- Dogrulama: `php artisan route:cache`, `php artisan config:cache` ve `php artisan view:cache` basarili; ardindan dev cache temizligi icin `php artisan optimize:clear` calistirildi.
+- Dogrulama: Full test suite Docker icinde basarili: `133 passed (1076 assertions)`.

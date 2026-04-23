@@ -15,6 +15,7 @@ use Sanalkopru\Crm\Models\Company;
 use Sanalkopru\Crm\Models\Contact;
 use Sanalkopru\Crm\Models\Deal;
 use Sanalkopru\Crm\Models\Quote;
+use Sanalkopru\Crm\Models\SavedFilter;
 use Sanalkopru\Crm\Services\Activities\ActivityLogger;
 use Sanalkopru\Crm\Services\Activities\ActivityQuery;
 
@@ -41,6 +42,7 @@ class ActivitiesController extends Controller
             'types' => $this->activityTypes(),
             'activityableTypes' => $this->activityableTypes(),
             'users' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
+            'savedFilters' => SavedFilter::query()->forModule('activities')->visibleTo($request->user())->orderBy('name')->get(),
         ]);
     }
 
