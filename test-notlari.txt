@@ -1,0 +1,60 @@
+Ekran: /admin/users
+kullanici: crm.owner@example.com
+beklenen: /admin/users a girebilmem lazim sonucta bu owner hesabi
+gercek: linke sidebardan tiklihyorum ama beni /admin/crm ye geri gonderiyor. ayrica sag ustte profil badge i 'staff' gorunuyor bu bir sorun mu bilmiyorum sana bildirmek istedim. sistemde diger rolerde sorun yok ama sanki owner rolunde sorun var gerekeni yapamiyor gibi. ayrica diger rollerde girememeleri gerken sayfalari sidebarda gorememeli. ve sag ustte 'staff' yazmak yerine o kisinin rolu ne ise onu yazalim.
+-------
+ekran: /admin/contacts ve /admin/contacts/8/edit
+kullanici: crm.owner@example.com
+beklenen: multiple selectboxlarinin stilleri eksik gibi gorunuyor. hatta sistemde selectboxlar ile ilgilihicbir stil yok. not olarak tutalim selectbox stili olusturmamiz lazim sistemtarafdinan kullanilan bir compnent olarak. peki bunu paket icin yapip paketi mi guncelleyelim? paket bana ait
+-------
+ekran: /admin/crm
+dashboard kisminda period u degistirmeme ragmen veriler degismiyor hep ayni kaliyor. demo veriler ile mi alakali yoksa sorun mu var kontrol edilmeli
+-------
+contact delete bulamadim silmek istedim ama silme entegrasyonu mu eksik crud larda?
+_------
+ayrica ornek veriyorum. /admin/contacts ekraninda oldugum zaman sidebarda contacts sayfasi linki active gorunuyor bu zaten sistemde var ve dogru. fakat ben /admin/contacts/10 gibi  veya /admin/contact/10/edit gibi inner safyalara gidince de contacts linki aktif olmasi gerekmiyor mu? buna karar vermemiz lazim.
+-------
+deals ekraninda kanban dogru calisiyor state basarili sekilde korunuyor. fakat sayfayi yenilemesi gerek kalmadan stage basliklarindaki stage sayisi toplam value gibi degerlerin de dinamik guncellenmesi gerekmiyor mu? bunu cozebilir miyiz.
+-------
+mailtip reminder testini yapamadim. anlayamadim veya tarihleri calisacak sekilde uygulayamadim. sadece bununla ilgili bir manuel test yapmamiz lazim. bir saniye bekle. evet bildirim geldi! bir sure bekledim. bir reminder geldi ekranima bana atanan bir task reminder i geldi guzel.
+------
+ekran: /admin/quotes/create
+kullanici: crm.owner@example.com
+contacts selectboxi icinde bos stringi selectler var, deal selectboxi icinde de bos stringler var gibi bosluk var yani yazi yazmiyor ama secilebilyor
+------
+quotes u tam anlayamadim. yani quotes ne quiotes item ne bunalrin iliskisi gercek hayattaki karasilliklari ile ilgili bir quotes-tanitim.txt olarak kisaca anlatman lazim kisa ve net. yani mesela hem quotes a hemde neden quiotes item a price giriyoruz. duplicate quote aksiyonu ihtiyaci nereden doguyor? bunlar kafami karsitirdi.
+------
+contact import etmeye calistim bu hatayi aldim: ErrorException
+packages/sanalkopru/crm/src/Services/DataTransfer/CrmDataTransferService.php:322
+Undefined array key "lifecycle_stage", ayni hata diger import ekranlainda da duzeltilmeli.
+------
+ayrica import sayfasindaki preview daha okunabilir olmasi gerekiyor. suanda ; ile ayrilmis ama hic okunur degil. aynisi diger import ekranlari icin de gecerli.
+------
+ai kapali iken butonlar disabled gorunuyor guzel. ai testini sonra kendim yaparim suanda atliyorum. sen bana ai ozelligi sunan sayfalarin listesini ai-sayfalar.txt olarak ver ve ne yaptiklarini nasil bir sonuc uretmeleri gerektigni soyle.
+------
+perfromance testi yapmaya calistim. fakat
+'❯ make artisan CMD="db:seed --class=Sanalkopru\\Crm\\Database\\Seeders\\CrmPerformanceSeeder"
+docker compose exec app php artisan db:seed --class=Sanalkopru\Crm\Database\Seeders\CrmPerformanceSeeder
+
+   INFO  Seeding database.
+
+
+   Illuminate\Contracts\Container\BindingResolutionException
+
+  Target class [Database\Seeders\SanalkopruCrmDatabaseSeedersCrmPerformanceSeeder] does not exist.'
+  bu hatayi verdi. ama benim kafami karistiran sey. sistemdeki packages klasorunde tutuyrouz ana dosyalarimizi ama bu dogru mu? cunku sistemde hem ana dizinde database resorucs vs dizinelr var hemde packages icinde var hem src icinde ayri migration dosyalari falan var. ayni sey diger config ve route dosyalari icin de gecerli sistemde birden fazla farkli yerlerde var kafa karistiyor. yani bir kontrol etmemiz lazim. bu bahsettigin dirty repo mu oluyor? bunu nasil cozmeliyiz?  daha dogrusu bu bir mimari hata mi? bizim bu crm yi paket olarak yazmamiz dogru bir yaklasim mi? suanki hiyerarsi ve sistem dogru mu? buna bir karar verebilrimiyiz? bu crm yi bir paket olarka yazmak yerine dogrudan proje olarak yazip istedigim zaman kopyala yapistir kullanmak daha iyi degil mi? neden en bastan beri bunu pakcage olark yaziyoruz anlayamadim amac ne ? burada bunu package yaparak kazandigimiz sey ne tam olarrak? bu gerekli mi gereksiz mi? ileride
+-------
+ek olarak karar vermemiz gereken birsey var. her aksiyon sayfaynin yenilenmesine sebep oluyor. bu da aslinda ux i olumsuz etkliyor. ozellikle show bladelerdeki quick actionlar gibi hizli olmasi gereken seylerde vs. tikladigim her buton sayfayi yeniliyormus gibi hissediyorum. bu sence kalsin mi? yoksa tum safyfalardaki aksiyonlari belirleyip gercekten ajax ile yani sayfayi yenilemeden dinamik olmasi gerkeen aksiyonlara karar verip hepsinin entegrrlerini mi yapalim?
+--------
+ui gelistirmeleri (2026 yilinda oldugumuz icin sistemin ui/ux i de onemli):
+arama cubugunun sayfa icinde gorunmesi kesinlikle cok kotu oluyor. sayfa icerigini asagiya itiyor. onu navbar icinde bir ikon olarak tutabilmemiz ve tiklayinca acilmasini  expandable falan saglamamiz lazim. bunun icin admin-panel packageini guncelleyebilriz. ayrica listeleme sayfalarindaki filtreleme panelleri fazla yer kapliyor. nerdeyse butun sayfayi kapliyor icerikler cok asagida kaliyor. buna da bir cozum bulmamiz lazim. filre panelleri kucultmeyi deneyebilirz.
+admin-panel in kendi sundugu search veya filter veya pagination entegrasyonu varmi? bunlari kontrol et. filtre degisimi ve paginationlar degisimleri sayfayi yenilememeli. bunlari api ile cozmek hem performansi arttirmaz mi.
+------
+crm/contacts sayfasinda datatble in ustune bir quick action alani koymussun fakat bu sistemin diger alanlarinda olmadigi ve sadece burada oldugu icin garip durmus. bunu bence en iyisi su sekilde olur: quick action i position absolute olacak sekilde sayfanin sag ustunde konumlandiricaz. fakat en basta gorunmez olacak. kullanici en az 1 kisiyi sectikten sonra bir slide left veya slide down animasyonu ile sayfanin sag ustune gelecek. icinde quick actionlar olacak. bunu her listeleme sayfasina ekleyelim. yani componenta dahil bir entegrasyon olsun. cunku kullanmak isteyebeirliz. hatta hepsinde olsun ve hepsinde sonucta default olarak silme quick action i bulunsun. contacts in tag atama gibi diger farkli speisifik custom quick action lar da eklenebilir olacak sekilde yapalim.bu sayede daha iyi olur. (kafanda daha modern ve kullanicii dostu bir yontem var ise yapabilir≥) - filtre paneli icin de benzer bir cozum mu uretelim yoksa mevcut hali kalsin mi? mevcut hali sayfada cok yer kapladigi icin hosuma gitmiyordu ama overnegineer yapmadan temiz bir yontem bulabilrsek guzel olur.
+crm/contacts sayfadnda yaptiigni filter save entegrasyonunu da hem bu yeni yapacagimiz genel ve global filter entegrasyonuna da dahil edeilm ki. bir sayfada var digerlerinde yok gibi sacma bir durumla karsilasmayalim.
+kisaca her sayfada olacak ui temiz bir filter ve quick action duzeltmesi yapmaliyiz.
+bazi elementler * css secicisi ile gelen global padding: 0; ayarindan etkilenmisler ve kendi padding eklemeleri etki etmemis. base.css nin en basta. ondan sonra eklenen csslerin ondan sonra geldiginden emin olmamiz lazim.
+sidebar link hiyerasisini duzeltmemiz lazim herseyi tek bir linkin altina koymak yerine guzle basliklarla gruplayalim.
+mumkunse show edit gibi ekranlari daha renkli fazla abartmadan goze hitap etcek hale getirebilrmiyzi?
+------
+simdilik test sonuclari bunlar.
