@@ -78,16 +78,15 @@
                     <x-admin-panel::input name="discount_value" label="Discount Value" type="number" min="0" step="0.01" :value="old('discount_value', $quote->discount_value ?: 0)" />
                     <x-admin-panel::input name="valid_until" label="Valid Until" type="date" :value="old('valid_until', $quote->valid_until?->format('Y-m-d'))" />
 
-                    <div class="form-group crm-span-2">
-                        <label class="form-label" for="tag_ids">Tags</label>
-                        <select id="tag_ids" name="tag_ids[]" class="form-control" multiple>
-                            @foreach($tags as $tag)
-                                <option value="{{ $tag->id }}" @selected(in_array($tag->id, old('tag_ids', $selectedTags), true))>
-                                    {{ $tag->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <x-admin-panel::select
+                        name="tag_ids[]"
+                        label="Tags"
+                        :options="$tags"
+                        :selected="old('tag_ids', $selectedTags)"
+                        placeholder="No tags"
+                        group-class="crm-span-2"
+                        multiple
+                    />
 
                     <x-admin-panel::textarea name="notes" label="Notes" class="crm-span-2" :value="old('notes', $quote->notes)" rows="3" />
                     <x-admin-panel::textarea name="terms" label="Terms" class="crm-span-2" :value="old('terms', $quote->terms ?: $defaultTerms)" rows="4" />

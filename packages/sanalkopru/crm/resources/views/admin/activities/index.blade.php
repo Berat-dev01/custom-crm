@@ -41,9 +41,11 @@
                     <x-admin-panel::input name="occurred_from" label="Occurred From" type="date" :value="$filters['occurred_from']" />
                     <x-admin-panel::input name="occurred_to" label="Occurred To" type="date" :value="$filters['occurred_to']" />
                 </x-slot:advanced>
-            </x-admin-panel::filter-shell>
 
-            @include('crm::admin.partials.saved-filters', ['module' => 'activities', 'savedFilters' => $savedFilters, 'filters' => $filters])
+                <x-slot:saved>
+                    @include('crm::admin.partials.saved-filters', ['module' => 'activities', 'savedFilters' => $savedFilters, 'filters' => $filters])
+                </x-slot:saved>
+            </x-admin-panel::filter-shell>
 
             <x-admin-panel::card>
                 <x-slot:header>

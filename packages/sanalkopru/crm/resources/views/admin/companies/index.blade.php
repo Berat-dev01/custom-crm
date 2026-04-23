@@ -69,9 +69,11 @@
                         ]"
                     />
                 </x-slot:advanced>
-            </x-admin-panel::filter-shell>
 
-            @include('crm::admin.partials.saved-filters', ['module' => 'companies', 'savedFilters' => $savedFilters, 'filters' => $filters])
+                <x-slot:saved>
+                    @include('crm::admin.partials.saved-filters', ['module' => 'companies', 'savedFilters' => $savedFilters, 'filters' => $filters])
+                </x-slot:saved>
+            </x-admin-panel::filter-shell>
 
             <x-admin-panel::card>
                 <x-slot:header>

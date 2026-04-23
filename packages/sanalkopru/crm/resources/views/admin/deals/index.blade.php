@@ -70,9 +70,11 @@
                     <x-admin-panel::input name="value_min" label="Min Value" type="number" min="0" step="0.01" :value="$filters['value_min']" />
                     <x-admin-panel::input name="value_max" label="Max Value" type="number" min="0" step="0.01" :value="$filters['value_max']" />
                 </x-slot:advanced>
-            </x-admin-panel::filter-shell>
 
-            @include('crm::admin.partials.saved-filters', ['module' => 'deals', 'savedFilters' => $savedFilters, 'filters' => $filters])
+                <x-slot:saved>
+                    @include('crm::admin.partials.saved-filters', ['module' => 'deals', 'savedFilters' => $savedFilters, 'filters' => $filters])
+                </x-slot:saved>
+            </x-admin-panel::filter-shell>
 
             @if($filters['view'] === 'list')
                 <x-admin-panel::card>

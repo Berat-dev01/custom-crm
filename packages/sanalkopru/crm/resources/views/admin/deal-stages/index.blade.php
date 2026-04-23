@@ -27,7 +27,7 @@
                 Pipeline Order
             </x-slot:header>
 
-            <form method="POST" action="{{ route('crm.deal-stages.reorder') }}" class="crm-stack">
+            <form id="reorder-form" method="POST" action="{{ route('crm.deal-stages.reorder') }}" class="crm-stack">
                 @csrf
 
                 <x-admin-panel::table :headers="[
@@ -113,7 +113,7 @@
                 @enderror
 
                 <div class="crm-form-actions">
-                    <x-admin-panel::button type="submit" icon="save">Save Order</x-admin-panel::button>
+                    <x-admin-panel::button type="submit" form="reorder-form" icon="save">Save Order</x-admin-panel::button>
                 </div>
             </form>
         </x-admin-panel::card>

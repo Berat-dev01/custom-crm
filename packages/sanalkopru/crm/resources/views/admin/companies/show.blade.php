@@ -81,9 +81,15 @@
                     @if($availableContacts->isNotEmpty())
                         <form method="POST" action="{{ route('crm.companies.contacts.attach', $company) }}" class="crm-stack">
                             @csrf
-                            <div class="form-group">
+                            <div
+                                class="form-group"
+                                data-admin-select
+                                data-admin-select-placeholder="Select contacts"
+                                data-admin-select-searchable="1"
+                                data-admin-select-clearable="1"
+                            >
                                 <label class="form-label" for="contact_ids">Available Contacts</label>
-                                <select id="contact_ids" name="contact_ids[]" class="form-control" multiple required>
+                                <select id="contact_ids" name="contact_ids[]" class="form-control" multiple required data-admin-select-native>
                                     @foreach($availableContacts as $contact)
                                         <option value="{{ $contact->id }}">
                                             {{ $contact->full_name }}{{ $contact->email ? ' / '.$contact->email : '' }}

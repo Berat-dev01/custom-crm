@@ -78,20 +78,28 @@
                         ]"
                     />
                 </x-slot:advanced>
+                <x-slot:saved>
+                    @include('crm::admin.partials.saved-filters', ['module' => 'contacts', 'savedFilters' => $savedFilters, 'filters' => $filters])
+                </x-slot:saved>
             </x-admin-panel::filter-shell>
-
-            @include('crm::admin.partials.saved-filters', ['module' => 'contacts', 'savedFilters' => $savedFilters, 'filters' => $filters])
 
             <form id="crm-contact-bulk" method="POST" action="{{ route('crm.contacts.bulk-tags') }}">
                 @csrf
 
                 <x-admin-panel::bulk-actions form="crm-contact-bulk" checkbox-selector=".crm-contact-selector" label="contacts">
                     @can('crm.contacts.update')
-                        <select name="tag_ids[]" class="form-control" multiple form="crm-contact-bulk">
-                            @foreach($tags as $tag)
-                                <option value="{{ $tag->id }}">{{ $tag->name }}</option>
-                            @endforeach
-                        </select>
+                        <div
+                            data-admin-select
+                            data-admin-select-placeholder="Select tags"
+                            data-admin-select-searchable="1"
+                            data-admin-select-clearable="1"
+                        >
+                            <select name="tag_ids[]" class="form-control" multiple form="crm-contact-bulk" data-admin-select-native>
+                                @foreach($tags as $tag)
+                                    <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <input type="hidden" name="taggable_type" value="contact">
                         <input type="hidden" name="mode" value="detach">
                         <x-admin-panel::button type="submit" size="sm" variant="outline" icon="tag" form="crm-contact-bulk">

@@ -44,19 +44,15 @@
                 <x-admin-panel::select name="source" label="Source" :options="$sources" :selected="$contact->source" placeholder="No source" />
                 <x-admin-panel::input name="last_contacted_at" label="Last Contacted At" type="datetime-local" :value="$contact->last_contacted_at?->format('Y-m-d\\TH:i')" />
 
-                <div class="form-group crm-span-2">
-                    <label class="form-label" for="tag_ids">Tags</label>
-                    <select id="tag_ids" name="tag_ids[]" class="form-control" multiple>
-                        @foreach($tags as $tag)
-                            <option value="{{ $tag->id }}" @selected(in_array($tag->id, old('tag_ids', $selectedTags), true))>
-                                {{ $tag->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('tag_ids')
-                        <small class="form-error">{{ $message }}</small>
-                    @enderror
-                </div>
+                <x-admin-panel::select
+                    name="tag_ids[]"
+                    label="Tags"
+                    :options="$tags"
+                    :selected="old('tag_ids', $selectedTags)"
+                    placeholder="No tags"
+                    group-class="crm-span-2"
+                    multiple
+                />
 
                 <x-admin-panel::textarea
                     name="custom_fields_json"

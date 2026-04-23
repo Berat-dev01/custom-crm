@@ -47,19 +47,15 @@
                 <x-admin-panel::input name="postal_code" label="Postal Code" :value="$company->postal_code" />
                 <x-admin-panel::input name="country" label="Country" :value="$company->country" />
 
-                <div class="form-group crm-span-2">
-                    <label class="form-label" for="tag_ids">Tags</label>
-                    <select id="tag_ids" name="tag_ids[]" class="form-control" multiple>
-                        @foreach($tags as $tag)
-                            <option value="{{ $tag->id }}" @selected(in_array($tag->id, old('tag_ids', $selectedTags), true))>
-                                {{ $tag->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('tag_ids')
-                        <small class="form-error">{{ $message }}</small>
-                    @enderror
-                </div>
+                <x-admin-panel::select
+                    name="tag_ids[]"
+                    label="Tags"
+                    :options="$tags"
+                    :selected="old('tag_ids', $selectedTags)"
+                    placeholder="No tags"
+                    group-class="crm-span-2"
+                    multiple
+                />
 
                 <x-admin-panel::textarea
                     name="custom_fields_json"

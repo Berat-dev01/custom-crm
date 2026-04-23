@@ -44,19 +44,15 @@
                 <x-admin-panel::select name="owner_id" label="Owner" :options="$owners" :selected="$deal->owner_id" placeholder="No owner" />
                 <x-admin-panel::input name="lost_reason" label="Lost Reason" :value="$deal->lost_reason" />
 
-                <div class="form-group crm-span-2">
-                    <label class="form-label" for="tag_ids">Tags</label>
-                    <select id="tag_ids" name="tag_ids[]" class="form-control" multiple>
-                        @foreach($tags as $tag)
-                            <option value="{{ $tag->id }}" @selected(in_array($tag->id, old('tag_ids', $selectedTags), true))>
-                                {{ $tag->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('tag_ids')
-                        <small class="form-error">{{ $message }}</small>
-                    @enderror
-                </div>
+                <x-admin-panel::select
+                    name="tag_ids[]"
+                    label="Tags"
+                    :options="$tags"
+                    :selected="old('tag_ids', $selectedTags)"
+                    placeholder="No tags"
+                    group-class="crm-span-2"
+                    multiple
+                />
 
                 <x-admin-panel::textarea
                     name="custom_fields_json"

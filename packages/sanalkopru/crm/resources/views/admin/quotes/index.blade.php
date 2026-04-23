@@ -50,9 +50,11 @@
                     <x-admin-panel::input name="valid_from" label="Valid From" type="date" :value="$filters['valid_from']" />
                     <x-admin-panel::input name="valid_to" label="Valid To" type="date" :value="$filters['valid_to']" />
                 </x-slot:advanced>
-            </x-admin-panel::filter-shell>
 
-            @include('crm::admin.partials.saved-filters', ['module' => 'quotes', 'savedFilters' => $savedFilters, 'filters' => $filters])
+                <x-slot:saved>
+                    @include('crm::admin.partials.saved-filters', ['module' => 'quotes', 'savedFilters' => $savedFilters, 'filters' => $filters])
+                </x-slot:saved>
+            </x-admin-panel::filter-shell>
 
             <x-admin-panel::card>
                 <x-slot:header>
