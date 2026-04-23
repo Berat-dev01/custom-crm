@@ -68,3 +68,32 @@
 - Dogrulama: `git diff --check` temiz.
 - Dogrulama: Production deploy dokumani icinde Docker/Compose referansi sadece "kullanilmaz" kararinda ve baslikta kaldi; production komutlari Docker kullanmiyor.
 - Dogrulama: Root ve package `composer validate --strict` Docker icinde basarili.
+
+## Manuel Smoke Test Hazirligi - Adim 31 Oncesi
+
+- Baslangic: Kullanici sistemi henuz tarayicida acip test etmedigini soyledi. Adim 31'e gecmeden local Docker ortaminda smoke test hazirligi yapildi.
+- Uygulama: `docker compose up -d` ile app, nginx, mysql, redis, queue, scheduler ve mailpit servisleri ayaga kaldirildi.
+- Bulgu: Local MySQL veritabaninda iki yeni migration pending durumdaydi. `php artisan migrate --force` ile `crm_api_tokens` ve performance index migration'lari calistirildi.
+- Bulgu: Veritabaninda demo kullanicisi ve demo CRM kaydi yoktu. `php artisan db:seed --force` ile permission, deal stage ve demo seed basildi.
+- Bulgu: `/admin/crm` login sayfasina yonlenmek yerine 403 donuyordu. Root uygulamada `admin.login`/`admin.login.post` route'lari eksikti ve CRM access middleware unauthenticated web istegini redirect etmiyordu.
+- Uygulama: `AdminAuthController` eklendi. Admin login, login post, logout, locale redirect ve admin users/settings redirect route'lari closure kullanmadan controller'a tasindi.
+- Uygulama: `EnsureCrmAccess` unauthenticated web isteklerinde `admin.login` route'una redirect edecek, JSON isteklerde 403 kalacak sekilde guncellendi.
+- Uygulama: API health closure route'u `HealthController` sinifina tasindi. Route cache icin closure route birakilmadi.
+- Dogrulama: `CrmAdminRoutingTest` gecti; admin login ile demo user dashboard'a girebiliyor.
+- Dogrulama: `CrmApiModuleTest` gecti; API health ve protected endpoint davranislari korunuyor.
+- Dogrulama: `php artisan route:cache`, `php artisan config:cache` ve `php artisan view:cache` basarili. Ardindan dev ortaminda stale cache kalmamasi icin `php artisan optimize:clear` calistirildi.
+- Dogrulama: Full test suite Docker icinde gecti: `129 passed (1028 assertions)`.
+- Dogrulama: Nginx container icinden `/admin/crm` 302 ile `/admin/login` route'una gidiyor, `/admin/login` 200 donuyor, `/api/crm/health` 200 ve `{"status":"ok"}` donuyor.
+- Not: Terminal sandbox'i host `127.0.0.1:8081` portuna baglanamadi; Docker port mapping acik gorunuyor. Masaustu tarayici kontrolu icin Computer Use izni yoktu, bu nedenle kullanici tarayicidan manuel acacak.
+
+## Manuel Test Rehberi ve Son Kontroller
+
+- Baslangic: Kullanici sistemi manuel test etmek icin adim adim rehber istedi; urun buyuk oldugu icin kabiliyetleri ogrenebilecegi sirali test plani hazirlandi.
+- Dogrulama: Docker servisleri ayakta: app, nginx, mysql, redis, queue, scheduler, mailpit.
+- Dogrulama: `migrate:status` tum CRM migration'larini `Ran` gosteriyor; pending migration yok.
+- Dogrulama: Demo veriler mevcut: `users=6`, `companies=4`, `contacts=8`, `deals=8`, `quotes=5`, `tasks=8`, `activities=13`, `stages=7`.
+- Dogrulama: Scheduler listesinde `crm:tasks:send-reminders` her bes dakikada bir calisacak sekilde gorunuyor.
+- Dogrulama: Nginx container icinden `/admin/crm` login'e 302, `/admin/login` 200, `/api/crm/health` 200 donuyor.
+- Dogrulama: `CrmAdminRoutingTest` basarili: `7 passed (125 assertions)`.
+- Uygulama: `docs/manual-test-guide.md` eklendi. Login, dashboard, contacts, companies, deals, tasks, quotes, import/export, tags, AI, settings, roller, API, performans ve oncelikli test sirasi adim adim yazildi.
+- Uygulama: README dokuman listesine manual test guide linki eklendi.

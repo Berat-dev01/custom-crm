@@ -121,6 +121,7 @@ Production rehberi: [docs/production-deploy-no-docker.md](docs/production-deploy
 - [API](docs/api.md)
 - [Performance](docs/performance.md)
 - [Security Checklist](docs/security-checklist.md)
+- [Manual Test Guide](docs/manual-test-guide.md)
 - [QA Checklist](docs/qa-checklist.md)
 - [Troubleshooting](docs/troubleshooting.md)
 - [Architecture](docs/architecture.md)

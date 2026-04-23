@@ -22,7 +22,26 @@ class CrmAdminRoutingTest extends TestCase
     public function test_crm_admin_routes_require_authenticated_user(): void
     {
         $this->get('/admin/crm/contacts')
-            ->assertForbidden();
+            ->assertRedirect(route('admin.login'));
+    }
+
+    public function test_admin_login_allows_demo_user_to_open_crm_dashboard(): void
+    {
+        $this->seed(CrmPermissionSeeder::class);
+
+        User::factory()->create([
+            'email' => 'crm.owner@example.com',
+            'password' => 'password',
+        ])->assignRole('crm_owner');
+
+        $this->post('/admin/login', [
+            'email' => 'crm.owner@example.com',
+            'password' => 'password',
+        ])->assertRedirect(route('crm.dashboard'));
+
+        $this->get('/admin/crm')
+            ->assertOk()
+            ->assertSee('Dashboard');
     }
 
     public function test_authorized_user_can_open_module_indexes(): void

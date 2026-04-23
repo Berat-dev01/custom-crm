@@ -4,14 +4,14 @@ use Illuminate\Support\Facades\Route;
 use Sanalkopru\Crm\Http\Controllers\Api\CompaniesController;
 use Sanalkopru\Crm\Http\Controllers\Api\ContactsController;
 use Sanalkopru\Crm\Http\Controllers\Api\DealsController;
+use Sanalkopru\Crm\Http\Controllers\Api\HealthController;
 use Sanalkopru\Crm\Http\Controllers\Api\QuotesController;
 use Sanalkopru\Crm\Http\Controllers\Api\TasksController;
 
 Route::prefix('crm')
     ->name('crm.api.')
     ->group(function () {
-        Route::get('/health', fn () => response()->json(['status' => 'ok']))
-            ->name('health');
+        Route::get('/health', HealthController::class)->name('health');
 
         Route::middleware(['crm.api.auth', 'throttle:crm-api'])->group(function () {
             Route::apiResource('contacts', ContactsController::class)->only(['index', 'store', 'show', 'update']);

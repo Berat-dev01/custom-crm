@@ -1,17 +1,18 @@
 <?php
 
+use App\Http\Controllers\AdminAuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::view('/', 'welcome')->name('home');
 
 Route::prefix('admin')
     ->name('admin.')
     ->middleware('web')
     ->group(function () {
-        Route::get('/users', fn () => redirect()->route('crm.dashboard'))->name('users.index');
-        Route::get('/settings', fn () => redirect()->route('crm.dashboard'))->name('settings.index');
-        Route::post('/locale', fn () => back())->name('locale.update');
-        Route::post('/logout', fn () => redirect()->route('home'))->name('logout');
+        Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('login');
+        Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post');
+        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+        Route::post('/locale', [AdminAuthController::class, 'updateLocale'])->name('locale.update');
+        Route::get('/users', [AdminAuthController::class, 'redirectToCrm'])->name('users.index');
+        Route::get('/settings', [AdminAuthController::class, 'redirectToCrm'])->name('settings.index');
     });
