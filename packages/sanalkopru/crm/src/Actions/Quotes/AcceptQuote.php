@@ -7,14 +7,20 @@ use Illuminate\Support\Facades\DB;
 use Sanalkopru\Crm\Actions\Deals\MoveDealToStage;
 use Sanalkopru\Crm\Models\DealStage;
 use Sanalkopru\Crm\Models\Quote;
+use Sanalkopru\Crm\Services\Audit\CrmAuditLogger;
 
 class AcceptQuote
 {
-    public function __construct(private readonly MoveDealToStage $moveDeal) {}
+    public function __construct(
+        private readonly MoveDealToStage $moveDeal,
+        private readonly CrmAuditLogger $audit
+    ) {}
 
     public function handle(Quote $quote, bool $markDealWon = false, ?Authenticatable $user = null): Quote
     {
         return DB::transaction(function () use ($quote, $markDealWon, $user): Quote {
+            $before = $quote->only(['status', 'accepted_at', 'rejected_at']);
+
             $quote->forceFill([
                 'status' => 'accepted',
                 'accepted_at' => $quote->accepted_at ?: now(),
@@ -38,7 +44,10 @@ class AcceptQuote
                 }
             }
 
-            return $quote->refresh();
+            $quote = $quote->refresh();
+            $this->audit->record('crm.quote.accepted', $quote, $user, $before, $quote->only(['status', 'accepted_at', 'rejected_at']));
+
+            return $quote;
         });
     }
 }

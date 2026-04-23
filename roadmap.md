@@ -1214,6 +1214,8 @@ Kabul kriterleri:
 
 ## ADIM 26 — Audit Log, Guvenlik ve Veri Koruma Katmanini Tamamla
 
+**Durum:** Tamamlandi. Kritik CRM olaylari icin merkezi audit log servisi/test altyapisi eklendi; contact create/update/delete, deal move/won/lost, quote sent/accepted/rejected, settings changed ve import/export started olaylari hassas veri redaksiyonu ile kaydediliyor. API ve AI rate limitleri, upload validation kontrolleri ve guvenlik checklist dokumani tamamlandi.
+
 ```prompt
 CRM'i kurumsal musteriye satilabilir guvenlik seviyesine getir.
 

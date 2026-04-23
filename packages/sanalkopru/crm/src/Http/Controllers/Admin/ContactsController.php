@@ -20,6 +20,7 @@ use Sanalkopru\Crm\Models\Company;
 use Sanalkopru\Crm\Models\Contact;
 use Sanalkopru\Crm\Models\SavedFilter;
 use Sanalkopru\Crm\Models\Tag;
+use Sanalkopru\Crm\Services\Audit\CrmAuditLogger;
 use Sanalkopru\Crm\Services\Contacts\ContactCsvExporter;
 use Sanalkopru\Crm\Services\Contacts\ContactImportService;
 use Sanalkopru\Crm\Services\Contacts\ContactQuery;
@@ -27,7 +28,10 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ContactsController extends Controller
 {
-    public function __construct(private readonly ContactQuery $contacts) {}
+    public function __construct(
+        private readonly ContactQuery $contacts,
+        private readonly CrmAuditLogger $audit
+    ) {}
 
     public function index(Request $request): View
     {
@@ -102,6 +106,7 @@ class ContactsController extends Controller
     {
         Gate::authorize('delete', $contact);
 
+        $this->audit->record('crm.contact.deleted', $contact, request()->user(), $contact->only($this->auditedFields()), null);
         $contact->delete();
 
         return redirect()
@@ -113,7 +118,13 @@ class ContactsController extends Controller
     {
         Contact::query()
             ->whereKey($request->validated('contact_ids'))
-            ->delete();
+            ->get()
+            ->each(function (Contact $contact) use ($request): void {
+                $this->audit->record('crm.contact.deleted', $contact, $request->user(), $contact->only($this->auditedFields()), null, [
+                    'bulk' => true,
+                ]);
+                $contact->delete();
+            });
 
         return back()->with('crm_status', 'Selected contacts deleted.');
     }
@@ -201,6 +212,24 @@ class ContactsController extends Controller
             'event' => 'Event',
             'outbound' => 'Outbound',
             'partner' => 'Partner',
+        ];
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function auditedFields(): array
+    {
+        return [
+            'first_name',
+            'last_name',
+            'full_name',
+            'email',
+            'phone',
+            'company_id',
+            'lifecycle_stage',
+            'source',
+            'owner_id',
         ];
     }
 }

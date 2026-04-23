@@ -8,9 +8,12 @@ use Illuminate\Support\Facades\DB;
 use Sanalkopru\Crm\Events\DealMoved;
 use Sanalkopru\Crm\Models\Deal;
 use Sanalkopru\Crm\Models\DealStage;
+use Sanalkopru\Crm\Services\Audit\CrmAuditLogger;
 
 class MoveDealToStage
 {
+    public function __construct(private readonly CrmAuditLogger $audit) {}
+
     public function handle(
         Deal $deal,
         DealStage $stage,
@@ -22,6 +25,7 @@ class MoveDealToStage
             $deal = Deal::query()->lockForUpdate()->findOrFail($deal->id);
             $sourceStageId = $deal->stage_id;
             $sourceStage = DealStage::query()->find($sourceStageId);
+            $before = $deal->only($this->auditedFields());
 
             $this->lockStageDeals($sourceStageId);
             if ((int) $sourceStageId !== (int) $stage->id) {
@@ -63,6 +67,24 @@ class MoveDealToStage
 
             $deal = $deal->refresh();
             event(new DealMoved($deal, $sourceStage, $stage, $user));
+            $event = match ($deal->status) {
+                'won' => 'crm.deal.won',
+                'lost' => 'crm.deal.lost',
+                default => 'crm.deal.moved',
+            };
+            $this->audit->record(
+                $event,
+                $deal,
+                $user,
+                $before,
+                $deal->only($this->auditedFields()),
+                [
+                    'from_stage_id' => $sourceStage?->id,
+                    'from_stage' => $sourceStage?->name,
+                    'to_stage_id' => $stage->id,
+                    'to_stage' => $stage->name,
+                ]
+            );
 
             return $deal;
         });
@@ -121,5 +143,20 @@ class MoveDealToStage
         array_splice($items, $index, 0, [$dealId]);
 
         return collect($items)->values();
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function auditedFields(): array
+    {
+        return [
+            'stage_id',
+            'status',
+            'probability',
+            'position',
+            'closed_at',
+            'lost_reason',
+        ];
     }
 }

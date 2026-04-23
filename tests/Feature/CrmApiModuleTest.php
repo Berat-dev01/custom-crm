@@ -105,8 +105,22 @@ class CrmApiModuleTest extends TestCase
 
     public function test_deal_move_and_task_complete_use_action_layer(): void
     {
-        $sourceStage = DealStage::factory()->create(['position' => 1, 'probability' => 20]);
-        $targetStage = DealStage::factory()->create(['position' => 2, 'probability' => 70]);
+        $sourceStage = DealStage::factory()->create([
+            'name' => 'API Source',
+            'slug' => 'api-source',
+            'position' => 1,
+            'probability' => 20,
+            'is_won' => false,
+            'is_lost' => false,
+        ]);
+        $targetStage = DealStage::factory()->create([
+            'name' => 'API Target',
+            'slug' => 'api-target',
+            'position' => 2,
+            'probability' => 70,
+            'is_won' => false,
+            'is_lost' => false,
+        ]);
         $deal = Deal::factory()->create([
             'stage_id' => $sourceStage->id,
             'status' => 'open',

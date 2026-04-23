@@ -84,9 +84,11 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
                 Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
 
-                Route::post('ai/summarize', [AiController::class, 'summarize'])->name('ai.summarize');
-                Route::post('ai/summarize-note', [AiController::class, 'summarizeNote'])->name('ai.summarize-note');
-                Route::post('ai/draft-email', [AiController::class, 'draftEmail'])->name('ai.draft-email');
-                Route::post('ai/follow-up', [AiController::class, 'followUp'])->name('ai.follow-up');
+                Route::middleware('throttle:crm-ai')->group(function () {
+                    Route::post('ai/summarize', [AiController::class, 'summarize'])->name('ai.summarize');
+                    Route::post('ai/summarize-note', [AiController::class, 'summarizeNote'])->name('ai.summarize-note');
+                    Route::post('ai/draft-email', [AiController::class, 'draftEmail'])->name('ai.draft-email');
+                    Route::post('ai/follow-up', [AiController::class, 'followUp'])->name('ai.follow-up');
+                });
             });
     });

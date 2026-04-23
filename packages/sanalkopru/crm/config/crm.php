@@ -56,6 +56,7 @@ return [
         'model' => env('CRM_AI_MODEL'),
         'max_tokens' => (int) env('CRM_AI_MAX_TOKENS', 1200),
         'temperature' => (float) env('CRM_AI_TEMPERATURE', 0.3),
+        'rate_limit_per_minute' => (int) env('CRM_AI_RATE_LIMIT_PER_MINUTE', 30),
         'drivers' => [
             'openai' => [
                 'api_key' => env('OPENAI_API_KEY'),

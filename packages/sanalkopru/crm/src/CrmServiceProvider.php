@@ -40,6 +40,7 @@ use Sanalkopru\Crm\Policies\QuotePolicy;
 use Sanalkopru\Crm\Policies\TagPolicy;
 use Sanalkopru\Crm\Policies\TaskPolicy;
 use Sanalkopru\Crm\Services\Ai\AiDriverManager;
+use Sanalkopru\Crm\Services\Audit\CrmAuditLogger;
 use Sanalkopru\Crm\Services\Authorization\CrmAuthorization;
 use Sanalkopru\Crm\Services\Authorization\PermissionCatalog;
 use Sanalkopru\Crm\Services\Configuration\FeatureManager;
@@ -58,6 +59,7 @@ class CrmServiceProvider extends ServiceProvider
         $this->app->singleton(AiDriverManager::class);
         $this->app->bind(AiProviderContract::class, fn ($app) => $app->make(AiDriverManager::class)->provider());
         $this->app->singleton(CrmAuthorization::class);
+        $this->app->singleton(CrmAuditLogger::class);
         $this->app->singleton(PermissionCatalog::class);
         $this->app->singleton(FeatureManager::class);
         $this->app->singleton(MoneySettings::class);
@@ -131,6 +133,13 @@ class CrmServiceProvider extends ServiceProvider
             $key = $request->user()?->getAuthIdentifier() ?: $request->ip();
 
             return Limit::perMinute($limit)->by('crm-api:'.$key);
+        });
+
+        RateLimiter::for('crm-ai', function (Request $request): Limit {
+            $limit = (int) config('crm.ai.rate_limit_per_minute', 30);
+            $key = $request->user()?->getAuthIdentifier() ?: $request->ip();
+
+            return Limit::perMinute($limit)->by('crm-ai:'.$key);
         });
     }
 

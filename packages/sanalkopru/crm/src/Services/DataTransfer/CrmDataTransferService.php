@@ -24,6 +24,7 @@ use Sanalkopru\Crm\Models\CrmImport;
 use Sanalkopru\Crm\Models\Deal;
 use Sanalkopru\Crm\Models\DealStage;
 use Sanalkopru\Crm\Models\Quote;
+use Sanalkopru\Crm\Services\Audit\CrmAuditLogger;
 use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -38,7 +39,8 @@ class CrmDataTransferService
         private readonly UpsertContact $upsertContact,
         private readonly UpsertCompany $upsertCompany,
         private readonly UpsertDeal $upsertDeal,
-        private readonly MoneySettings $money
+        private readonly MoneySettings $money,
+        private readonly CrmAuditLogger $audit
     ) {}
 
     /**
@@ -78,6 +80,13 @@ class CrmDataTransferService
             'options' => [
                 'extension' => $extension,
             ],
+        ]);
+        $this->audit->record('crm.import.started', $import, $user, null, [
+            'module' => $module,
+            'total_rows' => $totalRows,
+            'queued' => $totalRows > (int) config('crm.data_transfer.queue_threshold', 500),
+        ], [
+            'extension' => $extension,
         ]);
 
         if ($totalRows > (int) config('crm.data_transfer.queue_threshold', 500)) {
@@ -189,7 +198,7 @@ class CrmDataTransferService
         $rows = $this->exportRows($module, $request);
         $headers = $this->exportHeaders($module);
 
-        CrmExport::query()->create([
+        $export = CrmExport::query()->create([
             'module' => $module,
             'filename' => 'crm-'.$module.'-'.now()->format('Y-m-d-His').'.csv',
             'status' => 'completed',
@@ -198,6 +207,12 @@ class CrmDataTransferService
             'started_at' => now(),
             'finished_at' => now(),
             'created_by' => $user?->getAuthIdentifier(),
+        ]);
+        $this->audit->record('crm.export.started', $export, $user, null, [
+            'module' => $module,
+            'total_rows' => $rows->count(),
+        ], [
+            'filters' => $request->query(),
         ]);
 
         return $this->streamCsv('crm-'.$module.'-'.now()->format('Y-m-d-His').'.csv', $headers, $rows->all());

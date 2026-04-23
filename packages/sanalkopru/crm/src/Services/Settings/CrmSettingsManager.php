@@ -9,9 +9,12 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Sanalkopru\Crm\Models\CrmSetting;
+use Sanalkopru\Crm\Services\Audit\CrmAuditLogger;
 
 class CrmSettingsManager
 {
+    public function __construct(private readonly CrmAuditLogger $audit) {}
+
     /**
      * @return array<string, mixed>
      */
@@ -34,6 +37,7 @@ class CrmSettingsManager
      */
     public function update(array $values, ?UploadedFile $logo = null, ?Authenticatable $user = null): void
     {
+        $before = $this->all();
         $values = $this->normalize($values);
 
         if ($logo) {
@@ -58,6 +62,14 @@ class CrmSettingsManager
         }
 
         Cache::forget($this->cacheKey());
+        $after = $this->all();
+        $changes = $this->audit->diff($before, $after);
+
+        if ($changes['new'] !== []) {
+            $this->audit->record('crm.settings.changed', null, $user, $changes['old'], $changes['new'], [
+                'changed_keys' => array_keys($changes['new']),
+            ]);
+        }
     }
 
     public function logoPath(): ?string
