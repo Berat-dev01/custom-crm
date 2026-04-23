@@ -105,11 +105,13 @@
                 <x-slot:header>Contacts</x-slot:header>
                 @forelse($company->contacts->sortBy('full_name') as $contact)
                     <div class="crm-list-item">
-                        <strong>{{ $contact->full_name }}</strong>
-                        <span>{{ $contact->email ?: 'No email' }}</span>
+                        <a href="{{ route('crm.contacts.show', $contact) }}">{{ $contact->full_name }}</a>
+                        <span>{{ $contact->title ? $contact->title.' · ' : '' }}{{ $contact->email ?: 'No email' }}</span>
                     </div>
                 @empty
-                    <p class="crm-muted">No contacts attached.</p>
+                    <div class="crm-empty-state">
+                        <strong>No contacts attached.</strong>
+                    </div>
                 @endforelse
             </x-admin-panel::card>
 
@@ -117,23 +119,33 @@
                 <x-slot:header>Open Deals</x-slot:header>
                 @forelse($openDeals as $deal)
                     <div class="crm-list-item">
-                        <strong>{{ $deal->title }}</strong>
-                        <span>{{ number_format((float) $deal->value, 2) }} {{ $deal->currency }} / {{ $deal->stage?->name }}</span>
+                        <a href="{{ route('crm.deals.show', $deal) }}">{{ $deal->title }}</a>
+                        <span>{{ number_format((float) $deal->value, 2) }} {{ $deal->currency }}{{ $deal->stage ? ' / '.$deal->stage->name : '' }}</span>
                     </div>
                 @empty
-                    <p class="crm-muted">No open deals.</p>
+                    <div class="crm-empty-state">
+                        <strong>No open deals.</strong>
+                    </div>
                 @endforelse
             </x-admin-panel::card>
 
             <x-admin-panel::card>
                 <x-slot:header>Quotes</x-slot:header>
                 @forelse($company->quotes->sortByDesc('created_at') as $quote)
+                    @php
+                        $quoteStatusVariant = match($quote->status) { 'accepted' => 'success', 'rejected' => 'danger', 'expired' => 'warning', 'sent' => 'info', default => 'secondary' };
+                    @endphp
                     <div class="crm-list-item">
-                        <strong><a href="{{ route('crm.quotes.show', $quote) }}">{{ $quote->quote_number }}</a></strong>
-                        <span>{{ ucfirst($quote->status) }} / {{ number_format((float) $quote->grand_total, 2) }} {{ $quote->currency }}</span>
+                        <a href="{{ route('crm.quotes.show', $quote) }}">{{ $quote->quote_number }}</a>
+                        <span>
+                            <x-admin-panel::badge :variant="$quoteStatusVariant" size="sm">{{ ucfirst($quote->status) }}</x-admin-panel::badge>
+                            {{ number_format((float) $quote->grand_total, 2) }} {{ $quote->currency }}
+                        </span>
                     </div>
                 @empty
-                    <p class="crm-muted">No quotes yet.</p>
+                    <div class="crm-empty-state">
+                        <strong>No quotes yet.</strong>
+                    </div>
                 @endforelse
             </x-admin-panel::card>
         </div>
@@ -142,29 +154,26 @@
             <x-admin-panel::card>
                 <x-slot:header>Tasks</x-slot:header>
                 @forelse($openTasks as $task)
+                    @php
+                        $priorityVariant = match($task->priority) { 'high' => 'danger', 'medium' => 'warning', default => 'secondary' };
+                    @endphp
                     <div class="crm-list-item">
-                        <strong>{{ $task->title }}</strong>
-                        <span>{{ $task->due_at?->diffForHumans() ?: 'No due date' }}</span>
+                        <a href="{{ route('crm.tasks.show', $task) }}">{{ $task->title }}</a>
+                        <span>
+                            <x-admin-panel::badge :variant="$priorityVariant" size="sm">{{ ucfirst($task->priority) }}</x-admin-panel::badge>
+                            {{ $task->due_at?->diffForHumans() ?: 'No due date' }}
+                        </span>
                     </div>
                 @empty
-                    <p class="crm-muted">No open tasks.</p>
+                    <div class="crm-empty-state">
+                        <strong>No open tasks.</strong>
+                    </div>
                 @endforelse
             </x-admin-panel::card>
 
             <x-admin-panel::card>
                 <x-slot:header>Activities</x-slot:header>
-                @forelse($timeline as $activity)
-                    <div class="crm-timeline-item">
-                        <div>
-                            <x-admin-panel::badge variant="info">{{ ucfirst($activity->type) }}</x-admin-panel::badge>
-                            <strong>{{ $activity->subject }}</strong>
-                        </div>
-                        <p>{{ $activity->body }}</p>
-                        <span>{{ $activity->occurred_at?->diffForHumans() ?: '-' }} by {{ $activity->user?->name ?: 'System' }}</span>
-                    </div>
-                @empty
-                    <p class="crm-muted">No activity yet.</p>
-                @endforelse
+                @include('crm::admin.partials._timeline')
             </x-admin-panel::card>
         </div>
     </section>

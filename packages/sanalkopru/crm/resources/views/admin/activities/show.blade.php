@@ -10,12 +10,36 @@
 @section('content')
     @php
         $related = $activity->activityable;
+        $relatedRoute = match(true) {
+            $related instanceof \Sanalkopru\Crm\Models\Contact => route('crm.contacts.show', $related),
+            $related instanceof \Sanalkopru\Crm\Models\Company => route('crm.companies.show', $related),
+            $related instanceof \Sanalkopru\Crm\Models\Deal   => route('crm.deals.show', $related),
+            $related instanceof \Sanalkopru\Crm\Models\Quote  => route('crm.quotes.show', $related),
+            default => null,
+        };
         $relatedLabel = match(true) {
             $related instanceof \Sanalkopru\Crm\Models\Contact => $related->full_name,
             $related instanceof \Sanalkopru\Crm\Models\Company => $related->name,
-            $related instanceof \Sanalkopru\Crm\Models\Deal => $related->title,
-            $related instanceof \Sanalkopru\Crm\Models\Quote => $related->quote_number,
+            $related instanceof \Sanalkopru\Crm\Models\Deal   => $related->title,
+            $related instanceof \Sanalkopru\Crm\Models\Quote  => $related->quote_number,
             default => '-',
+        };
+        $typeVariant = match($activity->type) {
+            'note' => 'info',
+            'call' => 'success',
+            'email' => 'primary',
+            'meeting' => 'warning',
+            default => 'secondary',
+        };
+        $typeLabel = match($activity->type) {
+            'note' => 'Note',
+            'call' => 'Call',
+            'email' => 'Email',
+            'meeting' => 'Meeting',
+            'task_completed' => 'Task Completed',
+            'quote_sent' => 'Quote Sent',
+            'deal_moved' => 'Stage Change',
+            default => ucfirst(str_replace('_', ' ', $activity->type)),
         };
     @endphp
 
@@ -26,6 +50,9 @@
             <div>
                 <p class="crm-admin-eyebrow">CRM / Activities</p>
                 <h1>{{ $activity->subject }}</h1>
+                <p class="crm-muted" style="margin-top:4px;">
+                    <x-admin-panel::badge :variant="$typeVariant">{{ $typeLabel }}</x-admin-panel::badge>
+                </p>
             </div>
             <div class="crm-admin-actions">
                 @can('update', $activity)
@@ -36,21 +63,32 @@
         </header>
 
         <x-admin-panel::card>
-            <x-slot:header>
-                Activity Detail
-            </x-slot:header>
+            <x-slot:header>Activity Detail</x-slot:header>
 
             <dl class="crm-detail-list">
                 <dt>Type</dt>
-                <dd>{{ ucfirst(str_replace('_', ' ', $activity->type)) }}</dd>
+                <dd><x-admin-panel::badge :variant="$typeVariant">{{ $typeLabel }}</x-admin-panel::badge></dd>
                 <dt>Related</dt>
-                <dd>{{ $relatedLabel }}</dd>
-                <dt>User</dt>
+                <dd>
+                    @if($relatedRoute)
+                        <a href="{{ $relatedRoute }}" style="color:#0369a1;">{{ $relatedLabel }}</a>
+                    @else
+                        {{ $relatedLabel }}
+                    @endif
+                </dd>
+                <dt>Logged by</dt>
                 <dd>{{ $activity->user?->name ?: 'System' }}</dd>
                 <dt>Occurred</dt>
-                <dd>{{ $activity->occurred_at?->format('Y-m-d H:i') ?: '-' }}</dd>
-                <dt>Body</dt>
-                <dd>{{ $activity->body ?: '-' }}</dd>
+                <dd>
+                    {{ $activity->occurred_at?->format('d M Y H:i') ?: '-' }}
+                    @if($activity->occurred_at)
+                        <span class="crm-muted">({{ $activity->occurred_at->diffForHumans() }})</span>
+                    @endif
+                </dd>
+                @if($activity->body)
+                    <dt>Notes</dt>
+                    <dd>{{ $activity->body }}</dd>
+                @endif
             </dl>
         </x-admin-panel::card>
     </section>

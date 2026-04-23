@@ -674,6 +674,52 @@
         margin: 0;
     }
 
+    .crm-list-item a {
+        color: #0f172a;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .crm-list-item a:hover {
+        color: #0369a1;
+    }
+
+    .crm-timeline-item-header {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .crm-timeline-item-header strong {
+        color: #0f172a;
+    }
+
+    .crm-timeline-body {
+        color: #475569;
+        margin: 2px 0 0;
+    }
+
+    .crm-timeline-meta {
+        color: #94a3b8;
+        font-size: 0.8rem;
+        margin: 0;
+    }
+
+    .crm-timeline-item--system {
+        opacity: 0.72;
+    }
+
+    .crm-timeline-item--system .crm-timeline-item-header strong {
+        font-weight: 400;
+    }
+
+    .crm-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
     .crm-quote-items {
         display: grid;
         gap: 14px;

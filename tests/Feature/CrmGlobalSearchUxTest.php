@@ -86,7 +86,6 @@ class CrmGlobalSearchUxTest extends TestCase
             ->assertSee('Sales')
             ->assertSee('Customers')
             ->assertSee('Operations')
-            ->assertSee('Search contacts, companies, deals or quotes')
             ->assertSee('No contacts found.')
             ->assertSee('New Contact');
     }

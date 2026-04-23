@@ -279,19 +279,7 @@
                     <x-admin-panel::button :href="route('crm.deals.show', $deal)" variant="ghost">Reset</x-admin-panel::button>
                 </form>
 
-                <div class="crm-stack">
-                    @forelse($timeline as $activity)
-                        <div class="crm-timeline-item">
-                            <strong>{{ $activity->subject }}</strong>
-                            <span>{{ ucfirst(str_replace('_', ' ', $activity->type)) }} / {{ $activity->occurred_at?->format('Y-m-d H:i') }} / {{ $activity->user?->name ?: 'System' }}</span>
-                            @if($activity->body)
-                                <p>{{ $activity->body }}</p>
-                            @endif
-                        </div>
-                    @empty
-                        <p class="crm-muted">No activities yet.</p>
-                    @endforelse
-                </div>
+                @include('crm::admin.partials._timeline')
             </x-admin-panel::card>
         </div>
     </section>

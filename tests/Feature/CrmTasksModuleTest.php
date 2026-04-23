@@ -30,17 +30,19 @@ class CrmTasksModuleTest extends TestCase
 
     public function test_task_indexes_filter_my_today_and_overdue_tasks(): void
     {
+        $this->travelTo(today()->setHour(9));
+
         $myToday = CrmTask::factory()->create([
             'title' => 'My today task',
             'assigned_to' => $this->admin->id,
-            'due_at' => now()->addHour(),
+            'due_at' => today()->setHour(14),
             'status' => 'open',
             'completed_at' => null,
         ]);
         CrmTask::factory()->create([
             'title' => 'Other today task',
             'assigned_to' => User::factory(),
-            'due_at' => now()->addHours(2),
+            'due_at' => today()->setHour(16),
             'status' => 'open',
             'completed_at' => null,
         ]);
