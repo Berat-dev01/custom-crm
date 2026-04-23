@@ -11,6 +11,11 @@
     <section class="crm-admin-page" data-crm-module="quotes">
         @include('crm::admin.partials.status')
 
+        <div class="crm-highlight-box" data-crm-ai-result hidden>
+            <strong data-crm-ai-label>AI Result</strong>
+            <pre class="crm-muted" style="white-space: pre-wrap; margin: 0;" data-crm-ai-content></pre>
+        </div>
+
         @if(session('crm_ai_draft'))
             <div class="crm-highlight-box">
                 <strong>AI Follow-up Draft</strong>
@@ -113,21 +118,21 @@
                 <div class="crm-stack">
                     <div class="crm-row-actions">
                         @can('send', $quote)
-                            <form method="POST" action="{{ route('crm.quotes.send', $quote) }}">
+                            <form method="POST" action="{{ route('crm.quotes.send', $quote) }}" data-crm-ajax-form>
                                 @csrf
                                 @method('PATCH')
                                 <x-admin-panel::button type="submit" variant="outline" icon="send">Send</x-admin-panel::button>
                             </form>
                         @endcan
                         @can('reject', $quote)
-                            <form method="POST" action="{{ route('crm.quotes.reject', $quote) }}">
+                            <form method="POST" action="{{ route('crm.quotes.reject', $quote) }}" data-crm-ajax-form>
                                 @csrf
                                 @method('PATCH')
                                 <x-admin-panel::button type="submit" variant="danger" icon="x">Reject</x-admin-panel::button>
                             </form>
                         @endcan
                         @can('update', $quote)
-                            <form method="POST" action="{{ route('crm.quotes.expire', $quote) }}">
+                            <form method="POST" action="{{ route('crm.quotes.expire', $quote) }}" data-crm-ajax-form>
                                 @csrf
                                 @method('PATCH')
                                 <x-admin-panel::button type="submit" variant="ghost" icon="clock">Expire</x-admin-panel::button>
@@ -140,7 +145,7 @@
                             </form>
                         @endcan
                         @can('crm.ai.use')
-                            <form method="POST" action="{{ route('crm.ai.follow-up') }}">
+                            <form method="POST" action="{{ route('crm.ai.follow-up') }}" data-crm-ajax-form data-crm-ai-label="AI Follow-up Draft">
                                 @csrf
                                 <input type="hidden" name="quote_id" value="{{ $quote->id }}">
                                 <input type="hidden" name="brief" value="Draft a polite follow-up for this quote.">
@@ -152,7 +157,7 @@
                     </div>
 
                     @can('accept', $quote)
-                        <form method="POST" action="{{ route('crm.quotes.accept', $quote) }}" class="crm-action-panel">
+                        <form method="POST" action="{{ route('crm.quotes.accept', $quote) }}" class="crm-action-panel" data-crm-ajax-form>
                             @csrf
                             @method('PATCH')
                             @if($quote->deal)

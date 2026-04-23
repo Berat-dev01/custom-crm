@@ -4,6 +4,7 @@ namespace Sanalkopru\Crm\Http\Controllers\Admin;
 
 use App\Models\User;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -102,39 +103,67 @@ class QuotesController extends Controller
             ->with('crm_status', 'Quote deleted.');
     }
 
-    public function send(Quote $quote, SendQuote $send): RedirectResponse
+    public function send(Quote $quote, SendQuote $send): JsonResponse|RedirectResponse
     {
         Gate::authorize('send', $quote);
         $send->handle($quote, request()->user());
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'message' => 'Quote marked as sent.',
+                'redirect' => route('crm.quotes.show', $quote),
+            ]);
+        }
 
         return redirect()
             ->route('crm.quotes.show', $quote)
             ->with('crm_status', 'Quote marked as sent.');
     }
 
-    public function accept(AcceptQuoteRequest $request, Quote $quote, AcceptQuote $accept): RedirectResponse
+    public function accept(AcceptQuoteRequest $request, Quote $quote, AcceptQuote $accept): JsonResponse|RedirectResponse
     {
         $accept->handle($quote, $request->boolean('mark_deal_won'), $request->user());
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Quote accepted.',
+                'redirect' => route('crm.quotes.show', $quote),
+            ]);
+        }
 
         return redirect()
             ->route('crm.quotes.show', $quote)
             ->with('crm_status', 'Quote accepted.');
     }
 
-    public function reject(Quote $quote, RejectQuote $reject): RedirectResponse
+    public function reject(Quote $quote, RejectQuote $reject): JsonResponse|RedirectResponse
     {
         Gate::authorize('reject', $quote);
         $reject->handle($quote, request()->user());
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'message' => 'Quote rejected.',
+                'redirect' => route('crm.quotes.show', $quote),
+            ]);
+        }
 
         return redirect()
             ->route('crm.quotes.show', $quote)
             ->with('crm_status', 'Quote rejected.');
     }
 
-    public function expire(Quote $quote, ExpireQuote $expire): RedirectResponse
+    public function expire(Quote $quote, ExpireQuote $expire): JsonResponse|RedirectResponse
     {
         Gate::authorize('update', $quote);
         $expire->handle($quote, request()->user());
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'message' => 'Quote expired.',
+                'redirect' => route('crm.quotes.show', $quote),
+            ]);
+        }
 
         return redirect()
             ->route('crm.quotes.show', $quote)

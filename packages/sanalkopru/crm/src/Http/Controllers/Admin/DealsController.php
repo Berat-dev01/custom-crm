@@ -30,6 +30,7 @@ use Sanalkopru\Crm\Models\Tag;
 use Sanalkopru\Crm\Services\Ai\AiDriverManager;
 use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 use Sanalkopru\Crm\Services\Deals\DealQuery;
+use Sanalkopru\Crm\Support\CrmFormatter;
 
 class DealsController extends Controller
 {
@@ -152,6 +153,7 @@ class DealsController extends Controller
 
     public function move(MoveDealRequest $request, Deal $deal, MoveDealToStage $moveDeal): JsonResponse
     {
+        $fromStageId = $deal->stage_id;
         $stage = DealStage::query()->findOrFail($request->validated('stage_id'));
         $deal = $moveDeal->handle(
             $deal,
@@ -160,6 +162,28 @@ class DealsController extends Controller
             $request->validated('lost_reason'),
             $request->user()
         );
+
+        $affectedIds = collect([$fromStageId, $stage->id])->unique()->filter()->values();
+        $aggregates = Deal::withoutTrashed()
+            ->selectRaw('stage_id, COUNT(*) as deals_count, COALESCE(SUM(value), 0) as pipeline_value')
+            ->whereIn('stage_id', $affectedIds)
+            ->groupBy('stage_id')
+            ->get()
+            ->keyBy('stage_id');
+
+        $formatter = app(CrmFormatter::class);
+        $stages = $affectedIds->map(function ($stageId) use ($aggregates, $formatter) {
+            $agg = $aggregates->get($stageId);
+            $count = (int) ($agg?->deals_count ?? 0);
+            $value = (float) ($agg?->pipeline_value ?? 0);
+
+            return [
+                'id' => $stageId,
+                'deals_count' => $count,
+                'count_label' => $count.' '.($count === 1 ? 'deal' : 'deals'),
+                'value_label' => $formatter->money($value),
+            ];
+        })->values();
 
         return response()->json([
             'message' => 'Deal moved.',
@@ -172,10 +196,11 @@ class DealsController extends Controller
                 'closed_at' => $deal->closed_at?->toISOString(),
                 'lost_reason' => $deal->lost_reason,
             ],
+            'stages' => $stages,
         ]);
     }
 
-    public function stage(MoveDealRequest $request, Deal $deal, MoveDealToStage $moveDeal): RedirectResponse
+    public function stage(MoveDealRequest $request, Deal $deal, MoveDealToStage $moveDeal): JsonResponse|RedirectResponse
     {
         Gate::authorize('move', $deal);
 
@@ -187,40 +212,65 @@ class DealsController extends Controller
             $request->user()
         );
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Deal stage updated.',
+                'redirect' => route('crm.deals.show', $deal),
+            ]);
+        }
+
         return redirect()
             ->route('crm.deals.show', $deal)
             ->with('crm_status', 'Deal stage updated.');
     }
 
-    public function closeWon(Deal $deal, MoveDealToStage $moveDeal): RedirectResponse
+    public function closeWon(Deal $deal, MoveDealToStage $moveDeal): JsonResponse|RedirectResponse
     {
         Gate::authorize('close', $deal);
 
         $stage = DealStage::query()->where('is_won', true)->firstOrFail();
         $moveDeal->handle($deal, $stage, null, null, request()->user());
 
+        if (request()->expectsJson()) {
+            return response()->json([
+                'message' => 'Deal marked as won.',
+                'redirect' => route('crm.deals.show', $deal),
+            ]);
+        }
+
         return redirect()
             ->route('crm.deals.show', $deal)
             ->with('crm_status', 'Deal marked as won.');
     }
 
-    public function closeLost(CloseDealAsLostRequest $request, Deal $deal, MoveDealToStage $moveDeal): RedirectResponse
+    public function closeLost(CloseDealAsLostRequest $request, Deal $deal, MoveDealToStage $moveDeal): JsonResponse|RedirectResponse
     {
         Gate::authorize('close', $deal);
 
         $stage = DealStage::query()->where('is_lost', true)->firstOrFail();
         $moveDeal->handle($deal, $stage, null, $request->validated('lost_reason'), $request->user());
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Deal marked as lost.',
+                'redirect' => route('crm.deals.show', $deal),
+            ]);
+        }
+
         return redirect()
             ->route('crm.deals.show', $deal)
             ->with('crm_status', 'Deal marked as lost.');
     }
 
-    public function storeTask(StoreDealTaskRequest $request, Deal $deal, AddDealTask $addTask): RedirectResponse
+    public function storeTask(StoreDealTaskRequest $request, Deal $deal, AddDealTask $addTask): JsonResponse|RedirectResponse
     {
         Gate::authorize('view', $deal);
 
         $addTask->handle($deal, $request->validated(), $request->user());
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Task added to deal.']);
+        }
 
         return redirect()
             ->route('crm.deals.show', $deal)
@@ -238,11 +288,15 @@ class DealsController extends Controller
             ->with('crm_status', 'Quote created for deal.');
     }
 
-    public function storeActivity(StoreDealActivityRequest $request, Deal $deal, AddDealActivity $addActivity): RedirectResponse
+    public function storeActivity(StoreDealActivityRequest $request, Deal $deal, AddDealActivity $addActivity): JsonResponse|RedirectResponse
     {
         Gate::authorize('view', $deal);
 
         $addActivity->handle($deal, $request->validated(), $request->user());
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Activity added to deal.']);
+        }
 
         return redirect()
             ->route('crm.deals.show', $deal)

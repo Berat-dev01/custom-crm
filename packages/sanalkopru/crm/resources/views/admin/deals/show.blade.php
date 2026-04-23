@@ -61,6 +61,11 @@
             </div>
         </div>
 
+        <div class="crm-highlight-box" data-crm-ai-result hidden>
+            <strong data-crm-ai-label>AI Result</strong>
+            <pre class="crm-muted" style="white-space: pre-wrap; margin: 0;" data-crm-ai-content></pre>
+        </div>
+
         @if(session('crm_ai_draft'))
             <div class="crm-highlight-box">
                 <strong>AI Email Draft</strong>
@@ -104,7 +109,7 @@
 
                 <div class="crm-stack">
                     @can('move', $deal)
-                        <form method="POST" action="{{ route('crm.deals.stage', $deal) }}" class="crm-action-panel">
+                        <form method="POST" action="{{ route('crm.deals.stage', $deal) }}" class="crm-action-panel" data-crm-ajax-form>
                             @csrf
                             @method('PATCH')
                             <x-admin-panel::select name="stage_id" label="Stage" :options="$stages" :selected="$deal->stage_id" required />
@@ -117,14 +122,14 @@
                         <div class="crm-action-panel">
                             <h3>Close Deal</h3>
                             <div class="crm-row-actions">
-                                <form method="POST" action="{{ route('crm.deals.close-won', $deal) }}">
+                                <form method="POST" action="{{ route('crm.deals.close-won', $deal) }}" data-crm-ajax-form>
                                     @csrf
                                     @method('PATCH')
                                     <x-admin-panel::button type="submit" variant="success" icon="check">
                                         Mark Won
                                     </x-admin-panel::button>
                                 </form>
-                                <form method="POST" action="{{ route('crm.deals.close-lost', $deal) }}" class="crm-inline-form">
+                                <form method="POST" action="{{ route('crm.deals.close-lost', $deal) }}" class="crm-inline-form" data-crm-ajax-form>
                                     @csrf
                                     @method('PATCH')
                                     <input name="lost_reason" class="form-control" placeholder="Lost reason" required>
@@ -137,7 +142,7 @@
                     @endcan
 
                     @can('crm.ai.use')
-                        <form method="POST" action="{{ route('crm.ai.draft-email') }}" class="crm-action-panel">
+                        <form method="POST" action="{{ route('crm.ai.draft-email') }}" class="crm-action-panel" data-crm-ajax-form data-crm-ai-label="AI Email Draft">
                             @csrf
                             <input type="hidden" name="deal_id" value="{{ $deal->id }}">
                             <input type="hidden" name="deal_title" value="{{ $deal->title }}">
@@ -147,7 +152,7 @@
                             </x-admin-panel::button>
                         </form>
 
-                        <form method="POST" action="{{ route('crm.ai.summarize') }}" class="crm-action-panel">
+                        <form method="POST" action="{{ route('crm.ai.summarize') }}" class="crm-action-panel" data-crm-ajax-form data-crm-ai-label="{{ $deal->status === 'lost' ? 'AI Lost Deal Analysis' : 'AI Timeline Summary' }}">
                             @csrf
                             <input type="hidden" name="type" value="{{ $deal->status === 'lost' ? 'lost_deal' : 'deal_timeline' }}">
                             <input type="hidden" name="deal_id" value="{{ $deal->id }}">
@@ -167,7 +172,7 @@
                 </x-slot:header>
 
                 @can('crm.tasks.create')
-                    <form method="POST" action="{{ route('crm.deals.tasks.store', $deal) }}" class="crm-form-grid">
+                    <form method="POST" action="{{ route('crm.deals.tasks.store', $deal) }}" class="crm-form-grid" data-crm-ajax-form data-crm-reload-region="crm-deal-tasks-list" data-crm-reset-on-success>
                         @csrf
                         <x-admin-panel::input name="title" label="Title" required />
                         <x-admin-panel::select name="priority" label="Priority" :options="$taskPriorities" selected="normal" required />
@@ -182,7 +187,7 @@
                 @endcan
             </x-admin-panel::card>
 
-            <x-admin-panel::card>
+            <x-admin-panel::card id="crm-deal-tasks-list">
                 <x-slot:header>
                     Open Tasks
                 </x-slot:header>
@@ -250,7 +255,7 @@
                 </x-slot:header>
 
                 @can('crm.activities.create')
-                    <form method="POST" action="{{ route('crm.deals.activities.store', $deal) }}" class="crm-form-grid">
+                    <form method="POST" action="{{ route('crm.deals.activities.store', $deal) }}" class="crm-form-grid" data-crm-ajax-form data-crm-reload-region="crm-deal-timeline" data-crm-reset-on-success>
                         @csrf
                         <x-admin-panel::select name="type" label="Type" :options="array_intersect_key($activityTypes, array_flip(['note', 'call', 'email', 'meeting']))" selected="note" required />
                         <x-admin-panel::input name="subject" label="Subject" required />
@@ -263,7 +268,7 @@
                 @endcan
             </x-admin-panel::card>
 
-            <x-admin-panel::card>
+            <x-admin-panel::card id="crm-deal-timeline">
                 <x-slot:header>
                     Activity Timeline
                 </x-slot:header>

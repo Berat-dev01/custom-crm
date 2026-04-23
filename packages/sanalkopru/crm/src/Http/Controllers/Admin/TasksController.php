@@ -4,6 +4,7 @@ namespace Sanalkopru\Crm\Http\Controllers\Admin;
 
 use App\Models\User;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -98,11 +99,15 @@ class TasksController extends Controller
             ->with('crm_status', 'Task deleted.');
     }
 
-    public function complete(Task $task, CompleteTask $completeTask): RedirectResponse
+    public function complete(Task $task, CompleteTask $completeTask): JsonResponse|RedirectResponse
     {
         Gate::authorize('complete', $task);
 
         $completeTask->handle($task, request()->user());
+
+        if (request()->expectsJson()) {
+            return response()->json(['message' => 'Task completed.']);
+        }
 
         return back()->with('crm_status', 'Task completed.');
     }

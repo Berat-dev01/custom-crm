@@ -322,6 +322,29 @@ Bu faz admin-panel altyapisini CRM liste ekranlarina uygular.
    - Activities.
    - Gerekliyse Tags.
 
+### 2026-04-23 - Faz 5 Kapanis
+
+Durum:
+
+- Faz 5 tamamlandi.
+- Kanban drag-drop sonrasi `DealsController::move()` endpoint etkilenen stage'lerin anlık `deals_count` ve `pipeline_value` verilerini JSON olarak donuyor; `CrmFormatter` ile PHP tarafinda formatlaniyor.
+- `crm.js`'e `updateKanbanAggregates()` eklendi; basarili move sonrasi stage kolon basliklarindaki sayac ve tutar anlık guncelleniyor.
+- Kanban move basarili/hatali durumlar icin `AdminPanel.toast()` mesajlari eklendi; `window.alert` kaldirildi.
+- `data-crm-ajax-form` attr'li formlar `crm.js`'teki `initializeAjaxForms()` ile AJAX olarak gondeiliyor: `Accept: application/json` header, JSON yanit, toast, AI result inline display, region reload, redirect ve form reset destekleri.
+- Deal show sayfasinda stage degistirme, close won/lost, task ekleme, activity ekleme ve AI draft/summary formlari AJAX'a alindi.
+- Task ekleme formu basarili submit sonrasi `crm-deal-tasks-list` regionunu; activity ekleme formu `crm-deal-timeline` regionunu sayfayi yenilemeden guncellıyor.
+- AI sonuclari (`data-crm-ai-result`) deal show ve quote show sayfalarinda inline gosteriliyor; sayfayi yenilemeden taslagin ustunde cikiyor.
+- Quote show sayfasinda send/accept/reject/expire/AI follow-up formlari AJAX'a alindi; basarili submit sonrasi toast + ayni sayfaya redirect yapiliyor.
+- `DataTransferController::preview()` AJAX isteginde `_preview.blade.php` partialini HTML olarak dondüruyor; `initializeImportPreviewForms()` dosya yukleyince once preview endpoint'e AJAX POST yapiyor, gelen HTML'i sayfa yenilemeden preview bolumune injekte ediyor.
+- `DealsController`, `TasksController` ve `QuotesController` status aksiyonlari `$request->expectsJson()` kontrolu ile geri donusluluk korunarak JSON/redirect destekli hale getirildi.
+
+Dogrulama:
+
+- Pint formatter basarili.
+- Full test suite basarili: `133 passed (1076 assertions)`.
+- Route/config/view cache basarili; ardindan dev cache temizlendi.
+- `git diff --check` temiz.
+
 ### Faz 5 - CRM Dinamik Aksiyonlar
 
 Bu faz hibrit AJAX kararini CRM'e uygular.

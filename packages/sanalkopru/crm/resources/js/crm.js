@@ -54,6 +54,31 @@
         });
     }
 
+    function updateKanbanAggregates(stages) {
+        if (!Array.isArray(stages)) {
+            return;
+        }
+
+        stages.forEach(function (stage) {
+            const col = document.querySelector('[data-crm-kanban-column="' + stage.id + '"]');
+
+            if (!col) {
+                return;
+            }
+
+            const countEl = col.querySelector('[data-crm-stage-count]');
+            const valueEl = col.querySelector('[data-crm-stage-value]');
+
+            if (countEl) {
+                countEl.textContent = stage.count_label;
+            }
+
+            if (valueEl) {
+                valueEl.textContent = stage.value_label;
+            }
+        });
+    }
+
     async function moveDeal(card, targetList, sourceList, sourceIndex) {
         const stageId = targetList.dataset.stageId;
         const isLostStage = targetList.dataset.stageIsLost === '1';
@@ -89,9 +114,13 @@
             if (!response.ok) {
                 throw new Error(`Move failed with status ${response.status}`);
             }
+
+            const data = await response.json();
+            updateKanbanAggregates(data.stages || []);
+            window.AdminPanel?.toast('Deal moved.', 'success');
         } catch (error) {
             restoreCard(card, sourceList, sourceIndex);
-            window.alert('Deal could not be moved. Please refresh and try again.');
+            window.AdminPanel?.toast('Deal could not be moved. Please refresh and try again.', 'danger');
         } finally {
             card.classList.remove('is-moving');
         }
@@ -260,11 +289,190 @@
         });
     }
 
+    async function reloadRegion(region) {
+        const url = region.dataset.crmRegionUrl || window.location.href;
+
+        try {
+            const response = await fetch(url, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            });
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const next = doc.getElementById(region.id);
+
+            if (next) {
+                region.replaceWith(next);
+                window.AdminPanel?.rehydrate?.();
+            }
+        } catch (_e) {
+            // silently fail — region updates on next full page load
+        }
+    }
+
+    function initializeAjaxForms() {
+        document.querySelectorAll('[data-crm-ajax-form]').forEach((form) => {
+            if (form.dataset.crmAjaxFormReady === '1') {
+                return;
+            }
+
+            form.dataset.crmAjaxFormReady = '1';
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const button = event.submitter;
+                form.classList.add('crm-is-submitting');
+
+                if (button) {
+                    button.disabled = true;
+                }
+
+                try {
+                    const formData = new FormData(form);
+
+                    if (button && button.name) {
+                        formData.set(button.name, button.value || '1');
+                    }
+
+                    const response = await fetch(form.action, {
+                        method: (form.getAttribute('method') || 'POST').toUpperCase(),
+                        headers: {
+                            Accept: 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        body: formData,
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        window.AdminPanel?.toast(data.message || 'Request failed.', 'danger');
+                        return;
+                    }
+
+                    window.AdminPanel?.toast(data.message || 'Done.', 'success');
+
+                    const aiContent = data.draft || data.summary;
+
+                    if (aiContent) {
+                        const container = document.querySelector('[data-crm-ai-result]');
+
+                        if (container) {
+                            const labelEl = container.querySelector('[data-crm-ai-label]');
+                            const contentEl = container.querySelector('[data-crm-ai-content]');
+
+                            if (labelEl) {
+                                labelEl.textContent = form.dataset.crmAiLabel || 'AI Result';
+                            }
+
+                            if (contentEl) {
+                                contentEl.textContent = aiContent;
+                            }
+
+                            container.hidden = false;
+                            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    }
+
+                    const regionId = form.dataset.crmReloadRegion;
+
+                    if (regionId) {
+                        const region = document.getElementById(regionId);
+
+                        if (region) {
+                            await reloadRegion(region);
+                        }
+                    }
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (form.dataset.crmResetOnSuccess !== undefined) {
+                        form.reset();
+                        window.AdminPanel?.rehydrate?.();
+                    }
+                } catch (_error) {
+                    window.AdminPanel?.toast('Request failed. Please try again.', 'danger');
+                } finally {
+                    form.classList.remove('crm-is-submitting');
+
+                    if (button) {
+                        button.disabled = false;
+                    }
+                }
+            });
+        });
+    }
+
+    function initializeImportPreviewForms() {
+        document.querySelectorAll('[data-crm-import-form]').forEach((form) => {
+            if (form.dataset.crmImportFormReady === '1') {
+                return;
+            }
+
+            form.dataset.crmImportFormReady = '1';
+
+            form.addEventListener('submit', async (event) => {
+                const submitter = event.submitter;
+                const previewUrl = form.dataset.crmImportPreviewUrl;
+
+                if (!previewUrl || (submitter && submitter.getAttribute('formaction'))) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                const previewContainer = document.querySelector('[data-crm-import-preview]');
+
+                if (previewContainer) {
+                    previewContainer.classList.add('is-loading');
+                }
+
+                try {
+                    const formData = new FormData(form);
+                    const response = await fetch(previewUrl, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        body: formData,
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Preview failed.');
+                    }
+
+                    const html = await response.text();
+
+                    if (previewContainer) {
+                        previewContainer.innerHTML = html;
+                        previewContainer.classList.remove('is-loading');
+                        previewContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        window.AdminPanel?.rehydrate?.();
+                    }
+                } catch (_e) {
+                    if (previewContainer) {
+                        previewContainer.classList.remove('is-loading');
+                    }
+
+                    window.AdminPanel?.toast('Preview failed. Please try again.', 'danger');
+                }
+            });
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         initializeGlobalSearchShortcut();
         initializeFormStates();
         initializeToasts();
         initializeDealKanban();
         initializeQuoteItems();
+        initializeAjaxForms();
+        initializeImportPreviewForms();
     });
 })();

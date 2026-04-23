@@ -5,6 +5,7 @@ namespace Sanalkopru\Crm\Http\Controllers\Admin;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Sanalkopru\Crm\Http\Requests\DataTransfer\ImportCrmRecordsRequest;
@@ -24,13 +25,19 @@ class DataTransferController extends Controller
         ]);
     }
 
-    public function preview(ImportCrmRecordsRequest $request, string $module, CrmDataTransferService $transfer): RedirectResponse
+    public function preview(ImportCrmRecordsRequest $request, string $module, CrmDataTransferService $transfer): Response|RedirectResponse
     {
         Gate::authorize("crm.{$module}.import");
 
+        $preview = $transfer->preview($module, $request->file('file'));
+
+        if ($request->ajax()) {
+            return response(view('crm::admin.data-transfer._preview', ['preview' => $preview])->render());
+        }
+
         return redirect()
             ->route("crm.{$module}.import")
-            ->with('crm_import_preview', $transfer->preview($module, $request->file('file')))
+            ->with('crm_import_preview', $preview)
             ->with('crm_status', 'Import preview generated. Upload the file again when you are ready to run the import.');
     }
 

@@ -137,7 +137,7 @@
                 <div class="crm-kanban-scroll">
                     <div class="crm-kanban-board" data-crm-kanban-board>
                     @foreach($pipeline as $stage)
-                        <section class="crm-kanban-column">
+                        <section class="crm-kanban-column" data-crm-kanban-column="{{ $stage->id }}">
                             <header class="crm-kanban-column-header">
                                 <div class="crm-kanban-column-title">
                                     <h2>
@@ -151,8 +151,8 @@
                                     @endif
                                 </div>
                                 <div class="crm-kanban-column-meta">
-                                    <span>{{ $stage->deals_count }} deals</span>
-                            <span>{{ $crmFormat->money($stage->pipeline_value) }}</span>
+                                    <span data-crm-stage-count>{{ $stage->deals_count }} deals</span>
+                                    <span data-crm-stage-value>{{ $crmFormat->money($stage->pipeline_value) }}</span>
                                 </div>
                             </header>
 
