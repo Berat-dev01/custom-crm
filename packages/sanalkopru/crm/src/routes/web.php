@@ -14,6 +14,7 @@ use Sanalkopru\Crm\Http\Controllers\Admin\SearchController;
 use Sanalkopru\Crm\Http\Controllers\Admin\SettingsController;
 use Sanalkopru\Crm\Http\Controllers\Admin\TagsController;
 use Sanalkopru\Crm\Http\Controllers\Admin\TasksController;
+use Sanalkopru\Crm\Http\Controllers\Admin\UsersController;
 use Sanalkopru\Crm\Http\Controllers\DashboardController;
 
 Route::middleware(config('crm.routes.middleware', ['web']))
@@ -83,6 +84,9 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::delete('saved-filters/{savedFilter}', [SavedFiltersController::class, 'destroy'])->name('saved-filters.destroy');
                 Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
                 Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
+
+                Route::patch('users/{user}/toggle-active', [UsersController::class, 'toggleActive'])->name('users.toggle-active');
+                Route::resource('users', UsersController::class)->except('show');
 
                 Route::middleware('throttle:crm-ai')->group(function () {
                     Route::post('ai/summarize', [AiController::class, 'summarize'])->name('ai.summarize');

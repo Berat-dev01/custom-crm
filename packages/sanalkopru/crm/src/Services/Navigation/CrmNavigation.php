@@ -97,6 +97,7 @@ class CrmNavigation
                 'label' => 'System',
                 'icon' => 'settings',
                 'items' => [
+                    ['label' => 'Users', 'route' => 'crm.users.index', 'permission' => 'crm.users.manage'],
                     ['label' => 'Settings', 'route' => 'crm.settings.index', 'permission' => 'crm.settings.manage'],
                 ],
             ],

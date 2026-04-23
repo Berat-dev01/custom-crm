@@ -157,6 +157,7 @@ return [
             'crm.tags.delete',
             'crm.ai.use',
             'crm.settings.manage',
+            'crm.users.manage',
         ],
         'roles' => [
             'owner' => [
