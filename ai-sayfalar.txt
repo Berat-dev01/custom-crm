@@ -1,0 +1,138 @@
+# AI Sayfalar
+
+Bu dosya CRM icindeki AI yuzeylerini, beklenen ciktilari ve manuel test adimlarini listeler.
+
+## Genel Davranis
+
+AI driver sistemi esnek tasarlandi.
+
+Secim noktasi:
+
+- `.env` veya CRM settings uzerinden AI driver/model secilir.
+- OpenAI, Claude veya Gemini gibi providerlar driver mantigi ile kullanilabilir.
+- AI kapaliysa butonlar disabled kalir veya provider credentials eksik oldugunu belirtir.
+- AI aksiyonlari kaydi otomatik degistirmez; ciktisi once kullaniciya taslak/ozet olarak gosterilir.
+
+## Sayfa: Deal Show
+
+URL:
+
+- `/admin/crm/deals/{deal}`
+
+Aksiyonlar:
+
+- AI Email Draft
+- AI Timeline Summary
+- AI Lost Deal Analysis
+
+Kullanilan context:
+
+- Deal basligi
+- Company/contact bilgisi
+- Stage, status, value, probability
+- Timeline/activity kayitlari
+- Task ve quote iliskileri
+- Lost reason varsa kayip analizi icin kullanilir
+
+Beklenen cikti:
+
+- Email draft aksiyonu satis takibi icin kullanilabilir mesaj taslagi uretir.
+- Timeline summary deal gecmisini kisa ve okunabilir ozetler.
+- Lost deal analysis kayip nedenini ve iyilestirme onerilerini verir.
+
+Kayit degistirir mi?
+
+- Hayir. AI sonucu session mesaj/taslak olarak gosterilir.
+
+AI kapaliyken davranis:
+
+- Buton disabled gorunur veya provider credentials eksik uyarisi title olarak bulunur.
+
+Manuel test:
+
+1. AI settings ekraninda AI enabled durumunu kontrol et.
+2. Deal show ekranina git.
+3. AI Email Draft butonunu dene.
+4. Sonucun ekranda "AI Email Draft" olarak gorundugunu kontrol et.
+5. Timeline Summary veya Lost Deal Analysis aksiyonunu dene.
+6. Deal verisinin otomatik degismedigini kontrol et.
+
+## Sayfa: Quote Show
+
+URL:
+
+- `/admin/crm/quotes/{quote}`
+
+Aksiyonlar:
+
+- AI Follow-up
+
+Kullanilan context:
+
+- Quote number
+- Quote status
+- Company/contact/deal iliskisi
+- Quote itemlari
+- Toplamlar
+- Notes ve terms
+
+Beklenen cikti:
+
+- Musteriye gonderilebilecek nazik ve profesyonel takip mesaji taslagi.
+
+Kayit degistirir mi?
+
+- Hayir. AI sonucu taslak olarak gosterilir.
+
+AI kapaliyken davranis:
+
+- Buton disabled olur veya provider credentials eksik title bilgisi gosterir.
+
+Manuel test:
+
+1. Quote show ekranina git.
+2. AI Follow-up butonunu dene.
+3. "AI Follow-up Draft" alaninda taslak metin geldigini kontrol et.
+4. Quote status veya toplamlarin otomatik degismedigini kontrol et.
+
+## Sayfa: Settings
+
+URL:
+
+- `/admin/crm/settings`
+
+Aksiyon:
+
+- AI enable/disable
+- AI driver secimi
+- AI model override
+
+Kullanilan context:
+
+- Sistem ayarlari
+- Provider credentials env/config degerleri
+
+Beklenen cikti:
+
+- AI butonlari secilen driver ve credential durumuna gore aktif/pasif olur.
+
+Kayit degistirir mi?
+
+- Evet. Settings kaydi guncellenir.
+
+Manuel test:
+
+1. AI enabled kapat.
+2. Deal/quote AI butonlarinin disabled oldugunu kontrol et.
+3. AI enabled ac.
+4. Driver secimini degistir.
+5. Provider credentials yoksa butonun yine guvenli sekilde disabled kaldigini kontrol et.
+
+## API veya Background AI
+
+Su an ana AI yuzeyleri admin ekranlarindadir. Background otomatik AI karar mekanizmasi yoktur.
+
+Ilke:
+
+- AI ciktilari kullanicinin onune taslak olarak gelir.
+- Kayit guncelleme, status degistirme veya musteriye gonderme islemi kullanici onayi olmadan yapilmaz.

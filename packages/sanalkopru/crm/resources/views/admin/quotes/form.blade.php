@@ -46,6 +46,11 @@
             </x-admin-panel::button>
         </header>
 
+        <div class="crm-context-help">
+            <strong>Quote totals are recalculated by the backend.</strong>
+            <span>Use line discounts for one item, quote discount for the whole offer, and link a deal when this quote belongs to an opportunity.</span>
+        </div>
+
         <form
             method="POST"
             action="{{ $quote->exists ? route('crm.quotes.update', $quote) : route('crm.quotes.store') }}"

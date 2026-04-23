@@ -1,0 +1,132 @@
+# Quotes Tanitim
+
+Bu dosya CRM icindeki quote modulunu manuel test eden veya urunu musteriye anlatan kisi icin hazirlandi.
+
+## Quote Nedir?
+
+Quote, musterinin satin almasi beklenen urun veya hizmetler icin hazirlanan resmi teklif kaydidir.
+
+Bir quote genelde su sorulara cevap verir:
+
+- Kime teklif veriliyor?
+- Hangi firma veya kontak icin hazirlaniyor?
+- Hangi deal/opportunity ile iliskili?
+- Hangi kalemler satiliyor?
+- Ara toplam, iskonto, vergi ve genel toplam nedir?
+- Teklif hangi tarihe kadar gecerli?
+- Teklif draft, sent, accepted, rejected veya expired durumunda mi?
+
+Quote kaydi CRM icinde takip edilir; PDF cikti ise musteriyle paylasilabilir teklif dokumanidir.
+
+## Quote Item Nedir?
+
+Quote item, teklif icindeki tek satirlik urun veya hizmet kalemidir.
+
+Ornek quote item:
+
+- Implementation Service
+- 2 adet
+- Birim fiyat: 1000 TRY
+- Satir iskontosu: %10
+- KDV: %20
+
+Her item kendi miktar, birim fiyat, iskonto ve vergi bilgisine sahiptir. Sistem toplam teklif tutarini bu itemlardan hesaplar.
+
+## Quote Iskontosu ve Item Iskontosu Farki
+
+Item iskontosu sadece ilgili satiri etkiler.
+
+Quote iskontosu ise tum teklif subtotal'i uzerinden uygulanir.
+
+Ornek:
+
+- Item A: 1000 TRY, item iskontosu %10 ise satir 900 TRY olur.
+- Item B: 500 TRY ise satir 500 TRY olur.
+- Quote iskontosu 100 TRY ise toplam teklif seviyesinde ayrica 100 TRY duser.
+
+Bu ayrim satis ekipleri icin onemlidir. Bazen tek urunde indirim yapilir; bazen tum teklif uzerinden pazarlik payi verilir.
+
+## Backend Toplam Hesaplama Karari
+
+Frontend toplam gosterebilir, ancak resmi toplam backend tarafinda hesaplanir.
+
+Kullanici formdan subtotal veya grand total manipule etse bile sistem item satirlarini, iskonto ve vergi kurallarini okuyarak dogru toplam degeri tekrar hesaplar. Bu karar satis guvenligi ve muhasebe tutarliligi icin zorunludur.
+
+## Duplicate Quote Neden Var?
+
+Duplicate quote, mevcut bir teklifi yeni draft teklif olarak kopyalar.
+
+Kullanim nedenleri:
+
+- Ayni musteriye revize teklif gondermek.
+- Benzer urun/hizmet paketini baska deal icin hizlica hazirlamak.
+- Accepted/rejected eski teklifi bozmadan yeni versiyon uretmek.
+- Fiyat veya kalem pazarligi icin alternatif hazirlamak.
+
+Duplicate isleminde orijinal teklif korunur; yeni teklif kendi numarasi ve durumuyla takip edilir.
+
+## Quote Status Anlamlari
+
+Draft:
+Teklif hazirlaniyor. Musteriye gonderilmis sayilmaz.
+
+Sent:
+Teklif musterinin onune cikti veya gonderildi olarak isaretlendi.
+
+Accepted:
+Musteri teklifi kabul etti. Istenirse iliskili deal won durumuna alinabilir.
+
+Rejected:
+Musteri teklifi reddetti veya teklif kaybedildi.
+
+Expired:
+Teklif gecerlilik tarihini veya ticari gecerliligini kaybetti.
+
+## Deal, Contact ve Company Iliskisi
+
+Quote su kayitlarla iliskilenebilir:
+
+- Company: Teklifin ait oldugu firma.
+- Contact: Teklifin muhatabi olan kisi.
+- Deal: Teklifin bagli oldugu satis firsati.
+
+En profesyonel akis genelde soyledir:
+
+1. Company ve contact olusturulur.
+2. Deal acilir.
+3. Deal icin quote hazirlanir.
+4. Quote sent yapilir.
+5. Musteri kabul ederse quote accepted, deal won olur.
+
+Quote tek basina da olusturulabilir, ancak deal ile baglamak raporlama ve pipeline takibi icin daha sagliklidir.
+
+## PDF Ne Icin Kullanilir?
+
+PDF, CRM icindeki quote kaydinin musteriye gonderilebilecek belge halidir.
+
+PDF icinde:
+
+- Sirket bilgileri
+- Musteri bilgileri
+- Teklif numarasi
+- Kalemler
+- Fiyatlar
+- Vergiler
+- Toplamlar
+- Notlar ve sartlar
+
+yer alir.
+
+CRM kaydi operasyonel takip icindir; PDF musteri ile paylasim icindir.
+
+## Manuel Test Onerisi
+
+1. Yeni quote ac.
+2. Company, contact ve deal seceneklerinin bos label gostermedigini kontrol et.
+3. Iki line item ekle.
+4. Bir itemda yuzde iskonto, digerinde sabit iskonto dene.
+5. Quote seviyesinde ek iskonto gir.
+6. Kaydet ve show ekraninda grand total degerini kontrol et.
+7. PDF preview ve download dene.
+8. Send, duplicate, accept/reject/expire aksiyonlarini test et.
+9. Accepted quote icin deal won secenegini dene.

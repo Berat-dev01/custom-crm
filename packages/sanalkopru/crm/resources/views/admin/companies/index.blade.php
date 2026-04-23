@@ -78,7 +78,7 @@
                 ['label' => 'Location'],
                 ['label' => 'Owner'],
                 ['label' => 'CRM Links'],
-                ['label' => 'Actions', 'width' => '160px'],
+                ['label' => 'Actions', 'width' => '220px'],
             ]">
                 @forelse($companies as $company)
                     <tr>
@@ -101,6 +101,13 @@
                                 <x-admin-panel::button :href="route('crm.companies.show', $company)" size="sm" variant="ghost" icon="eye" />
                                 @can('update', $company)
                                     <x-admin-panel::button :href="route('crm.companies.edit', $company)" size="sm" variant="ghost" icon="pencil" />
+                                @endcan
+                                @can('delete', $company)
+                                    <form method="POST" action="{{ route('crm.companies.destroy', $company) }}" class="crm-inline-form" data-crm-confirm="Delete this company?">
+                                        @csrf
+                                        @method('DELETE')
+                                        <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" />
+                                    </form>
                                 @endcan
                             </div>
                         </td>

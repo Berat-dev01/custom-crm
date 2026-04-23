@@ -63,6 +63,33 @@ php artisan vendor:publish --tag=crm-migrations
 php artisan migrate
 ```
 
+### Admin Panel Package Layer
+
+Genel admin arayuz altyapisi `packages/sanalkopru/admin-panel` paketinden gelir.
+
+Bu katman CRM'e ozel is kurali tasimaz. Burada tutulacak seyler genel UI ve layout altyapisidir:
+
+- Layout, navbar ve sidebar komponentleri
+- Button, card, table, form inputlari ve badge gibi temel komponentler
+- Confirm modal, toast, loading state ve command palette gibi tekrar kullanilabilir UI parcalari
+- Custom select, compact filter bar, bulk quick action ve progressive pagination gibi CRM disinda da kullanilabilecek admin patternleri
+
+CRM paketi bu komponentleri kullanir; fakat satis pipeline, quote hesaplama, import validation veya AI context gibi domain kurallarini admin-panel paketine gommez.
+
+### Host App Layer
+
+Root Laravel uygulamasi gelistirme ve demo hostudur. Production musteride de benzer bir host app bulunur, ancak asil urun kodu package icinde kalir.
+
+Root uygulamanin sorumluluklari:
+
+- Docker development ortami
+- Demo login ve smoke test route'lari
+- Musteri projesine ozel `.env`, cache, queue ve scheduler ayarlari
+- Paketlerin Composer uzerinden yuklenmesi
+- Paket publish/migration/seed komutlarinin calistirilmasi
+
+`packages/sanalkopru/crm` ile `packages/sanalkopru/admin-panel` klasorlerinin root app yaninda durmasi mimari hata degildir. Bu repo gelistirme monorepo/working copy gibi kullanilir; satis ve kurulumda paketler Composer uzerinden musteri projesine baglanabilir.
+
 ### Domain Layer
 
 Domain katmani CRM'in asil motorudur.

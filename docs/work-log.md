@@ -97,3 +97,24 @@
 - Dogrulama: `CrmAdminRoutingTest` basarili: `7 passed (125 assertions)`.
 - Uygulama: `docs/manual-test-guide.md` eklendi. Login, dashboard, contacts, companies, deals, tasks, quotes, import/export, tags, AI, settings, roller, API, performans ve oncelikli test sirasi adim adim yazildi.
 - Uygulama: README dokuman listesine manual test guide linki eklendi.
+
+## Manuel Test Kararlari Sonrasi - Faz 1 ve Faz 2 Ilk Gecis
+
+- Baslangic: `test-notlari.txt` icin alinan 20 karardan sonra `yapilacak-guncellemeler.md` kapsam dosyasi esas alindi.
+- Uygulama: Import preview artik headers, expected headers, missing/unexpected headers, row-level prepared payload, validation errors ve summary donuyor. Import ekraninda valid/invalid satirlar ve validation summary tablo olarak gosteriliyor.
+- Uygulama: Contacts import optional kolon eksiginde `lifecycle_stage` undefined key hatasi vermeyecek sekilde merkezi payload fallback mantigina alindi. Companies ve deals import payload okumalari da ayni guvenli helper'a baglandi.
+- Uygulama: `crm:seed-demo` ve `crm:seed-performance` artisan komutlari eklendi. README, installation, performance ve manual test dokumanlarindaki seed komutlari yeni komutlara tasindi.
+- Uygulama: Demo seeder tarihleri dashboard period testi icin dagitildi. Won/lost deal closed date, quote created date, task due/reminder ve activity occurred date alanlari demo farklarini gosterecek hale getirildi.
+- Uygulama: Demo user olusturma akisi `forceFill` ile mass assignment hatasina takilmayacak sekilde duzeltildi.
+- Uygulama: Dashboard'da snapshot metrikler ve period activity metrikleri ayrildi; periodun sadece zaman bazli alanlari etkiledigi UI metni eklendi.
+- Uygulama: Quote create formunda contact/deal select option label bosluklari controller tarafinda `pluck(label, id)` yapisina alinarak giderildi.
+- Uygulama: Contacts, companies, deals, tasks ve quotes index/show ekranlarina permission-aware delete aksiyonlari eklendi. Aksiyonlar ortak `data-crm-confirm` sistemiyle calisiyor.
+- Uygulama: `quotes-tanitim.txt` yazildi. Quote, quote item, quote/item iskonto farki, duplicate, status, deal/contact/company iliskisi, PDF ve manuel test adimlari anlatildi.
+- Uygulama: `ai-sayfalar.txt` yazildi. Deal show, quote show ve settings AI aksiyonlari; context, beklenen cikti, AI kapali davranis ve manuel test adimlari listelendi.
+- Uygulama: Quote create/show ekranlarina kisa urun ici yardim eklendi. Uzun egitim metni dosyada birakildi.
+- Uygulama: `docs/architecture.md` icinde CRM package, admin-panel package ve host app sorumluluklari ayrildi; admin-panel'in genel UI katmani oldugu, CRM is kurallarinin buraya gomulmeyecegi netlestirildi.
+- Dogrulama: `docker compose up -d` ile test servisleri ayaga kaldirildi.
+- Dogrulama: Pint formatter basarili.
+- Dogrulama: Hedefli testler basarili: `CrmDataTransferModuleTest`, `CrmDemoSeederTest`, `CrmDashboardModuleTest`, `CrmQuotesModuleTest`, `CrmContactsModuleTest`, `CrmCompaniesModuleTest`, `CrmDealsPipelineModuleTest`, `CrmTasksModuleTest`, `CrmAdminRoutingTest`.
+- Dogrulama: `php artisan route:cache`, `php artisan config:cache`, `php artisan view:cache` basarili. Ardindan dev ortaminda stale cache kalmamasi icin `php artisan optimize:clear` calistirildi.
+- Dogrulama: Full test suite basarili: `131 passed (1041 assertions)`.

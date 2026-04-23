@@ -56,7 +56,7 @@
                 ['label' => 'Due'],
                 ['label' => 'Priority'],
                 ['label' => 'Status'],
-                ['label' => 'Actions', 'width' => '180px'],
+                ['label' => 'Actions', 'width' => '240px'],
             ]">
                 @forelse($tasks as $task)
                     @php
@@ -87,12 +87,19 @@
                                 @endcan
                                 @can('complete', $task)
                                     @if($task->status !== 'completed')
-                                        <form method="POST" action="{{ route('crm.tasks.complete', $task) }}">
+                                        <form method="POST" action="{{ route('crm.tasks.complete', $task) }}" class="crm-inline-form">
                                             @csrf
                                             @method('PATCH')
                                             <x-admin-panel::button type="submit" size="sm" variant="ghost" icon="check" />
                                         </form>
                                     @endif
+                                @endcan
+                                @can('delete', $task)
+                                    <form method="POST" action="{{ route('crm.tasks.destroy', $task) }}" class="crm-inline-form" data-crm-confirm="Delete this task?">
+                                        @csrf
+                                        @method('DELETE')
+                                        <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" />
+                                    </form>
                                 @endcan
                             </div>
                         </td>

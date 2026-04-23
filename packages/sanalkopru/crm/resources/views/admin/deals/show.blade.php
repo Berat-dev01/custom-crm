@@ -23,6 +23,15 @@
                         Edit
                     </x-admin-panel::button>
                 @endcan
+                @can('delete', $deal)
+                    <form method="POST" action="{{ route('crm.deals.destroy', $deal) }}" data-crm-confirm="Delete this deal?">
+                        @csrf
+                        @method('DELETE')
+                        <x-admin-panel::button type="submit" variant="danger" icon="trash-2">
+                            Delete
+                        </x-admin-panel::button>
+                    </form>
+                @endcan
                 <x-admin-panel::button :href="route('crm.deals.index')" variant="ghost" icon="arrow-left">
                     Back
                 </x-admin-panel::button>

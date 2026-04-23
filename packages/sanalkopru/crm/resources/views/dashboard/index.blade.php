@@ -28,7 +28,10 @@
             <div>
                 <p class="crm-admin-eyebrow">CRM Engine</p>
                 <h1>Sales Dashboard</h1>
-                <p class="crm-muted">{{ $canViewAll ? 'All team records' : 'Your owned and assigned records' }} / {{ $range['label'] }}</p>
+                <p class="crm-muted">
+                    {{ $canViewAll ? 'All team records' : 'Your owned and assigned records' }} / {{ $range['label'] }}.
+                    Period filters affect won value, quote activity, recent activity, and trend charts. Snapshot metrics stay current.
+                </p>
             </div>
         </header>
 
@@ -44,14 +47,21 @@
             </form>
         </x-admin-panel::card>
 
+        <div class="crm-dashboard-section-label">Current snapshot</div>
+
         <div class="crm-admin-grid">
             <x-admin-panel::stat-card label="Contacts" :value="number_format($stats['contacts'])" icon="users" variant="primary" />
             <x-admin-panel::stat-card label="Companies" :value="number_format($stats['companies'])" icon="building-2" variant="info" />
             <x-admin-panel::stat-card label="Open Deals" :value="number_format($stats['open_deals'])" icon="briefcase" variant="primary" />
             <x-admin-panel::stat-card label="Open Pipeline" :value="$money($stats['open_pipeline_value'])" icon="chart-no-axes-column" variant="success" />
             <x-admin-panel::stat-card label="Weighted Pipeline" :value="$money($stats['weighted_pipeline_value'])" icon="percent" variant="info" />
-            <x-admin-panel::stat-card label="Won Value" :value="$money($stats['won_deal_value'])" icon="trophy" variant="success" />
             <x-admin-panel::stat-card label="Overdue Tasks" :value="number_format($stats['overdue_tasks'])" icon="alarm-clock" variant="{{ $stats['overdue_tasks'] > 0 ? 'danger' : 'success' }}" />
+        </div>
+
+        <div class="crm-dashboard-section-label">Period activity</div>
+
+        <div class="crm-admin-grid">
+            <x-admin-panel::stat-card label="Won Value" :value="$money($stats['won_deal_value'])" icon="trophy" variant="success" />
             <x-admin-panel::stat-card label="Quotes Sent / Accepted" :value="number_format($stats['sent_quotes']).' / '.number_format($stats['accepted_quotes'])" icon="file-text" variant="info" />
         </div>
 

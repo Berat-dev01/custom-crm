@@ -38,6 +38,15 @@
                         Edit
                     </x-admin-panel::button>
                 @endcan
+                @can('delete', $quote)
+                    <form method="POST" action="{{ route('crm.quotes.destroy', $quote) }}" data-crm-confirm="Delete this quote?">
+                        @csrf
+                        @method('DELETE')
+                        <x-admin-panel::button type="submit" variant="danger" icon="trash-2">
+                            Delete
+                        </x-admin-panel::button>
+                    </form>
+                @endcan
                 <x-admin-panel::button :href="route('crm.quotes.index')" variant="ghost" icon="arrow-left">
                     Back
                 </x-admin-panel::button>
@@ -65,6 +74,11 @@
                 <strong>{{ $quote->valid_until?->format('Y-m-d') ?: '-' }}</strong>
                 <p>{{ $quote->owner?->name ?: 'No owner' }}</p>
             </div>
+        </div>
+
+        <div class="crm-context-help">
+            <strong>Status actions do not edit line items.</strong>
+            <span>Use Duplicate for revisions, Send for customer delivery tracking, and Accept when the customer approves the offer.</span>
         </div>
 
         <div class="crm-two-column">

@@ -117,6 +117,15 @@
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     }
 
+    .crm-dashboard-section-label {
+        color: #334155;
+        font-size: 0.9rem;
+        font-weight: 800;
+        letter-spacing: 0;
+        margin-bottom: -10px;
+        text-transform: uppercase;
+    }
+
     .crm-admin-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
@@ -138,6 +147,69 @@
     .crm-muted {
         color: #64748b;
         font-size: 0.875rem;
+    }
+
+    .crm-import-summary {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        margin-bottom: 16px;
+    }
+
+    .crm-import-summary > div {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        display: grid;
+        gap: 4px;
+        padding: 12px;
+    }
+
+    .crm-import-summary-value {
+        color: #0f172a;
+        font-size: 1.35rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .crm-import-valid {
+        color: #15803d;
+    }
+
+    .crm-import-invalid {
+        color: #b91c1c;
+    }
+
+    .crm-import-row-invalid {
+        background: #fff7ed;
+    }
+
+    .crm-import-errors {
+        color: #b91c1c;
+        display: grid;
+        font-size: 0.8rem;
+        gap: 3px;
+        margin-top: 6px;
+    }
+
+    .crm-hidden-form {
+        display: none;
+    }
+
+    .crm-context-help {
+        align-items: flex-start;
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        color: #334155;
+        display: grid;
+        gap: 4px;
+        padding: 12px 14px;
+    }
+
+    .crm-context-help strong {
+        color: #0f172a;
+        font-weight: 800;
     }
 
     .crm-sr-only {

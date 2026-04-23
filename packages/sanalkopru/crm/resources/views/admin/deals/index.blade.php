@@ -80,7 +80,7 @@
                     ['label' => 'Value'],
                     ['label' => 'Expected Close'],
                     ['label' => 'Owner'],
-                    ['label' => 'Actions', 'width' => '150px'],
+                    ['label' => 'Actions', 'width' => '220px'],
                 ]">
                     @forelse($deals as $deal)
                         <tr>
@@ -97,6 +97,13 @@
                                     <x-admin-panel::button :href="route('crm.deals.show', $deal)" size="sm" variant="ghost" icon="eye" />
                                     @can('update', $deal)
                                         <x-admin-panel::button :href="route('crm.deals.edit', $deal)" size="sm" variant="ghost" icon="pencil" />
+                                    @endcan
+                                    @can('delete', $deal)
+                                        <form method="POST" action="{{ route('crm.deals.destroy', $deal) }}" class="crm-inline-form" data-crm-confirm="Delete this deal?">
+                                            @csrf
+                                            @method('DELETE')
+                                            <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" />
+                                        </form>
                                     @endcan
                                 </div>
                             </td>
@@ -168,6 +175,13 @@
                                             @if($deal->open_tasks_count > 0)
                                                 <span class="crm-kanban-badge">{{ $deal->open_tasks_count }} tasks</span>
                                             @endif
+                                            @can('delete', $deal)
+                                                <form method="POST" action="{{ route('crm.deals.destroy', $deal) }}" class="crm-inline-form" data-crm-confirm="Delete this deal?">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" />
+                                                </form>
+                                            @endcan
                                         </div>
                                     </article>
                                 @empty

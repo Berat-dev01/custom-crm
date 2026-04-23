@@ -44,13 +44,52 @@ class CrmDataTransferService
     ) {}
 
     /**
-     * @return array{headers: list<string>, rows: list<array<string, mixed>>, total_rows: int}
+     * @return array<string, mixed>
      */
     public function preview(string $module, UploadedFile $file): array
     {
         $this->ensureImportModule($module);
 
-        return $this->reader->preview($file);
+        $rawPreview = $this->reader->preview($file);
+        $expectedHeaders = $this->templateHeaders($module);
+        $rows = [];
+        $validRows = 0;
+        $invalidRows = 0;
+
+        foreach ($rawPreview['rows'] as $index => $payload) {
+            $prepared = $this->preparePayload($module, $payload);
+            $validator = Validator::make($prepared, $this->rules($module));
+            $errors = $validator->errors()->all();
+
+            if ($errors === []) {
+                $validRows++;
+            } else {
+                $invalidRows++;
+            }
+
+            $rows[] = [
+                'row' => $index + 2,
+                'values' => $payload,
+                'prepared' => $prepared,
+                'valid' => $errors === [],
+                'errors' => $errors,
+            ];
+        }
+
+        return [
+            'headers' => $rawPreview['headers'],
+            'expected_headers' => $expectedHeaders,
+            'missing_headers' => array_values(array_diff($expectedHeaders, $rawPreview['headers'])),
+            'unexpected_headers' => array_values(array_diff($rawPreview['headers'], $expectedHeaders)),
+            'rows' => $rows,
+            'total_rows' => $rawPreview['total_rows'],
+            'summary' => [
+                'shown_rows' => count($rows),
+                'valid_rows' => $validRows,
+                'invalid_rows' => $invalidRows,
+                'total_rows' => $rawPreview['total_rows'],
+            ],
+        ];
     }
 
     /**
@@ -309,19 +348,21 @@ class CrmDataTransferService
      */
     private function contactPayload(array $payload): array
     {
-        $company = $this->companyByName($payload['company'] ?? null);
+        $company = $this->companyByName($this->payloadValue($payload, 'company'));
+        $firstName = $this->payloadValue($payload, 'first_name');
+        $lastName = $this->payloadValue($payload, 'last_name');
 
         return [
-            'first_name' => $payload['first_name'] ?? null,
-            'last_name' => $payload['last_name'] ?? null,
-            'full_name' => $payload['full_name'] ?? trim(($payload['first_name'] ?? '').' '.($payload['last_name'] ?? '')),
-            'email' => $payload['email'] ?? null,
-            'phone' => $payload['phone'] ?? null,
-            'title' => $payload['title'] ?? null,
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'full_name' => $this->payloadValue($payload, 'full_name') ?: trim($firstName.' '.$lastName),
+            'email' => $this->payloadValue($payload, 'email'),
+            'phone' => $this->payloadValue($payload, 'phone'),
+            'title' => $this->payloadValue($payload, 'title'),
             'company_id' => $company?->id,
-            'lifecycle_stage' => $payload['lifecycle_stage'] ?: 'lead',
-            'source' => $payload['source'] ?? null,
-            'owner_id' => $this->userIdByEmail($payload['owner_email'] ?? null),
+            'lifecycle_stage' => $this->payloadValue($payload, 'lifecycle_stage', 'lead'),
+            'source' => $this->payloadValue($payload, 'source'),
+            'owner_id' => $this->userIdByEmail($this->payloadValue($payload, 'owner_email')),
             'tag_ids' => [],
         ];
     }
@@ -332,19 +373,19 @@ class CrmDataTransferService
     private function companyPayload(array $payload): array
     {
         return [
-            'name' => $payload['name'] ?? null,
-            'email' => $payload['email'] ?? null,
-            'phone' => $payload['phone'] ?? null,
-            'website' => $payload['website'] ?? null,
-            'tax_number' => $payload['tax_number'] ?? null,
-            'tax_office' => $payload['tax_office'] ?? null,
-            'sector' => $payload['sector'] ?? null,
-            'address_line_1' => $payload['address_line_1'] ?? null,
-            'city' => $payload['city'] ?? null,
-            'state' => $payload['state'] ?? null,
-            'postal_code' => $payload['postal_code'] ?? null,
-            'country' => $payload['country'] ?? null,
-            'owner_id' => $this->userIdByEmail($payload['owner_email'] ?? null),
+            'name' => $this->payloadValue($payload, 'name'),
+            'email' => $this->payloadValue($payload, 'email'),
+            'phone' => $this->payloadValue($payload, 'phone'),
+            'website' => $this->payloadValue($payload, 'website'),
+            'tax_number' => $this->payloadValue($payload, 'tax_number'),
+            'tax_office' => $this->payloadValue($payload, 'tax_office'),
+            'sector' => $this->payloadValue($payload, 'sector'),
+            'address_line_1' => $this->payloadValue($payload, 'address_line_1'),
+            'city' => $this->payloadValue($payload, 'city'),
+            'state' => $this->payloadValue($payload, 'state'),
+            'postal_code' => $this->payloadValue($payload, 'postal_code'),
+            'country' => $this->payloadValue($payload, 'country'),
+            'owner_id' => $this->userIdByEmail($this->payloadValue($payload, 'owner_email')),
             'tag_ids' => [],
         ];
     }
@@ -354,22 +395,22 @@ class CrmDataTransferService
      */
     private function dealPayload(array $payload): array
     {
-        $stage = $this->stageByName($payload['stage'] ?? null) ?: DealStage::query()->ordered()->first();
-        $company = $this->companyByName($payload['company'] ?? null);
-        $contact = $this->contactByEmail($payload['contact_email'] ?? null);
+        $stage = $this->stageByName($this->payloadValue($payload, 'stage')) ?: DealStage::query()->ordered()->first();
+        $company = $this->companyByName($this->payloadValue($payload, 'company'));
+        $contact = $this->contactByEmail($this->payloadValue($payload, 'contact_email'));
 
         return [
-            'title' => $payload['title'] ?? null,
+            'title' => $this->payloadValue($payload, 'title'),
             'company_id' => $company?->id,
             'contact_id' => $contact?->id,
             'stage_id' => $stage?->id,
-            'value' => $payload['value'] ?? 0,
-            'currency' => $payload['currency'] ?: $this->money->defaultCurrency(),
-            'probability' => $payload['probability'] ?: ($stage?->probability ?? 0),
-            'expected_close_date' => $payload['expected_close_date'] ?? null,
-            'status' => $payload['status'] ?: 'open',
-            'lost_reason' => $payload['lost_reason'] ?? null,
-            'owner_id' => $this->userIdByEmail($payload['owner_email'] ?? null),
+            'value' => $this->payloadValue($payload, 'value', '0'),
+            'currency' => $this->payloadValue($payload, 'currency', $this->money->defaultCurrency()),
+            'probability' => $this->payloadValue($payload, 'probability', (string) ($stage?->probability ?? 0)),
+            'expected_close_date' => $this->payloadValue($payload, 'expected_close_date'),
+            'status' => $this->payloadValue($payload, 'status', 'open'),
+            'lost_reason' => $this->payloadValue($payload, 'lost_reason'),
+            'owner_id' => $this->userIdByEmail($this->payloadValue($payload, 'owner_email')),
             'tag_ids' => [],
         ];
     }
@@ -634,6 +675,13 @@ class CrmDataTransferService
     private function userIdByEmail(?string $email): ?int
     {
         return filled($email) ? User::query()->where('email', trim((string) $email))->value('id') : null;
+    }
+
+    private function payloadValue(array $payload, string $key, ?string $default = null): ?string
+    {
+        $value = trim((string) ($payload[$key] ?? ''));
+
+        return $value === '' ? $default : $value;
     }
 
     private function ensureImportModule(string $module): void

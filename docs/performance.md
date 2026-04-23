@@ -13,7 +13,7 @@ Performans kabul senaryosu:
 Bu veri seti Docker development ortaminda su seeder ile uretilebilir:
 
 ```bash
-docker compose run --rm --no-deps app php artisan db:seed --class="Sanalkopru\\Crm\\Database\\Seeders\\CrmPerformanceSeeder"
+docker compose exec app php artisan crm:seed-performance
 ```
 
 Seeder siniflari:

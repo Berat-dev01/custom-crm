@@ -116,7 +116,7 @@
                 ['label' => 'Stage'],
                 ['label' => 'Owner'],
                 ['label' => 'Activity'],
-                ['label' => 'Actions', 'width' => '180px'],
+                ['label' => 'Actions', 'width' => '220px'],
             ]">
                 @forelse($contacts as $contact)
                     <tr>
@@ -150,6 +150,16 @@
                                 @can('update', $contact)
                                     <x-admin-panel::button :href="route('crm.contacts.edit', $contact)" size="sm" variant="ghost" icon="pencil" />
                                 @endcan
+                                @can('delete', $contact)
+                                    <x-admin-panel::button
+                                        type="submit"
+                                        form="crm-contact-delete-{{ $contact->id }}"
+                                        size="sm"
+                                        variant="danger"
+                                        icon="trash-2"
+                                        data-crm-confirm="Delete this contact?"
+                                    />
+                                @endcan
                             </div>
                         </td>
                     </tr>
@@ -173,5 +183,14 @@
             </div>
         </x-admin-panel::card>
         </form>
+
+        @foreach($contacts as $contact)
+            @can('delete', $contact)
+                <form id="crm-contact-delete-{{ $contact->id }}" method="POST" action="{{ route('crm.contacts.destroy', $contact) }}" class="crm-hidden-form">
+                    @csrf
+                    @method('DELETE')
+                </form>
+            @endcan
+        @endforeach
     </section>
 @endsection

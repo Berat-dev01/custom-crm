@@ -53,7 +53,7 @@ Yardimci servisler:
 `make fresh` root `DatabaseSeeder` uzerinden CRM permission, stage ve demo veriyi yukler. Sadece demo CRM verisini tekrar basmak icin:
 
 ```bash
-make artisan CMD="db:seed --class=Sanalkopru\\Crm\\Database\\Seeders\\CrmDemoSeeder"
+make artisan CMD="crm:seed-demo"
 ```
 
 Demo kullanicilari:
@@ -73,7 +73,7 @@ Demo pipeline, companies, contacts, deals, tasks, quotes, quote items, tags ve a
 Buyuk veriyle ekranlari denemek icin:
 
 ```bash
-make artisan CMD="db:seed --class=Sanalkopru\\Crm\\Database\\Seeders\\CrmPerformanceSeeder"
+make artisan CMD="crm:seed-performance"
 ```
 
 Bu seeder 2.000 company, 10.000 contact ve 5.000 deal olusturur.

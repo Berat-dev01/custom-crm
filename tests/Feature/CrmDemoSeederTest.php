@@ -35,4 +35,13 @@ class CrmDemoSeederTest extends TestCase
         $this->assertGreaterThan(0, Deal::query()->won()->count());
         $this->assertGreaterThan(0, Deal::query()->lost()->count());
     }
+
+    public function test_demo_seed_command_is_available(): void
+    {
+        $this->artisan('crm:seed-demo')
+            ->assertSuccessful();
+
+        $this->assertGreaterThanOrEqual(8, Contact::query()->count());
+        $this->assertGreaterThanOrEqual(8, Deal::query()->count());
+    }
 }

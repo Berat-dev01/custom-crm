@@ -320,7 +320,7 @@ Basarili kabul: Token yoksa 401, yetki yoksa 403, validation hatalarinda 422 JSO
 Bu adimi normal manual testten sonra yap. Buyuk seed sistemi doldurur.
 
 ```bash
-make artisan CMD="db:seed --class=Sanalkopru\\Crm\\Database\\Seeders\\CrmPerformanceSeeder"
+make artisan CMD="crm:seed-performance"
 ```
 
 Sonra kontrol et:

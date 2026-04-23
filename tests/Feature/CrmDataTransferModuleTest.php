@@ -46,7 +46,9 @@ class CrmDataTransferModuleTest extends TestCase
 
         $preview = session('crm_import_preview');
         $this->assertSame(1, $preview['total_rows']);
-        $this->assertSame('Preview Co', $preview['rows'][0]['name']);
+        $this->assertSame('Preview Co', $preview['rows'][0]['values']['name']);
+        $this->assertTrue($preview['rows'][0]['valid']);
+        $this->assertSame(1, $preview['summary']['valid_rows']);
 
         $response = $this->actingAs($this->admin, 'admin')
             ->get(route('crm.companies.template'))
@@ -54,6 +56,25 @@ class CrmDataTransferModuleTest extends TestCase
             ->assertHeader('content-type', 'text/csv; charset=UTF-8');
 
         $this->assertStringContainsString('name,email,phone', $response->streamedContent());
+    }
+
+    public function test_contacts_import_uses_defaults_when_optional_columns_are_missing(): void
+    {
+        $file = UploadedFile::fake()->createWithContent('contacts.csv', implode("\n", [
+            'full_name,email',
+            'Missing Lifecycle,missing-lifecycle@example.com',
+        ]));
+
+        $this->actingAs($this->admin, 'admin')
+            ->post(route('crm.contacts.import.store'), ['file' => $file])
+            ->assertRedirect(route('crm.contacts.import'))
+            ->assertSessionHas('crm_import_result');
+
+        $this->assertDatabaseHas('contacts', [
+            'full_name' => 'Missing Lifecycle',
+            'email' => 'missing-lifecycle@example.com',
+            'lifecycle_stage' => 'lead',
+        ]);
     }
 
     public function test_companies_import_records_validation_errors_and_downloadable_report(): void

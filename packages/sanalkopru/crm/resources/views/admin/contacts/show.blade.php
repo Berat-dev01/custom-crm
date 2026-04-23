@@ -24,6 +24,15 @@
                         Edit
                     </x-admin-panel::button>
                 @endcan
+                @can('delete', $contact)
+                    <form method="POST" action="{{ route('crm.contacts.destroy', $contact) }}" data-crm-confirm="Delete this contact?">
+                        @csrf
+                        @method('DELETE')
+                        <x-admin-panel::button type="submit" variant="danger" icon="trash-2">
+                            Delete
+                        </x-admin-panel::button>
+                    </form>
+                @endcan
                 <x-admin-panel::button :href="route('crm.contacts.index')" variant="ghost" icon="arrow-left">
                     Back
                 </x-admin-panel::button>

@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Sanalkopru\Crm\Console\SeedCrmDemoCommand;
+use Sanalkopru\Crm\Console\SeedCrmPerformanceCommand;
 use Sanalkopru\Crm\Console\SendTaskRemindersCommand;
 use Sanalkopru\Crm\Contracts\AiProviderContract;
 use Sanalkopru\Crm\Events\ContactCreated;
@@ -83,6 +85,8 @@ class CrmServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->registerPublishables();
             $this->commands([
+                SeedCrmDemoCommand::class,
+                SeedCrmPerformanceCommand::class,
                 SendTaskRemindersCommand::class,
             ]);
         }

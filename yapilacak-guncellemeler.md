@@ -76,6 +76,29 @@ Root uygulama development/demo host olarak kalir:
 
 ## Onceliklendirme
 
+## Uygulama Durumu
+
+### 2026-04-23 - Faz 1 ve Faz 2 Ilk Gecis
+
+Tamamlananlar:
+
+- Import preview structured table + validation summary haline getirildi.
+- Eksik optional import kolonlari notice/error uretmeden guvenli defaultlara baglandi.
+- `crm:seed-demo` ve `crm:seed-performance` komutlari eklendi.
+- Demo seeder tarihleri dashboard period testine uygun hale getirildi.
+- Dashboard snapshot/time-based metric ayrimi UI'da netlestirildi.
+- Quote create select option bos label sorunu duzeltildi.
+- Contacts, companies, deals, tasks ve quotes delete aksiyonlari index/show ekranlarinda permission-aware ve confirm'li hale getirildi.
+- `quotes-tanitim.txt` ve `ai-sayfalar.txt` yazildi.
+- Quote create/show ekranlarina kisa urun ici yardim eklendi.
+- Package/host/admin-panel mimari ayrimi `docs/architecture.md` icinde netlestirildi.
+
+Dogrulama:
+
+- Pint formatter basarili.
+- Route/config/view cache basarili; ardindan dev ortaminda cache temizlendi.
+- Full test suite basarili: `131 passed (1041 assertions)`.
+
 ### Faz 1 - Kritik Bugfix ve Test Edilebilirlik
 
 Bu faz once yapilmali. Amac kullanicinin sistemi rahat test edebilmesi.

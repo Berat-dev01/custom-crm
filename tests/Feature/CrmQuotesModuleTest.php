@@ -32,18 +32,28 @@ class CrmQuotesModuleTest extends TestCase
     {
         $company = Company::factory()->create(['name' => 'Acme Quote']);
         $contact = Contact::factory()->create(['company_id' => $company->id, 'full_name' => 'Ada Buyer']);
+        $stage = DealStage::factory()->create(['is_won' => false, 'is_lost' => false]);
+        $deal = Deal::factory()->create([
+            'company_id' => $company->id,
+            'contact_id' => $contact->id,
+            'stage_id' => $stage->id,
+            'title' => 'Quote Form Deal',
+        ]);
         $tag = Tag::factory()->create(['name' => 'Priority Quote', 'slug' => 'priority-quote']);
 
         $this->actingAs($this->admin, 'admin')
             ->get(route('crm.quotes.create'))
             ->assertOk()
             ->assertSee('Line Items')
-            ->assertSee('Add Line');
+            ->assertSee('Add Line')
+            ->assertSee('Ada Buyer')
+            ->assertSee('Quote Form Deal');
 
         $this->actingAs($this->admin, 'admin')
             ->post(route('crm.quotes.store'), [
                 'company_id' => $company->id,
                 'contact_id' => $contact->id,
+                'deal_id' => $deal->id,
                 'status' => 'draft',
                 'currency' => 'TRY',
                 'discount_type' => 'fixed',

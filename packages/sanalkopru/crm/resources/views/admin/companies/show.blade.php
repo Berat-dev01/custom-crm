@@ -34,7 +34,7 @@
                     <form method="POST" action="{{ route('crm.companies.destroy', $company) }}" data-crm-confirm="Delete this company?">
                         @csrf
                         @method('DELETE')
-                        <x-admin-panel::button type="submit" variant="ghost" icon="trash-2">
+                        <x-admin-panel::button type="submit" variant="danger" icon="trash-2">
                             Delete
                         </x-admin-panel::button>
                     </form>

@@ -31,6 +31,13 @@
                 @can('update', $task)
                     <x-admin-panel::button :href="route('crm.tasks.edit', $task)" icon="pencil">Edit</x-admin-panel::button>
                 @endcan
+                @can('delete', $task)
+                    <form method="POST" action="{{ route('crm.tasks.destroy', $task) }}" data-crm-confirm="Delete this task?">
+                        @csrf
+                        @method('DELETE')
+                        <x-admin-panel::button type="submit" variant="danger" icon="trash-2">Delete</x-admin-panel::button>
+                    </form>
+                @endcan
                 <x-admin-panel::button :href="route('crm.tasks.index')" variant="ghost" icon="arrow-left">Back</x-admin-panel::button>
             </div>
         </header>

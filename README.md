@@ -44,13 +44,13 @@ Demo kullanicilari:
 Demo verisi tek komutla gelir:
 
 ```bash
-make artisan CMD="db:seed --class=Sanalkopru\\Crm\\Database\\Seeders\\CrmDemoSeeder"
+make artisan CMD="crm:seed-demo"
 ```
 
 Performans veri seti:
 
 ```bash
-make artisan CMD="db:seed --class=Sanalkopru\\Crm\\Database\\Seeders\\CrmPerformanceSeeder"
+make artisan CMD="crm:seed-performance"
 ```
 
 Detayli kurulum: [docs/installation.md](docs/installation.md)

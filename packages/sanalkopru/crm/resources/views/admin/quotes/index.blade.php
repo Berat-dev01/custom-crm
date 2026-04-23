@@ -59,7 +59,7 @@
                 ['label' => 'Total'],
                 ['label' => 'Valid Until'],
                 ['label' => 'Owner'],
-                ['label' => 'Actions', 'width' => '180px'],
+                ['label' => 'Actions', 'width' => '240px'],
             ]">
                 @forelse($quotes as $quote)
                     <tr>
@@ -84,6 +84,13 @@
                                 @endcan
                                 @can('export', $quote)
                                     <x-admin-panel::button :href="route('crm.quotes.download', $quote)" size="sm" variant="ghost" icon="download" />
+                                @endcan
+                                @can('delete', $quote)
+                                    <form method="POST" action="{{ route('crm.quotes.destroy', $quote) }}" class="crm-inline-form" data-crm-confirm="Delete this quote?">
+                                        @csrf
+                                        @method('DELETE')
+                                        <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" />
+                                    </form>
                                 @endcan
                             </div>
                         </td>

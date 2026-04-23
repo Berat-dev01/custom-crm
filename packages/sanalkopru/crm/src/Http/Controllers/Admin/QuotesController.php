@@ -181,9 +181,17 @@ class QuotesController extends Controller
     {
         return [
             'quote' => $quote,
-            'contacts' => Contact::query()->orderBy('full_name')->limit(250)->get(['id', 'full_name']),
+            'contacts' => Contact::query()
+                ->orderBy('full_name')
+                ->limit(250)
+                ->pluck('full_name', 'id')
+                ->all(),
             'companies' => Company::query()->orderBy('name')->limit(250)->get(['id', 'name']),
-            'deals' => Deal::query()->orderByDesc('updated_at')->limit(250)->get(['id', 'title']),
+            'deals' => Deal::query()
+                ->orderByDesc('updated_at')
+                ->limit(250)
+                ->pluck('title', 'id')
+                ->all(),
             'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
             'tags' => Tag::query()->orderBy('name')->get(['id', 'name', 'color']),
             'selectedTags' => $quote->exists ? $quote->tags()->pluck('tags.id')->all() : [],

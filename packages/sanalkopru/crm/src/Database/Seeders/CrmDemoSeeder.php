@@ -60,6 +60,8 @@ class CrmDemoSeeder extends Seeder
                 'owner_id' => $users->random()->id,
                 'position' => $index + 1,
                 'probability' => $stage->probability,
+                'created_at' => now()->subDays($index * 3),
+                'updated_at' => now()->subDays($index),
             ]);
         });
 
@@ -72,6 +74,9 @@ class CrmDemoSeeder extends Seeder
             'company_id' => $contacts[0]->company_id,
             'owner_id' => $users[0]->id,
             'position' => 1,
+            'closed_at' => now(),
+            'created_at' => now()->subDays(9),
+            'updated_at' => now(),
         ]));
 
         $deals->push(Deal::factory()->lost()->create([
@@ -80,9 +85,12 @@ class CrmDemoSeeder extends Seeder
             'company_id' => $contacts[1]->company_id,
             'owner_id' => $users[1]->id,
             'position' => 1,
+            'closed_at' => now()->subDays(18),
+            'created_at' => now()->subDays(30),
+            'updated_at' => now()->subDays(18),
         ]));
 
-        $deals->each(function (Deal $deal) use ($tags, $users): void {
+        $deals->values()->each(function (Deal $deal, int $index) use ($tags, $users): void {
             $deal->tags()->syncWithoutDetaching($tags->random(2)->pluck('id')->all());
 
             Task::factory()->create([
@@ -90,6 +98,8 @@ class CrmDemoSeeder extends Seeder
                 'taskable_id' => $deal->id,
                 'assigned_to' => $deal->owner_id,
                 'title' => $deal->title.' icin takip',
+                'due_at' => now()->addDays($index + 1),
+                'reminder_at' => now()->addDays($index + 1)->subHour(),
             ]);
 
             Activity::factory()->create([
@@ -98,6 +108,7 @@ class CrmDemoSeeder extends Seeder
                 'user_id' => $users->random()->id,
                 'subject' => 'Pipeline guncellendi',
                 'type' => 'system',
+                'occurred_at' => now()->subDays($index * 2),
             ]);
         });
 
@@ -114,6 +125,8 @@ class CrmDemoSeeder extends Seeder
                 'owner_id' => $users->random()->id,
                 'status' => $index === 0 ? 'accepted' : 'sent',
                 'accepted_at' => $index === 0 ? now() : null,
+                'created_at' => now()->subDays($index * 7),
+                'updated_at' => now()->subDays($index * 7),
             ]);
 
             QuoteItem::factory()->count(3)->create(['quote_id' => $quote->id]);
@@ -124,20 +137,24 @@ class CrmDemoSeeder extends Seeder
                 'user_id' => $quote->owner_id,
                 'subject' => 'Teklif hazirlandi',
                 'type' => 'email',
+                'occurred_at' => now()->subDays($index * 7),
             ]);
         });
     }
 
     private function user(string $name, string $email, string $role): User
     {
-        $user = User::query()->firstOrCreate(
-            ['email' => $email],
-            [
+        $user = User::query()->where('email', $email)->first();
+
+        if (! $user) {
+            $user = new User;
+            $user->forceFill([
                 'name' => $name,
+                'email' => $email,
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
-            ]
-        );
+            ])->save();
+        }
 
         if (method_exists($user, 'assignRole') && ! $user->hasRole($role)) {
             $user->assignRole($role);
