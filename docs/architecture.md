@@ -90,6 +90,8 @@ Root uygulamanin sorumluluklari:
 
 `packages/sanalkopru/crm` ile `packages/sanalkopru/admin-panel` klasorlerinin root app yaninda durmasi mimari hata degildir. Bu repo gelistirme monorepo/working copy gibi kullanilir; satis ve kurulumda paketler Composer uzerinden musteri projesine baglanabilir.
 
+`packages/sanalkopru/admin-panel` git status icinde dirty subrepo veya path repository olarak gorunebilir. Bu durum CRM mimarisinin hatali oldugu anlamina gelmez; sadece lokal repo yonetimi ve paket kaynak baglantisi konusudur. Kod sorumlulugu yine ayridir: genel admin UI admin-panel paketinde, CRM domain mantigi CRM paketinde kalir.
+
 ### Domain Layer
 
 Domain katmani CRM'in asil motorudur.

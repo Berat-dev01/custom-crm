@@ -94,6 +94,10 @@ Test kapsami: [docs/qa/test-suite.md](docs/qa/test-suite.md)
 
 Manual QA checklist: [docs/qa-checklist.md](docs/qa-checklist.md)
 
+Quote kavram rehberi: [quotes-tanitim.txt](quotes-tanitim.txt)
+
+AI test haritasi: [ai-sayfalar.txt](ai-sayfalar.txt)
+
 ## AI Provider Secimi
 
 `.env` icinden provider secilir:
@@ -126,6 +130,8 @@ Production rehberi: [docs/production-deploy-no-docker.md](docs/production-deploy
 - [Troubleshooting](docs/troubleshooting.md)
 - [Architecture](docs/architecture.md)
 - [Product Scope](docs/product-scope.md)
+- [Quotes Tanitim](quotes-tanitim.txt)
+- [AI Sayfalar](ai-sayfalar.txt)
 
 ## Roadmap
 

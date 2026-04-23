@@ -31,6 +31,11 @@ Gercek:
 Varsa hata mesaji:
 ```
 
+Kavram notlari:
+
+- Quote modulunu test etmeden once [quotes-tanitim.txt](../quotes-tanitim.txt) dosyasini oku.
+- AI aksiyonlarini test etmeden once [ai-sayfalar.txt](../ai-sayfalar.txt) dosyasindaki sayfa/aksiyon listesini kullan.
+
 ## 1. Hizli Smoke Test
 
 Bu bolum sistem aciliyor mu, ana ekranlar patliyor mu diye bakar.

@@ -44,6 +44,7 @@ class CrmQuotesModuleTest extends TestCase
         $this->actingAs($this->admin, 'admin')
             ->get(route('crm.quotes.create'))
             ->assertOk()
+            ->assertSee('Quote totals are recalculated by the backend.')
             ->assertSee('Line Items')
             ->assertSee('Add Line')
             ->assertSee('Ada Buyer')
@@ -97,6 +98,7 @@ class CrmQuotesModuleTest extends TestCase
         $this->actingAs($this->admin, 'admin')
             ->get(route('crm.quotes.show', $quote))
             ->assertOk()
+            ->assertSee('Status actions do not edit line items.')
             ->assertSee('Backend controls the totals.')
             ->assertSee('2,537.00');
 
