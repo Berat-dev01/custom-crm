@@ -1246,6 +1246,8 @@ Kabul kriterleri:
 
 ## ADIM 27 — Test Suite'i Production Seviyesine Cikar
 
+**Durum:** Tamamlandi. `make test` Docker icinde izole container ile calisacak hale getirildi; deal stage transition, task reminder command, AI prompt mock ve minimum UI smoke testleri eklendi. Test suite kapsam dokumani `docs/qa/test-suite.md` icinde yazildi.
+
 ```prompt
 CRM icin kapsamli test suite yaz.
 

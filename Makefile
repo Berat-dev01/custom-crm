@@ -32,7 +32,7 @@ fresh:
 	$(DOCKER_COMPOSE) exec app php artisan migrate:fresh --seed
 
 test:
-	$(DOCKER_COMPOSE) exec app php artisan test
+	$(DOCKER_COMPOSE) run --rm --no-deps app php artisan test
 
 queue:
 	$(DOCKER_COMPOSE) exec app php artisan queue:work redis --sleep=3 --tries=3 --timeout=90
