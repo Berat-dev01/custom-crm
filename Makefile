@@ -1,6 +1,6 @@
 DOCKER_COMPOSE ?= docker compose
 
-.PHONY: up down restart build bash composer artisan npm migrate fresh test queue logs ps
+.PHONY: up down restart build bash composer artisan npm migrate fresh test queue logs ps assets
 
 up:
 	$(DOCKER_COMPOSE) up -d
@@ -42,3 +42,7 @@ logs:
 
 ps:
 	$(DOCKER_COMPOSE) ps
+
+assets:
+	$(DOCKER_COMPOSE) exec app php artisan vendor:publish --tag=crm-assets --force
+	$(DOCKER_COMPOSE) exec app php artisan vendor:publish --tag=admin-panel-assets --force

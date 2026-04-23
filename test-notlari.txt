@@ -58,3 +58,9 @@ sidebar link hiyerasisini duzeltmemiz lazim herseyi tek bir linkin altina koymak
 mumkunse show edit gibi ekranlari daha renkli fazla abartmadan goze hitap etcek hale getirebilrmiyzi?
 ------
 simdilik test sonuclari bunlar.
+________
+faz -  2
+listeleme sayfalarindaki save filter paneli compact filterimiz ile ortak calismali yani birlikte entegre olmali yani filter save i de bu global compact filterimizin icine guzelce bir ui calismasi ile dahil etmeliyiz. bu sayede daha cok alan kazanmis oluruz ve her sayfada birden fazla panel eklememis oluruz yer kazanmis oluruz.
+sisteme selectbox stili eklenmis bu cok guzel. fakat multiple selectler icin birsey yapilmamis onlar hala default browser kullaniyor. onlar icin de ayni produfesyonel production fready cozum yapilmali.
+/crm/deal-stages sayfasinda save order tiklayinca 404 sayfasina yonlendiriyor. 'crm/deal-stages/reorder' olarak.
+soru: kanban view yatay scroll olarak kalsin mi yoksa flex-wrap ile tek akrana sigdiralim mi? en dogrusu ne ise onu yapalim.

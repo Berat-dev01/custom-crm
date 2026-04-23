@@ -11,7 +11,11 @@
       "Read(//opt/homebrew/bin/**)",
       "Read(//usr/bin/**)",
       "Read(//opt/**)",
-      "Bash(docker exec crm-app-1 *)"
+      "Bash(docker exec crm-app-1 *)",
+      "Read(//var/run/**)",
+      "Read(//run/**)",
+      "Read(//Users/zyix/.docker/run/**)",
+      "Bash(DOCKER_HOST=unix:///Users/zyix/.docker/run/docker.sock docker exec crm-app-1 *)"
     ]
   }
 }
