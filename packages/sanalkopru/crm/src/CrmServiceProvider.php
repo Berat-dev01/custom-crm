@@ -2,11 +2,14 @@
 
 namespace Sanalkopru\Crm;
 
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -16,6 +19,7 @@ use Sanalkopru\Crm\Events\ContactCreated;
 use Sanalkopru\Crm\Events\DealMoved;
 use Sanalkopru\Crm\Events\QuoteSent;
 use Sanalkopru\Crm\Events\TaskCompleted;
+use Sanalkopru\Crm\Http\Middleware\AuthenticateCrmApi;
 use Sanalkopru\Crm\Http\Middleware\EnsureCrmAccess;
 use Sanalkopru\Crm\Listeners\LogContactCreatedActivity;
 use Sanalkopru\Crm\Listeners\LogDealMovedActivity;
@@ -70,6 +74,7 @@ class CrmServiceProvider extends ServiceProvider
 
         $this->registerAuthorization();
         $this->registerEvents();
+        $this->registerRateLimiters();
         $this->loadWebRoutes();
         $this->loadApiRoutes();
 
@@ -86,6 +91,7 @@ class CrmServiceProvider extends ServiceProvider
     private function registerAuthorization(): void
     {
         $this->app['router']->aliasMiddleware('crm.access', EnsureCrmAccess::class);
+        $this->app['router']->aliasMiddleware('crm.api.auth', AuthenticateCrmApi::class);
 
         Gate::policy(Activity::class, ActivityPolicy::class);
         Gate::policy(Company::class, CompanyPolicy::class);
@@ -116,6 +122,16 @@ class CrmServiceProvider extends ServiceProvider
         Event::listen(DealMoved::class, LogDealMovedActivity::class);
         Event::listen(QuoteSent::class, LogQuoteSentActivity::class);
         Event::listen(TaskCompleted::class, LogTaskCompletedActivity::class);
+    }
+
+    private function registerRateLimiters(): void
+    {
+        RateLimiter::for('crm-api', function (Request $request): Limit {
+            $limit = (int) config('crm.api.rate_limit_per_minute', 120);
+            $key = $request->user()?->getAuthIdentifier() ?: $request->ip();
+
+            return Limit::perMinute($limit)->by('crm-api:'.$key);
+        });
     }
 
     private function loadWebRoutes(): void

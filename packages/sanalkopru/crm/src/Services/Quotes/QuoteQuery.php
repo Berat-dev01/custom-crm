@@ -13,7 +13,7 @@ class QuoteQuery
     {
         return $this->baseQuery($request)
             ->orderByDesc('updated_at')
-            ->paginate(25)
+            ->paginate($this->perPage($request, 25))
             ->withQueryString();
     }
 
@@ -52,5 +52,12 @@ class QuoteQuery
             ->when($request->filled('tag_id'), fn (Builder $query) => $query->whereHas('tags', fn (Builder $query) => $query->whereKey($request->integer('tag_id'))))
             ->when($request->filled('valid_from'), fn (Builder $query) => $query->whereDate('valid_until', '>=', $request->date('valid_from')->toDateString()))
             ->when($request->filled('valid_to'), fn (Builder $query) => $query->whereDate('valid_until', '<=', $request->date('valid_to')->toDateString()));
+    }
+
+    private function perPage(Request $request, int $default): int
+    {
+        $max = (int) config('crm.api.max_per_page', 100);
+
+        return min(max(1, $request->integer('per_page', $default)), $max);
     }
 }

@@ -15,7 +15,7 @@ class DealQuery
     {
         return $this->baseQuery($request)
             ->orderByDesc('updated_at')
-            ->paginate(25)
+            ->paginate($this->perPage($request, 25))
             ->withQueryString();
     }
 
@@ -91,5 +91,12 @@ class DealQuery
             ->when($request->filled('expected_to'), fn (Builder $query) => $query->whereDate('expected_close_date', '<=', $request->date('expected_to')->toDateString()))
             ->when($request->filled('value_min'), fn (Builder $query) => $query->where('value', '>=', $request->input('value_min')))
             ->when($request->filled('value_max'), fn (Builder $query) => $query->where('value', '<=', $request->input('value_max')));
+    }
+
+    private function perPage(Request $request, int $default): int
+    {
+        $max = (int) config('crm.api.max_per_page', 100);
+
+        return min(max(1, $request->integer('per_page', $default)), $max);
     }
 }

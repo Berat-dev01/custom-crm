@@ -1179,6 +1179,8 @@ Kabul kriterleri:
 
 ## ADIM 25 — API Katmanini Hazirla
 
+**Durum:** Tamamlandi. `/api/crm` altinda token korumali ve rate limited API katmani eklendi; contacts, companies, deals, tasks ve quotes icin index/show/create/update endpointleri, deal move ve task complete aksiyonlari, Laravel API Resource response'lari, policy kontrolleri, API token modeli/middleware'i, docs/api.md dokumani ve feature testleri hazirlandi.
+
 ```prompt
 CRM icin opsiyonel API katmanini kur. Bu API ileride mobil uygulama, entegrasyon veya musteri ozel istekleri icin kullanilacak.
 

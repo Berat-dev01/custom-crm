@@ -193,6 +193,17 @@ class CrmDatabaseSchemaTest extends TestCase
             'deleted_at',
         ]);
 
+        $this->assertColumns('crm_api_tokens', [
+            'public_id',
+            'user_id',
+            'name',
+            'token_hash',
+            'abilities',
+            'last_used_at',
+            'expires_at',
+            'deleted_at',
+        ]);
+
         $this->assertColumns('notifications', [
             'id',
             'type',
@@ -233,6 +244,7 @@ class CrmDatabaseSchemaTest extends TestCase
             'crm_exports',
             'crm_saved_filters',
             'crm_audit_logs',
+            'crm_api_tokens',
         ];
     }
 

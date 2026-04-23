@@ -21,7 +21,7 @@ class CompanyQuery
     public function paginate(Request $request): LengthAwarePaginator
     {
         return $this->base($request)
-            ->paginate((int) $request->integer('per_page', 20))
+            ->paginate($this->perPage($request))
             ->withQueryString();
     }
 
@@ -57,5 +57,13 @@ class CompanyQuery
             ->when($filters['tag_id'], fn (Builder $query, int $tagId) => $query->whereHas('tags', fn (Builder $tagQuery) => $tagQuery->whereKey($tagId)))
             ->orderBy($sort, $direction)
             ->orderBy('id', 'desc');
+    }
+
+    private function perPage(Request $request): int
+    {
+        $default = (int) config('crm.api.default_per_page', 20);
+        $max = (int) config('crm.api.max_per_page', 100);
+
+        return min(max(1, $request->integer('per_page', $default)), $max);
     }
 }

@@ -94,6 +94,12 @@ return [
         'queue_threshold' => (int) env('CRM_IMPORT_QUEUE_THRESHOLD', 500),
     ],
 
+    'api' => [
+        'rate_limit_per_minute' => (int) env('CRM_API_RATE_LIMIT_PER_MINUTE', 120),
+        'default_per_page' => (int) env('CRM_API_DEFAULT_PER_PAGE', 20),
+        'max_per_page' => (int) env('CRM_API_MAX_PER_PAGE', 100),
+    ],
+
     'permissions' => [
         'enabled' => env('CRM_PERMISSIONS_ENABLED', true),
         'guard' => env('CRM_PERMISSIONS_GUARD', 'web'),

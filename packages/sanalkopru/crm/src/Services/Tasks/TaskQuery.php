@@ -15,7 +15,7 @@ class TaskQuery
             ->orderByRaw('CASE WHEN completed_at IS NULL THEN 0 ELSE 1 END')
             ->orderBy('due_at')
             ->orderByDesc('created_at')
-            ->paginate(25)
+            ->paginate($this->perPage($request, 25))
             ->withQueryString();
     }
 
@@ -55,5 +55,12 @@ class TaskQuery
             ->when($request->filled('status'), fn (Builder $query) => $query->where('status', $request->string('status')->toString()))
             ->when($request->filled('due_from'), fn (Builder $query) => $query->whereDate('due_at', '>=', $request->date('due_from')->toDateString()))
             ->when($request->filled('due_to'), fn (Builder $query) => $query->whereDate('due_at', '<=', $request->date('due_to')->toDateString()));
+    }
+
+    private function perPage(Request $request, int $default): int
+    {
+        $max = (int) config('crm.api.max_per_page', 100);
+
+        return min(max(1, $request->integer('per_page', $default)), $max);
     }
 }
