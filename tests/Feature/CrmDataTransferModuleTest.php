@@ -58,6 +58,21 @@ class CrmDataTransferModuleTest extends TestCase
         $this->assertStringContainsString('name,email,phone', $response->streamedContent());
     }
 
+    public function test_ajax_import_preview_renders_inside_scrollable_table_container(): void
+    {
+        $file = UploadedFile::fake()->createWithContent('contacts.csv', implode("\n", [
+            'full_name,first_name,last_name,email,phone,title,company,lifecycle_stage,source,owner_email,tags',
+            'Ada Lovelace,Ada,Lovelace,ada@example.com,+905551112233,CTO,Acme A.S.,lead,website,crm.owner@example.com,VIP|Enterprise',
+        ]));
+
+        $this->actingAs($this->admin, 'admin')
+            ->withHeader('X-Requested-With', 'XMLHttpRequest')
+            ->post(route('crm.contacts.import.preview'), ['file' => $file])
+            ->assertOk()
+            ->assertSee('crm-import-preview-table', false)
+            ->assertSee('Ada Lovelace', false);
+    }
+
     public function test_contacts_import_uses_defaults_when_optional_columns_are_missing(): void
     {
         $file = UploadedFile::fake()->createWithContent('contacts.csv', implode("\n", [

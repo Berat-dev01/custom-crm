@@ -119,6 +119,45 @@ class CompaniesController extends Controller
             ->with('crm_status', 'Company deleted.');
     }
 
+    public function bulkDelete(Request $request): RedirectResponse
+    {
+        Gate::authorize('crm.companies.delete');
+
+        $validated = $request->validate([
+            'record_ids' => ['required', 'array', 'min:1'],
+            'record_ids.*' => ['integer', 'exists:companies,id'],
+        ]);
+
+        $deleted = 0;
+        $blocked = 0;
+
+        Company::query()
+            ->whereKey($validated['record_ids'])
+            ->get()
+            ->each(function (Company $company) use (&$deleted, &$blocked): void {
+                Gate::authorize('delete', $company);
+
+                if ($company->contacts()->exists() || $company->deals()->exists() || $company->quotes()->exists()) {
+                    $blocked++;
+
+                    return;
+                }
+
+                $company->delete();
+                $deleted++;
+            });
+
+        $message = $deleted > 0
+            ? "{$deleted} company(s) deleted."
+            : 'No companies were deleted.';
+
+        if ($blocked > 0) {
+            $message .= " {$blocked} company(s) skipped because they still have related records.";
+        }
+
+        return back()->with('crm_status', $message);
+    }
+
     public function attachContacts(
         AttachCompanyContactsRequest $request,
         Company $company,

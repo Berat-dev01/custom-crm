@@ -29,27 +29,29 @@
         <p class="crm-muted">Extra columns will be ignored: {{ implode(', ', $preview['unexpected_headers']) }}</p>
     @endif
 
-    <x-admin-panel::table :headers="array_merge($preview['headers'], ['Status'])">
-        @foreach($preview['rows'] as $row)
-            <tr class="{{ $row['valid'] ? '' : 'crm-import-row-invalid' }}">
-                @foreach($preview['headers'] as $header)
+    <div class="crm-import-preview-table">
+        <x-admin-panel::table :headers="array_merge($preview['headers'], ['Status'])">
+            @foreach($preview['rows'] as $row)
+                <tr class="{{ $row['valid'] ? '' : 'crm-import-row-invalid' }}">
+                    @foreach($preview['headers'] as $header)
+                        <td>
+                            <span>{{ $row['values'][$header] ?? '-' }}</span>
+                        </td>
+                    @endforeach
                     <td>
-                        <span>{{ $row['values'][$header] ?? '-' }}</span>
+                        @if($row['valid'])
+                            <x-admin-panel::badge variant="success">Valid</x-admin-panel::badge>
+                        @else
+                            <x-admin-panel::badge variant="danger">Error</x-admin-panel::badge>
+                            <div class="crm-import-errors">
+                                @foreach($row['errors'] as $error)
+                                    <div>{{ $error }}</div>
+                                @endforeach
+                            </div>
+                        @endif
                     </td>
-                @endforeach
-                <td>
-                    @if($row['valid'])
-                        <x-admin-panel::badge variant="success">Valid</x-admin-panel::badge>
-                    @else
-                        <x-admin-panel::badge variant="danger">Error</x-admin-panel::badge>
-                        <div class="crm-import-errors">
-                            @foreach($row['errors'] as $error)
-                                <div>{{ $error }}</div>
-                            @endforeach
-                        </div>
-                    @endif
-                </td>
-            </tr>
-        @endforeach
-    </x-admin-panel::table>
+                </tr>
+            @endforeach
+        </x-admin-panel::table>
+    </div>
 </x-admin-panel::card>

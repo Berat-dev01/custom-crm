@@ -12,6 +12,16 @@
         $activeFilterCount = collect($filters)
             ->filter(fn ($value) => $value !== null && $value !== '')
             ->count();
+        $tableHeaders = [
+            ['label' => new \Illuminate\Support\HtmlString('<input type="checkbox" data-admin-bulk-toggle-all class="form-check-input" aria-label="Select all quotes">'), 'width' => '36px'],
+            ['label' => 'Quote'],
+            ['label' => 'Account'],
+            ['label' => 'Status'],
+            ['label' => 'Total'],
+            ['label' => 'Valid Until'],
+            ['label' => 'Owner'],
+            ['label' => 'Actions', 'width' => '240px'],
+        ];
     @endphp
 
     <section class="crm-admin-page" data-crm-module="quotes">
@@ -56,22 +66,41 @@
                 </x-slot:saved>
             </x-admin-panel::filter-shell>
 
-            <x-admin-panel::card>
-                <x-slot:header>
-                    Quotes
-                </x-slot:header>
+            <form id="crm-quote-bulk" method="POST" action="{{ route('crm.quotes.bulk-delete') }}">
+                @csrf
+                @method('DELETE')
 
-                <x-admin-panel::table :headers="[
-                    ['label' => 'Quote'],
-                    ['label' => 'Account'],
-                    ['label' => 'Status'],
-                    ['label' => 'Total'],
-                    ['label' => 'Valid Until'],
-                    ['label' => 'Owner'],
-                    ['label' => 'Actions', 'width' => '240px'],
-                ]">
+                <x-admin-panel::bulk-actions form="crm-quote-bulk" checkbox-selector=".crm-quote-selector" label="quotes">
+                    @can('crm.quotes.delete')
+                        <x-admin-panel::button
+                            type="submit"
+                            size="sm"
+                            variant="danger"
+                            icon="trash-2"
+                            form="crm-quote-bulk"
+                            data-crm-confirm="Delete selected quotes?"
+                        >
+                            Delete Selected
+                        </x-admin-panel::button>
+                    @endcan
+                </x-admin-panel::bulk-actions>
+
+                <x-admin-panel::card>
+                    <x-slot:header>
+                        Quotes
+                    </x-slot:header>
+
+                    <x-admin-panel::table :headers="$tableHeaders">
                     @forelse($quotes as $quote)
                         <tr>
+                            <td>
+                                <input
+                                    type="checkbox"
+                                    name="record_ids[]"
+                                    value="{{ $quote->id }}"
+                                    class="form-check-input crm-quote-selector"
+                                >
+                            </td>
                             <td>
                                 <strong>{{ $quote->quote_number }}</strong>
                                 <div class="crm-muted">{{ $quote->items_count }} items{{ $quote->deal ? ' / '.$quote->deal->title : '' }}</div>
@@ -95,18 +124,14 @@
                                         <x-admin-panel::button :href="route('crm.quotes.download', $quote)" size="sm" variant="ghost" icon="download" />
                                     @endcan
                                     @can('delete', $quote)
-                                        <form method="POST" action="{{ route('crm.quotes.destroy', $quote) }}" class="crm-inline-form" data-crm-confirm="Delete this quote?">
-                                            @csrf
-                                            @method('DELETE')
-                                            <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" />
-                                        </form>
+                                        <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" form="crm-quote-delete-{{ $quote->id }}" data-crm-confirm="Delete this quote?" />
                                     @endcan
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7">
+                            <td colspan="8">
                                 @include('crm::admin.partials.empty-state', [
                                     'title' => 'No quotes found.',
                                     'body' => 'Create a quote from a deal or start one manually.',
@@ -117,10 +142,20 @@
                             </td>
                         </tr>
                     @endforelse
-                </x-admin-panel::table>
+                    </x-admin-panel::table>
 
-                <x-admin-panel::pagination :paginator="$quotes" class="crm-pagination" />
-            </x-admin-panel::card>
+                    <x-admin-panel::pagination :paginator="$quotes" class="crm-pagination" />
+                </x-admin-panel::card>
+            </form>
         </div>
+
+        @foreach($quotes as $quote)
+            @can('delete', $quote)
+                <form id="crm-quote-delete-{{ $quote->id }}" method="POST" action="{{ route('crm.quotes.destroy', $quote) }}" class="crm-hidden-form">
+                    @csrf
+                    @method('DELETE')
+                </form>
+            @endcan
+        @endforeach
     </section>
 @endsection

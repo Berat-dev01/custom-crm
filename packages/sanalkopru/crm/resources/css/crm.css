@@ -50,13 +50,13 @@
 
     .crm-admin-page {
         display: grid;
-        gap: 24px;
-        max-width: 1180px;
+        gap: 18px;
+        max-width: 100%;
     }
 
     .crm-admin-header {
         display: grid;
-        gap: 6px;
+        gap: 4px;
     }
 
     .crm-admin-header-row {
@@ -73,7 +73,7 @@
         align-items: center;
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 8px;
     }
 
 
@@ -85,7 +85,7 @@
     .crm-filter-grid,
     .crm-form-grid {
         display: grid;
-        gap: 16px;
+        gap: 14px;
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
 
@@ -128,8 +128,16 @@
         font-size: 0.9rem;
         font-weight: 800;
         letter-spacing: 0;
-        margin-bottom: -10px;
+        margin-bottom: -6px;
         text-transform: uppercase;
+    }
+
+    .crm-dashboard-section-hint {
+        color: #64748b;
+        font-size: 0.72rem;
+        font-weight: 700;
+        margin-left: 8px;
+        text-transform: none;
     }
 
     .crm-admin-card {
@@ -199,6 +207,34 @@
         font-size: 0.8rem;
         gap: 3px;
         margin-top: 6px;
+    }
+
+    .crm-import-preview {
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .crm-import-preview-table {
+        max-width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+    }
+
+    .crm-import-preview-table .admin-table {
+        min-width: max-content;
+    }
+
+    .crm-import-preview-table td {
+        vertical-align: top;
+        white-space: nowrap;
+    }
+
+    .crm-import-preview-table td:last-child {
+        min-width: 220px;
+        white-space: normal;
     }
 
     .crm-hidden-form {

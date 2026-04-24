@@ -33,7 +33,7 @@ class DashboardReport
             'canViewAll' => $canViewAll,
             'stats' => $this->stats($user, $canViewAll, $range),
             'pipelineByStage' => $this->pipelineByStage($user, $canViewAll),
-            'monthlyTrend' => $this->monthlyTrend($user, $canViewAll, $range['end']),
+            'monthlyTrend' => $this->periodTrend($user, $canViewAll, $range),
             'upcomingTasks' => $this->upcomingTasks($user, $canViewAll),
             'recentActivities' => $this->recentActivities($user, $canViewAll, $range),
             'topOpenDeals' => $this->topOpenDeals($user, $canViewAll),
@@ -157,17 +157,15 @@ class DashboardReport
     /**
      * @return list<array<string, mixed>>
      */
-    private function monthlyTrend(Authenticatable $user, bool $canViewAll, CarbonImmutable $end): array
+    private function periodTrend(Authenticatable $user, bool $canViewAll, array $range): array
     {
-        $months = collect(range(5, 0))
-            ->map(fn (int $monthsBack): CarbonImmutable => $end->subMonths($monthsBack)->startOfMonth());
-        $start = $months->first()->startOfMonth();
-        $finish = $months->last()->endOfMonth();
-        $periodExpression = $this->monthExpression('closed_at');
+        $bucket = $this->trendBucket($range);
+        $points = $bucket['points'];
+        $periodExpression = $bucket['expression'];
         $aggregates = $this->scopeOwner(
             Deal::query()
                 ->whereIn('status', ['won', 'lost'])
-                ->whereBetween('closed_at', [$start, $finish]),
+                ->whereBetween('closed_at', [$range['start'], $range['end']]),
             $user,
             $canViewAll
         )
@@ -176,14 +174,14 @@ class DashboardReport
             ->get()
             ->groupBy(fn (Deal $deal): string => $deal->getAttribute('period').':'.$deal->status);
 
-        return $months
-            ->map(function (CarbonImmutable $month) use ($aggregates): array {
-                $period = $month->format('Y-m');
+        return collect($points)
+            ->map(function (array $point) use ($aggregates): array {
+                $period = $point['key'];
                 $won = $aggregates->get($period.':won')?->first();
                 $lost = $aggregates->get($period.':lost')?->first();
 
                 return [
-                    'label' => $month->format('M Y'),
+                    'label' => $point['label'],
                     'won_count' => (int) ($won?->deals_count ?? 0),
                     'won_value' => (float) ($won?->total_value ?? 0),
                     'lost_count' => (int) ($lost?->deals_count ?? 0),
@@ -278,10 +276,84 @@ class DashboardReport
         return $query->whereBetween($column, [$range['start'], $range['end']]);
     }
 
-    private function monthExpression(string $column): string
+    /**
+     * @param  array{start: CarbonImmutable, end: CarbonImmutable, label: string}  $range
+     * @return array{expression: string, points: list<array{key: string, label: string}>}
+     */
+    private function trendBucket(array $range): array
     {
-        return DB::connection()->getDriverName() === 'sqlite'
-            ? "strftime('%Y-%m', {$column})"
-            : "DATE_FORMAT({$column}, '%Y-%m')";
+        $spanDays = max(1, $range['start']->diffInDays($range['end']) + 1);
+
+        if ($spanDays <= 2) {
+            $points = [];
+            $cursor = $range['start']->startOfHour();
+            $finish = $range['end']->endOfHour();
+
+            while ($cursor->lessThanOrEqualTo($finish)) {
+                $points[] = [
+                    'key' => $cursor->format('Y-m-d H:00'),
+                    'label' => $cursor->format('d M H:00'),
+                ];
+                $cursor = $cursor->addHour();
+            }
+
+            return [
+                'expression' => $this->bucketExpression('hour', 'closed_at'),
+                'points' => $points,
+            ];
+        }
+
+        if ($spanDays <= 62) {
+            $points = [];
+            $cursor = $range['start']->startOfDay();
+            $finish = $range['end']->endOfDay();
+
+            while ($cursor->lessThanOrEqualTo($finish)) {
+                $points[] = [
+                    'key' => $cursor->format('Y-m-d'),
+                    'label' => $cursor->format('d M'),
+                ];
+                $cursor = $cursor->addDay();
+            }
+
+            return [
+                'expression' => $this->bucketExpression('day', 'closed_at'),
+                'points' => $points,
+            ];
+        }
+
+        $points = [];
+        $cursor = $range['start']->startOfMonth();
+        $finish = $range['end']->endOfMonth();
+
+        while ($cursor->lessThanOrEqualTo($finish)) {
+            $points[] = [
+                'key' => $cursor->format('Y-m'),
+                'label' => $cursor->format('M Y'),
+            ];
+            $cursor = $cursor->addMonth();
+        }
+
+        return [
+            'expression' => $this->bucketExpression('month', 'closed_at'),
+            'points' => $points,
+        ];
+    }
+
+    private function bucketExpression(string $bucket, string $column): string
+    {
+        $sqlite = match ($bucket) {
+            'hour' => "strftime('%Y-%m-%d %H:00', {$column})",
+            'day' => "strftime('%Y-%m-%d', {$column})",
+            default => "strftime('%Y-%m', {$column})",
+        };
+
+        $mysql = match ($bucket) {
+            'hour' => "DATE_FORMAT({$column}, '%Y-%m-%d %H:00')",
+            'day' => "DATE_FORMAT({$column}, '%Y-%m-%d')",
+            default => "DATE_FORMAT({$column}, '%Y-%m')",
+        };
+
+        return DB::connection()->getDriverName() === 'sqlite' ? $sqlite : $mysql;
     }
 }

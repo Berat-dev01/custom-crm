@@ -209,4 +209,19 @@ class CrmTasksModuleTest extends TestCase
             ->patch(route('crm.tasks.complete', $task))
             ->assertForbidden();
     }
+
+    public function test_tasks_can_be_bulk_deleted(): void
+    {
+        $first = CrmTask::factory()->create();
+        $second = CrmTask::factory()->create();
+
+        $this->actingAs($this->admin, 'admin')
+            ->delete(route('crm.tasks.bulk-delete'), [
+                'record_ids' => [$first->id, $second->id],
+            ])
+            ->assertRedirect();
+
+        $this->assertSoftDeleted('tasks', ['id' => $first->id]);
+        $this->assertSoftDeleted('tasks', ['id' => $second->id]);
+    }
 }

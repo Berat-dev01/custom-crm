@@ -95,6 +95,26 @@ class TagsController extends Controller
             ->with('crm_status', 'Tag deleted.');
     }
 
+    public function bulkDelete(Request $request): RedirectResponse
+    {
+        Gate::authorize('crm.tags.delete');
+
+        $validated = $request->validate([
+            'record_ids' => ['required', 'array', 'min:1'],
+            'record_ids.*' => ['integer', 'exists:tags,id'],
+        ]);
+
+        Tag::query()
+            ->whereKey($validated['record_ids'])
+            ->get()
+            ->each(function (Tag $tag): void {
+                Gate::authorize('delete', $tag);
+                $tag->delete();
+            });
+
+        return back()->with('crm_status', 'Selected tags deleted.');
+    }
+
     public function bulk(BulkTagRecordsRequest $request, BulkTagRecords $bulkTagRecords): RedirectResponse
     {
         $count = $bulkTagRecords->handle(

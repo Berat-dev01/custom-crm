@@ -44,7 +44,7 @@
             </form>
         </x-admin-panel::card>
 
-        <div data-crm-import-preview>
+        <div class="crm-import-preview" data-crm-import-preview>
             @if(session('crm_import_preview'))
                 @include('crm::admin.data-transfer._preview', ['preview' => session('crm_import_preview')])
             @endif

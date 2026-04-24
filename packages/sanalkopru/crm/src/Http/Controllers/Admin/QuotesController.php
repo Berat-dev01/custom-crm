@@ -103,6 +103,26 @@ class QuotesController extends Controller
             ->with('crm_status', 'Quote deleted.');
     }
 
+    public function bulkDelete(Request $request): RedirectResponse
+    {
+        Gate::authorize('crm.quotes.delete');
+
+        $validated = $request->validate([
+            'record_ids' => ['required', 'array', 'min:1'],
+            'record_ids.*' => ['integer', 'exists:quotes,id'],
+        ]);
+
+        Quote::query()
+            ->whereKey($validated['record_ids'])
+            ->get()
+            ->each(function (Quote $quote): void {
+                Gate::authorize('delete', $quote);
+                $quote->delete();
+            });
+
+        return back()->with('crm_status', 'Selected quotes deleted.');
+    }
+
     public function send(Quote $quote, SendQuote $send): JsonResponse|RedirectResponse
     {
         Gate::authorize('send', $quote);

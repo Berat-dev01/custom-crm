@@ -151,6 +151,26 @@ class DealsController extends Controller
             ->with('crm_status', 'Deal deleted.');
     }
 
+    public function bulkDelete(Request $request): RedirectResponse
+    {
+        Gate::authorize('crm.deals.delete');
+
+        $validated = $request->validate([
+            'record_ids' => ['required', 'array', 'min:1'],
+            'record_ids.*' => ['integer', 'exists:deals,id'],
+        ]);
+
+        Deal::query()
+            ->whereKey($validated['record_ids'])
+            ->get()
+            ->each(function (Deal $deal): void {
+                Gate::authorize('delete', $deal);
+                $deal->delete();
+            });
+
+        return back()->with('crm_status', 'Selected deals deleted.');
+    }
+
     public function move(MoveDealRequest $request, Deal $deal, MoveDealToStage $moveDeal): JsonResponse
     {
         $fromStageId = $deal->stage_id;

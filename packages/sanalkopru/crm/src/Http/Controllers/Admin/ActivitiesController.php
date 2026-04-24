@@ -107,6 +107,26 @@ class ActivitiesController extends Controller
             ->with('crm_status', 'Activity deleted.');
     }
 
+    public function bulkDelete(Request $request): RedirectResponse
+    {
+        Gate::authorize('crm.activities.delete');
+
+        $validated = $request->validate([
+            'record_ids' => ['required', 'array', 'min:1'],
+            'record_ids.*' => ['integer', 'exists:activities,id'],
+        ]);
+
+        Activity::query()
+            ->whereKey($validated['record_ids'])
+            ->get()
+            ->each(function (Activity $activity): void {
+                Gate::authorize('delete', $activity);
+                $activity->delete();
+            });
+
+        return back()->with('crm_status', 'Selected activities deleted.');
+    }
+
     /**
      * @return array<string, mixed>
      */

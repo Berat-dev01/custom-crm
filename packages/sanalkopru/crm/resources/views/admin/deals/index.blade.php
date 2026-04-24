@@ -13,6 +13,15 @@
             ->except(['view'])
             ->filter(fn ($value) => $value !== null && $value !== '')
             ->count();
+        $tableHeaders = [
+            ['label' => new \Illuminate\Support\HtmlString('<input type="checkbox" data-admin-bulk-toggle-all class="form-check-input" aria-label="Select all deals">'), 'width' => '36px'],
+            ['label' => 'Deal'],
+            ['label' => 'Stage'],
+            ['label' => 'Value'],
+            ['label' => 'Expected Close'],
+            ['label' => 'Owner'],
+            ['label' => 'Actions', 'width' => '220px'],
+        ];
     @endphp
 
     <section class="crm-admin-page" data-crm-module="deals">
@@ -77,21 +86,41 @@
             </x-admin-panel::filter-shell>
 
             @if($filters['view'] === 'list')
-                <x-admin-panel::card>
-                    <x-slot:header>
-                        Deals
-                    </x-slot:header>
+                <form id="crm-deal-bulk" method="POST" action="{{ route('crm.deals.bulk-delete') }}">
+                    @csrf
+                    @method('DELETE')
 
-                    <x-admin-panel::table :headers="[
-                        ['label' => 'Deal'],
-                        ['label' => 'Stage'],
-                        ['label' => 'Value'],
-                        ['label' => 'Expected Close'],
-                        ['label' => 'Owner'],
-                        ['label' => 'Actions', 'width' => '220px'],
-                    ]">
+                    <x-admin-panel::bulk-actions form="crm-deal-bulk" checkbox-selector=".crm-deal-selector" label="deals">
+                        @can('crm.deals.delete')
+                            <x-admin-panel::button
+                                type="submit"
+                                size="sm"
+                                variant="danger"
+                                icon="trash-2"
+                                form="crm-deal-bulk"
+                                data-crm-confirm="Delete selected deals?"
+                            >
+                                Delete Selected
+                            </x-admin-panel::button>
+                        @endcan
+                    </x-admin-panel::bulk-actions>
+
+                    <x-admin-panel::card>
+                        <x-slot:header>
+                            Deals
+                        </x-slot:header>
+
+                        <x-admin-panel::table :headers="$tableHeaders">
                         @forelse($deals as $deal)
                             <tr>
+                                <td>
+                                    <input
+                                        type="checkbox"
+                                        name="record_ids[]"
+                                        value="{{ $deal->id }}"
+                                        class="form-check-input crm-deal-selector"
+                                    >
+                                </td>
                                 <td>
                                     <strong>{{ $deal->title }}</strong>
                                     <div class="crm-muted">{{ $deal->company?->name ?: $deal->contact?->full_name ?: 'No account linked' }}</div>
@@ -107,18 +136,14 @@
                                             <x-admin-panel::button :href="route('crm.deals.edit', $deal)" size="sm" variant="ghost" icon="pencil" />
                                         @endcan
                                         @can('delete', $deal)
-                                            <form method="POST" action="{{ route('crm.deals.destroy', $deal) }}" class="crm-inline-form" data-crm-confirm="Delete this deal?">
-                                                @csrf
-                                                @method('DELETE')
-                                                <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" />
-                                            </form>
+                                            <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" form="crm-deal-delete-{{ $deal->id }}" data-crm-confirm="Delete this deal?" />
                                         @endcan
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6">
+                                <td colspan="7">
                                     @include('crm::admin.partials.empty-state', [
                                         'title' => 'No deals found.',
                                         'body' => 'Start a new opportunity or relax the current filters.',
@@ -129,10 +154,11 @@
                                 </td>
                             </tr>
                         @endforelse
-                    </x-admin-panel::table>
+                        </x-admin-panel::table>
 
-                    <x-admin-panel::pagination :paginator="$deals" class="crm-pagination" />
-                </x-admin-panel::card>
+                        <x-admin-panel::pagination :paginator="$deals" class="crm-pagination" />
+                    </x-admin-panel::card>
+                </form>
             @else
                 <div class="crm-kanban-scroll">
                     <div class="crm-kanban-board" data-crm-kanban-board>
@@ -226,5 +252,14 @@
                 </dialog>
             @endif
         </div>
+
+        @foreach($deals as $deal)
+            @can('delete', $deal)
+                <form id="crm-deal-delete-{{ $deal->id }}" method="POST" action="{{ route('crm.deals.destroy', $deal) }}" class="crm-hidden-form">
+                    @csrf
+                    @method('DELETE')
+                </form>
+            @endcan
+        @endforeach
     </section>
 @endsection

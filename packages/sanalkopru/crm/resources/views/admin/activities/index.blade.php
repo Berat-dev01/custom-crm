@@ -12,6 +12,15 @@
         $activeFilterCount = collect($filters)
             ->filter(fn ($value) => $value !== null && $value !== '')
             ->count();
+        $tableHeaders = [
+            ['label' => new \Illuminate\Support\HtmlString('<input type="checkbox" data-admin-bulk-toggle-all class="form-check-input" aria-label="Select all activities">'), 'width' => '36px'],
+            ['label' => 'Activity'],
+            ['label' => 'Type'],
+            ['label' => 'Related'],
+            ['label' => 'User'],
+            ['label' => 'Occurred'],
+            ['label' => 'Actions', 'width' => '180px'],
+        ];
     @endphp
 
     <section class="crm-admin-page" data-crm-module="activities">
@@ -47,19 +56,31 @@
                 </x-slot:saved>
             </x-admin-panel::filter-shell>
 
-            <x-admin-panel::card>
-                <x-slot:header>
-                    Timeline
-                </x-slot:header>
+            <form id="crm-activity-bulk" method="POST" action="{{ route('crm.activities.bulk-delete') }}">
+                @csrf
+                @method('DELETE')
 
-                <x-admin-panel::table :headers="[
-                    ['label' => 'Activity'],
-                    ['label' => 'Type'],
-                    ['label' => 'Related'],
-                    ['label' => 'User'],
-                    ['label' => 'Occurred'],
-                    ['label' => 'Actions', 'width' => '150px'],
-                ]">
+                <x-admin-panel::bulk-actions form="crm-activity-bulk" checkbox-selector=".crm-activity-selector" label="activities">
+                    @can('crm.activities.delete')
+                        <x-admin-panel::button
+                            type="submit"
+                            size="sm"
+                            variant="danger"
+                            icon="trash-2"
+                            form="crm-activity-bulk"
+                            data-crm-confirm="Delete selected activities?"
+                        >
+                            Delete Selected
+                        </x-admin-panel::button>
+                    @endcan
+                </x-admin-panel::bulk-actions>
+
+                <x-admin-panel::card>
+                    <x-slot:header>
+                        Timeline
+                    </x-slot:header>
+
+                    <x-admin-panel::table :headers="$tableHeaders">
                     @forelse($activities as $activity)
                     @php
                         $related = $activity->activityable;
@@ -72,6 +93,14 @@
                         };
                     @endphp
                     <tr>
+                        <td>
+                            <input
+                                type="checkbox"
+                                name="record_ids[]"
+                                value="{{ $activity->id }}"
+                                class="form-check-input crm-activity-selector"
+                            >
+                        </td>
                         <td>
                             <strong>{{ $activity->subject }}</strong>
                             <div class="crm-muted">{{ $activity->body ? str($activity->body)->limit(80) : 'No body' }}</div>
@@ -86,12 +115,15 @@
                                 @can('update', $activity)
                                     <x-admin-panel::button :href="route('crm.activities.edit', $activity)" size="sm" variant="ghost" icon="pencil" />
                                 @endcan
+                                @can('delete', $activity)
+                                    <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" form="crm-activity-delete-{{ $activity->id }}" data-crm-confirm="Delete this activity?" />
+                                @endcan
                             </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6">
+                        <td colspan="7">
                             @include('crm::admin.partials.empty-state', [
                                 'title' => 'No activities found.',
                                 'body' => 'Log calls, meetings and notes to keep the customer timeline useful.',
@@ -102,10 +134,20 @@
                         </td>
                     </tr>
                     @endforelse
-                </x-admin-panel::table>
+                    </x-admin-panel::table>
 
-                <x-admin-panel::pagination :paginator="$activities" class="crm-pagination" />
-            </x-admin-panel::card>
+                    <x-admin-panel::pagination :paginator="$activities" class="crm-pagination" />
+                </x-admin-panel::card>
+            </form>
         </div>
+
+        @foreach($activities as $activity)
+            @can('delete', $activity)
+                <form id="crm-activity-delete-{{ $activity->id }}" method="POST" action="{{ route('crm.activities.destroy', $activity) }}" class="crm-hidden-form">
+                    @csrf
+                    @method('DELETE')
+                </form>
+            @endcan
+        @endforeach
     </section>
 @endsection

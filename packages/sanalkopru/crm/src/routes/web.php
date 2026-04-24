@@ -45,6 +45,7 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::get('companies/import/template', [DataTransferController::class, 'template'])->defaults('module', 'companies')->name('companies.template');
                 Route::post('companies/import/preview', [DataTransferController::class, 'preview'])->defaults('module', 'companies')->name('companies.import.preview');
                 Route::post('companies/import', [DataTransferController::class, 'import'])->defaults('module', 'companies')->name('companies.import.store');
+                Route::delete('companies/bulk-delete', [CompaniesController::class, 'bulkDelete'])->name('companies.bulk-delete');
                 Route::post('companies/{company}/contacts', [CompaniesController::class, 'attachContacts'])->name('companies.contacts.attach');
                 Route::resource('companies', CompaniesController::class);
                 Route::post('deal-stages/reorder', [DealStagesController::class, 'reorder'])->name('deal-stages.reorder');
@@ -61,11 +62,13 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::get('deals/import/template', [DataTransferController::class, 'template'])->defaults('module', 'deals')->name('deals.template');
                 Route::post('deals/import/preview', [DataTransferController::class, 'preview'])->defaults('module', 'deals')->name('deals.import.preview');
                 Route::post('deals/import', [DataTransferController::class, 'import'])->defaults('module', 'deals')->name('deals.import.store');
+                Route::delete('deals/bulk-delete', [DealsController::class, 'bulkDelete'])->name('deals.bulk-delete');
                 Route::resource('deals', DealsController::class);
                 Route::get('tasks/my', [TasksController::class, 'my'])->name('tasks.my');
                 Route::get('tasks/overdue', [TasksController::class, 'overdue'])->name('tasks.overdue');
                 Route::get('tasks/today', [TasksController::class, 'today'])->name('tasks.today');
                 Route::patch('tasks/{task}/complete', [TasksController::class, 'complete'])->name('tasks.complete');
+                Route::delete('tasks/bulk-delete', [TasksController::class, 'bulkDelete'])->name('tasks.bulk-delete');
                 Route::resource('tasks', TasksController::class);
                 Route::patch('quotes/{quote}/send', [QuotesController::class, 'send'])->name('quotes.send');
                 Route::patch('quotes/{quote}/accept', [QuotesController::class, 'accept'])->name('quotes.accept');
@@ -74,10 +77,13 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::post('quotes/{quote}/duplicate', [QuotesController::class, 'duplicate'])->name('quotes.duplicate');
                 Route::get('quotes/{quote}/preview', [QuotesController::class, 'preview'])->name('quotes.preview');
                 Route::get('quotes/{quote}/download', [QuotesController::class, 'download'])->name('quotes.download');
+                Route::delete('quotes/bulk-delete', [QuotesController::class, 'bulkDelete'])->name('quotes.bulk-delete');
                 Route::get('quotes/export', [DataTransferController::class, 'export'])->defaults('module', 'quotes')->name('quotes.export');
                 Route::resource('quotes', QuotesController::class);
+                Route::delete('activities/bulk-delete', [ActivitiesController::class, 'bulkDelete'])->name('activities.bulk-delete');
                 Route::resource('activities', ActivitiesController::class);
                 Route::post('tags/bulk', [TagsController::class, 'bulk'])->name('tags.bulk');
+                Route::delete('tags/bulk-delete', [TagsController::class, 'bulkDelete'])->name('tags.bulk-delete');
                 Route::resource('tags', TagsController::class);
                 Route::post('saved-filters', [SavedFiltersController::class, 'store'])->name('saved-filters.store');
                 Route::get('saved-filters/{savedFilter}/apply', [SavedFiltersController::class, 'apply'])->name('saved-filters.apply');

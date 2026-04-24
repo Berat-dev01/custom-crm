@@ -164,4 +164,19 @@ class CrmCompaniesModuleTest extends TestCase
 
         $this->assertNotSoftDeleted('companies', ['id' => $company->id]);
     }
+
+    public function test_companies_can_be_bulk_deleted_when_unlinked(): void
+    {
+        $first = Company::factory()->create();
+        $second = Company::factory()->create();
+
+        $this->actingAs($this->admin, 'admin')
+            ->delete(route('crm.companies.bulk-delete'), [
+                'record_ids' => [$first->id, $second->id],
+            ])
+            ->assertRedirect();
+
+        $this->assertSoftDeleted('companies', ['id' => $first->id]);
+        $this->assertSoftDeleted('companies', ['id' => $second->id]);
+    }
 }

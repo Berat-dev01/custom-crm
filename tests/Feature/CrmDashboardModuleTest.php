@@ -102,6 +102,41 @@ class CrmDashboardModuleTest extends TestCase
         $this->assertSame(now()->startOfMonth()->format('Y-m-d').' - '.now()->endOfMonth()->format('Y-m-d'), $report['range']['label']);
     }
 
+    public function test_period_trend_changes_with_selected_period(): void
+    {
+        Deal::factory()->won()->create([
+            'stage_id' => $this->openStage->id,
+            'owner_id' => $this->sales->id,
+            'value' => 2500,
+            'closed_at' => now()->subDays(5),
+            'title' => 'Older Won Deal',
+        ]);
+
+        $todayReport = app(DashboardReport::class)->build(
+            Request::create('/admin/crm', 'GET', ['period' => 'today']),
+            $this->manager
+        );
+
+        $monthReport = app(DashboardReport::class)->build(
+            Request::create('/admin/crm', 'GET', ['period' => 'this_month']),
+            $this->manager
+        );
+
+        $this->assertSame(2, collect($todayReport['monthlyTrend'])->sum('won_count'));
+        $this->assertSame(3, collect($monthReport['monthlyTrend'])->sum('won_count'));
+        $this->assertGreaterThan(count($todayReport['monthlyTrend']), count($monthReport['monthlyTrend']));
+    }
+
+    public function test_dashboard_region_supports_ajax_refresh(): void
+    {
+        $this->actingAs($this->manager, 'admin')
+            ->withHeader('X-Requested-With', 'XMLHttpRequest')
+            ->get(route('crm.dashboard', ['period' => 'today']))
+            ->assertOk()
+            ->assertSee('crm-dashboard-region', false)
+            ->assertSee('Period Won/Lost Trend');
+    }
+
     public function test_dashboard_page_renders_demo_seed_with_meaningful_sections(): void
     {
         $this->seed(CrmDemoSeeder::class);
@@ -113,7 +148,7 @@ class CrmDashboardModuleTest extends TestCase
             ->assertSee('Sales Dashboard')
             ->assertSee('Open Pipeline')
             ->assertSee('Pipeline by Stage')
-            ->assertSee('Monthly Won/Lost Trend')
+            ->assertSee('Period Won/Lost Trend')
             ->assertSee('Upcoming Tasks')
             ->assertSee('Recent Activities')
             ->assertSee('Highest Value Open Deals')

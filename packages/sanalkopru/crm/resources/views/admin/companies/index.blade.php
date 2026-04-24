@@ -13,6 +13,15 @@
             ->except(['sort', 'direction'])
             ->filter(fn ($value) => $value !== null && $value !== '')
             ->count();
+        $tableHeaders = [
+            ['label' => new \Illuminate\Support\HtmlString('<input type="checkbox" data-admin-bulk-toggle-all class="form-check-input" aria-label="Select all companies">'), 'width' => '36px'],
+            ['label' => 'Name'],
+            ['label' => 'Sector'],
+            ['label' => 'Location'],
+            ['label' => 'Owner'],
+            ['label' => 'CRM Links'],
+            ['label' => 'Actions', 'width' => '220px'],
+        ];
     @endphp
 
     <section class="crm-admin-page" data-crm-module="companies">
@@ -75,21 +84,41 @@
                 </x-slot:saved>
             </x-admin-panel::filter-shell>
 
-            <x-admin-panel::card>
-                <x-slot:header>
-                    Companies
-                </x-slot:header>
+            <form id="crm-company-bulk" method="POST" action="{{ route('crm.companies.bulk-delete') }}">
+                @csrf
+                @method('DELETE')
 
-                <x-admin-panel::table :headers="[
-                    ['label' => 'Name'],
-                    ['label' => 'Sector'],
-                    ['label' => 'Location'],
-                    ['label' => 'Owner'],
-                    ['label' => 'CRM Links'],
-                    ['label' => 'Actions', 'width' => '220px'],
-                ]">
+                <x-admin-panel::bulk-actions form="crm-company-bulk" checkbox-selector=".crm-company-selector" label="companies">
+                    @can('crm.companies.delete')
+                        <x-admin-panel::button
+                            type="submit"
+                            size="sm"
+                            variant="danger"
+                            icon="trash-2"
+                            form="crm-company-bulk"
+                            data-crm-confirm="Delete selected companies?"
+                        >
+                            Delete Selected
+                        </x-admin-panel::button>
+                    @endcan
+                </x-admin-panel::bulk-actions>
+
+                <x-admin-panel::card>
+                    <x-slot:header>
+                        Companies
+                    </x-slot:header>
+
+                    <x-admin-panel::table :headers="$tableHeaders">
                     @forelse($companies as $company)
                         <tr>
+                            <td>
+                                <input
+                                    type="checkbox"
+                                    name="record_ids[]"
+                                    value="{{ $company->id }}"
+                                    class="form-check-input crm-company-selector"
+                                >
+                            </td>
                             <td>
                                 <strong>{{ $company->name }}</strong>
                                 <div class="crm-muted">{{ $company->email ?: 'No email' }}{{ $company->phone ? ' / '.$company->phone : '' }}</div>
@@ -111,18 +140,14 @@
                                         <x-admin-panel::button :href="route('crm.companies.edit', $company)" size="sm" variant="ghost" icon="pencil" />
                                     @endcan
                                     @can('delete', $company)
-                                        <form method="POST" action="{{ route('crm.companies.destroy', $company) }}" class="crm-inline-form" data-crm-confirm="Delete this company?">
-                                            @csrf
-                                            @method('DELETE')
-                                            <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" />
-                                        </form>
+                                        <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" form="crm-company-delete-{{ $company->id }}" data-crm-confirm="Delete this company?" />
                                     @endcan
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6">
+                            <td colspan="7">
                                 @include('crm::admin.partials.empty-state', [
                                     'title' => 'No companies found.',
                                     'body' => 'Add an account record or reset filters to see existing companies.',
@@ -133,10 +158,20 @@
                             </td>
                         </tr>
                     @endforelse
-                </x-admin-panel::table>
+                    </x-admin-panel::table>
 
-                <x-admin-panel::pagination :paginator="$companies" class="crm-pagination" />
-            </x-admin-panel::card>
+                    <x-admin-panel::pagination :paginator="$companies" class="crm-pagination" />
+                </x-admin-panel::card>
+            </form>
         </div>
+
+        @foreach($companies as $company)
+            @can('delete', $company)
+                <form id="crm-company-delete-{{ $company->id }}" method="POST" action="{{ route('crm.companies.destroy', $company) }}" class="crm-hidden-form">
+                    @csrf
+                    @method('DELETE')
+                </form>
+            @endcan
+        @endforeach
     </section>
 @endsection

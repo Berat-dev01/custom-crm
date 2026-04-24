@@ -13,6 +13,16 @@
             ->except(['scope'])
             ->filter(fn ($value) => $value !== null && $value !== '')
             ->count();
+        $tableHeaders = [
+            ['label' => new \Illuminate\Support\HtmlString('<input type="checkbox" data-admin-bulk-toggle-all class="form-check-input" aria-label="Select all tasks">'), 'width' => '36px'],
+            ['label' => 'Task'],
+            ['label' => 'Related'],
+            ['label' => 'Assignee'],
+            ['label' => 'Due'],
+            ['label' => 'Priority'],
+            ['label' => 'Status'],
+            ['label' => 'Actions', 'width' => '240px'],
+        ];
     @endphp
 
     <section class="crm-admin-page" data-crm-module="tasks">
@@ -54,20 +64,31 @@
                 </x-slot:saved>
             </x-admin-panel::filter-shell>
 
-            <x-admin-panel::card>
-                <x-slot:header>
-                    {{ ucfirst($filters['scope']) }} Tasks
-                </x-slot:header>
+            <form id="crm-task-bulk" method="POST" action="{{ route('crm.tasks.bulk-delete') }}">
+                @csrf
+                @method('DELETE')
 
-                <x-admin-panel::table :headers="[
-                    ['label' => 'Task'],
-                    ['label' => 'Related'],
-                    ['label' => 'Assignee'],
-                    ['label' => 'Due'],
-                    ['label' => 'Priority'],
-                    ['label' => 'Status'],
-                    ['label' => 'Actions', 'width' => '240px'],
-                ]">
+                <x-admin-panel::bulk-actions form="crm-task-bulk" checkbox-selector=".crm-task-selector" label="tasks">
+                    @can('crm.tasks.delete')
+                        <x-admin-panel::button
+                            type="submit"
+                            size="sm"
+                            variant="danger"
+                            icon="trash-2"
+                            form="crm-task-bulk"
+                            data-crm-confirm="Delete selected tasks?"
+                        >
+                            Delete Selected
+                        </x-admin-panel::button>
+                    @endcan
+                </x-admin-panel::bulk-actions>
+
+                <x-admin-panel::card>
+                    <x-slot:header>
+                        {{ ucfirst($filters['scope']) }} Tasks
+                    </x-slot:header>
+
+                    <x-admin-panel::table :headers="$tableHeaders">
                     @forelse($tasks as $task)
                     @php
                         $related = $task->taskable;
@@ -80,6 +101,14 @@
                         };
                     @endphp
                     <tr>
+                        <td>
+                            <input
+                                type="checkbox"
+                                name="record_ids[]"
+                                value="{{ $task->id }}"
+                                class="form-check-input crm-task-selector"
+                            >
+                        </td>
                         <td>
                             <strong>{{ $task->title }}</strong>
                             <div class="crm-muted">{{ $task->description ? str($task->description)->limit(80) : 'No description' }}</div>
@@ -97,26 +126,18 @@
                                 @endcan
                                 @can('complete', $task)
                                     @if($task->status !== 'completed')
-                                        <form method="POST" action="{{ route('crm.tasks.complete', $task) }}" class="crm-inline-form">
-                                            @csrf
-                                            @method('PATCH')
-                                            <x-admin-panel::button type="submit" size="sm" variant="ghost" icon="check" />
-                                        </form>
+                                        <x-admin-panel::button type="submit" size="sm" variant="ghost" icon="check" form="crm-task-complete-{{ $task->id }}" />
                                     @endif
                                 @endcan
                                 @can('delete', $task)
-                                    <form method="POST" action="{{ route('crm.tasks.destroy', $task) }}" class="crm-inline-form" data-crm-confirm="Delete this task?">
-                                        @csrf
-                                        @method('DELETE')
-                                        <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" />
-                                    </form>
+                                    <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" form="crm-task-delete-{{ $task->id }}" data-crm-confirm="Delete this task?" />
                                 @endcan
                             </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7">
+                        <td colspan="8">
                             @include('crm::admin.partials.empty-state', [
                                 'title' => 'No tasks found.',
                                 'body' => 'Create a follow-up so the next sales action is visible.',
@@ -127,10 +148,28 @@
                         </td>
                     </tr>
                     @endforelse
-                </x-admin-panel::table>
+                    </x-admin-panel::table>
 
-                <x-admin-panel::pagination :paginator="$tasks" class="crm-pagination" />
-            </x-admin-panel::card>
+                    <x-admin-panel::pagination :paginator="$tasks" class="crm-pagination" />
+                </x-admin-panel::card>
+            </form>
         </div>
+
+        @foreach($tasks as $task)
+            @can('complete', $task)
+                @if($task->status !== 'completed')
+                    <form id="crm-task-complete-{{ $task->id }}" method="POST" action="{{ route('crm.tasks.complete', $task) }}" class="crm-hidden-form">
+                        @csrf
+                        @method('PATCH')
+                    </form>
+                @endif
+            @endcan
+            @can('delete', $task)
+                <form id="crm-task-delete-{{ $task->id }}" method="POST" action="{{ route('crm.tasks.destroy', $task) }}" class="crm-hidden-form">
+                    @csrf
+                    @method('DELETE')
+                </form>
+            @endcan
+        @endforeach
     </section>
 @endsection

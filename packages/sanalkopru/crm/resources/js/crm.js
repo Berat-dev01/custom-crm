@@ -427,6 +427,11 @@
                 event.preventDefault();
 
                 const previewContainer = document.querySelector('[data-crm-import-preview]');
+                form.classList.add('crm-is-submitting');
+
+                if (submitter) {
+                    submitter.disabled = true;
+                }
 
                 if (previewContainer) {
                     previewContainer.classList.add('is-loading');
@@ -451,16 +456,21 @@
 
                     if (previewContainer) {
                         previewContainer.innerHTML = html;
-                        previewContainer.classList.remove('is-loading');
                         previewContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
                         window.AdminPanel?.rehydrate?.();
                     }
                 } catch (_e) {
+                    window.AdminPanel?.toast('Preview failed. Please try again.', 'danger');
+                } finally {
+                    form.classList.remove('crm-is-submitting');
+
+                    if (submitter) {
+                        submitter.disabled = false;
+                    }
+
                     if (previewContainer) {
                         previewContainer.classList.remove('is-loading');
                     }
-
-                    window.AdminPanel?.toast('Preview failed. Please try again.', 'danger');
                 }
             });
         });
