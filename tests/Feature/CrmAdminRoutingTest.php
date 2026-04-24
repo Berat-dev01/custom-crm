@@ -95,6 +95,7 @@ class CrmAdminRoutingTest extends TestCase
             'crm.dashboard',
             'crm.search',
             'crm.notifications.index',
+            'crm.notifications.page',
             'crm.notifications.read',
             'crm.notifications.read-all',
             'crm.contacts.index',

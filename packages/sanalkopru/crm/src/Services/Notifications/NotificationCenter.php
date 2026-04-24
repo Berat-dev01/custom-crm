@@ -3,6 +3,7 @@
 namespace Sanalkopru\Crm\Services\Notifications;
 
 use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationCenter
@@ -31,7 +32,20 @@ class NotificationCenter
             'items' => $items->take(self::LIMIT)->map(fn (DatabaseNotification $notification): array => $this->format($notification))->all(),
             'unread_count' => $user->unreadNotifications()->count(),
             'has_more' => $items->count() > self::LIMIT,
+            'server_time' => now()->toIso8601String(),
         ];
+    }
+
+    public function paginate(?User $user, int $perPage = 20): LengthAwarePaginator
+    {
+        abort_unless($user, 403);
+
+        $paginator = $user->notifications()
+            ->latest()
+            ->paginate($perPage)
+            ->through(fn (DatabaseNotification $notification): array => $this->format($notification));
+
+        return $paginator;
     }
 
     public function markRead(?User $user, string $notificationId): void

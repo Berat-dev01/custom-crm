@@ -2,7 +2,9 @@
 
 namespace Sanalkopru\Crm\Http\Controllers\Admin;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
@@ -19,20 +21,38 @@ class NotificationsController extends Controller
         return response()->json($this->notifications->payload($request->user('admin')));
     }
 
-    public function read(Request $request, string $notification): JsonResponse
+    public function page(Request $request): View
+    {
+        Gate::authorize('crm.dashboard.view');
+
+        return view('crm::admin.notifications.index', [
+            'notifications' => $this->notifications->paginate($request->user('admin')),
+            'unreadCount' => $request->user('admin')?->unreadNotifications()->count() ?? 0,
+        ]);
+    }
+
+    public function read(Request $request, string $notification): JsonResponse|RedirectResponse
     {
         Gate::authorize('crm.dashboard.view');
 
         $this->notifications->markRead($request->user('admin'), $notification);
 
+        if (! $request->expectsJson()) {
+            return back()->with('crm_status', 'Notification marked as read.');
+        }
+
         return response()->json($this->notifications->payload($request->user('admin')));
     }
 
-    public function readAll(Request $request): JsonResponse
+    public function readAll(Request $request): JsonResponse|RedirectResponse
     {
         Gate::authorize('crm.dashboard.view');
 
         $this->notifications->markAllRead($request->user('admin'));
+
+        if (! $request->expectsJson()) {
+            return back()->with('crm_status', 'Notifications marked as read.');
+        }
 
         return response()->json($this->notifications->payload($request->user('admin')));
     }

@@ -30,6 +30,7 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::get('/', DashboardController::class)->name('dashboard');
                 Route::get('search', SearchController::class)->name('search');
                 Route::get('notifications', [NotificationsController::class, 'index'])->name('notifications.index');
+                Route::get('notifications/all', [NotificationsController::class, 'page'])->name('notifications.page');
                 Route::post('notifications/read-all', [NotificationsController::class, 'readAll'])->name('notifications.read-all');
                 Route::post('notifications/{notification}/read', [NotificationsController::class, 'read'])->name('notifications.read');
 

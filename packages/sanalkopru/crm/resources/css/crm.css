@@ -257,6 +257,111 @@
         font-weight: 800;
     }
 
+    .crm-notification-feed {
+        display: grid;
+        gap: 12px;
+    }
+
+    .crm-notification-card {
+        align-items: center;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        display: grid;
+        gap: 12px;
+        grid-template-columns: minmax(0, 1fr) auto;
+        padding: 14px 16px;
+    }
+
+    .crm-notification-card.is-unread {
+        background: #f8fbff;
+        border-color: #bfdbfe;
+    }
+
+    .crm-notification-card-main {
+        display: grid;
+        gap: 6px;
+        min-width: 0;
+    }
+
+    .crm-notification-card-title {
+        align-items: center;
+        display: flex;
+        gap: 12px;
+        justify-content: space-between;
+    }
+
+    .crm-notification-card-title span {
+        color: #64748b;
+        flex-shrink: 0;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    .crm-notification-card-heading {
+        align-items: center;
+        display: inline-flex;
+        gap: 8px;
+        min-width: 0;
+    }
+
+    .crm-notification-card-heading strong {
+        color: #0f172a;
+        font-size: 0.95rem;
+        min-width: 0;
+    }
+
+    .crm-notification-card-dot {
+        background: #2563eb;
+        border-radius: 999px;
+        display: inline-block;
+        flex: 0 0 auto;
+        height: 8px;
+        opacity: 0;
+        width: 8px;
+    }
+
+    .crm-notification-card.is-unread .crm-notification-card-dot {
+        opacity: 1;
+    }
+
+    .crm-notification-card p {
+        color: #475569;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .crm-notification-card-actions {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+
+    .crm-notification-empty {
+        align-items: center;
+        color: #64748b;
+        display: grid;
+        gap: 8px;
+        justify-items: center;
+        padding: 28px 16px;
+        text-align: center;
+    }
+
+    .crm-notification-empty strong {
+        color: #0f172a;
+        font-size: 1rem;
+    }
+
+    .crm-notification-empty p {
+        margin: 0;
+        max-width: 420px;
+    }
+
+    .crm-notification-footer {
+        margin-top: 16px;
+    }
+
     .crm-sr-only {
         clip: rect(0, 0, 0, 0);
         border: 0;

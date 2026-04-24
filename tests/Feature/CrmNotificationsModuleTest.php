@@ -80,6 +80,23 @@ class CrmNotificationsModuleTest extends TestCase
         $this->assertSame(0, $this->admin->fresh()->unreadNotifications()->count());
     }
 
+    public function test_notifications_page_renders_latest_items(): void
+    {
+        $task = Task::factory()->create([
+            'assigned_to' => $this->admin->id,
+            'title' => 'Page reminder',
+        ]);
+
+        Notification::sendNow($this->admin, new TaskReminderNotification($task), ['database']);
+
+        $this->actingAs($this->admin, 'admin')
+            ->get(route('crm.notifications.page'))
+            ->assertOk()
+            ->assertSee('Notifications')
+            ->assertSee('Page reminder')
+            ->assertSee('Mark all as read');
+    }
+
     public function test_duplicate_unread_notifications_are_suppressed(): void
     {
         $quote = Quote::factory()->create(['owner_id' => $this->admin->id, 'status' => 'draft']);
