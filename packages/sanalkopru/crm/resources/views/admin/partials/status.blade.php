@@ -1,6 +1,9 @@
 @once
     @push('scripts')
-        <script src="{{ asset('vendor/crm/js/crm.js') }}"></script>
+        @php
+            $crmJsUrl = asset('vendor/crm/js/crm.js') . '?v=' . (@filemtime(public_path('vendor/crm/js/crm.js')) ?: time());
+        @endphp
+        <script src="{{ $crmJsUrl }}"></script>
     @endpush
 @endonce
 

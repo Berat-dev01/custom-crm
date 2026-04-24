@@ -152,7 +152,10 @@ class CrmDashboardModuleTest extends TestCase
             ->assertSee('Upcoming Tasks')
             ->assertSee('Recent Activities')
             ->assertSee('Highest Value Open Deals')
-            ->assertSee('Quote Status Distribution');
+            ->assertSee('Quote Status Distribution')
+            ->assertSee('data-crm-dashboard-expand', false)
+            ->assertSee('data-crm-paginate', false)
+            ->assertSee('crm-dashboard-panel', false);
     }
 
     public function test_sales_dashboard_page_does_not_render_other_sales_top_deals(): void

@@ -263,3 +263,33 @@
 - Dogrulama: `php artisan route:cache`, `php artisan config:cache`, `php artisan view:cache` basarili; ardindan proje akisina uygun olarak `php artisan optimize:clear` calistirildi.
 - Dogrulama: Full test suite Docker icinde basarili: `162 passed (1192 assertions)`.
 - Dogrulama: `git diff --check` temiz.
+
+## Notification Dropdown Fix ve Dashboard Card Kontrolu
+
+- Baslangic: Kullanici smoke testinde bell dropdown'da ayni anda loading/error/empty state gorundugu, `View all notifications` linkinin stilsiz kaldigi ve dashboard kartlarinin icerik uzadikca kontrolsuz sekilde uzadigi tespit edildi.
+- Uygulama: Admin-panel notification JS akisi request-id tabanli hale getirildi. Gec gelen eski fetch response'lari artik yeni state'i bozmayacak.
+- Uygulama: Notification dropdown icin merkezi state yonetimi eklendi; loading, error, empty ve list gorunumleri artik ayni anda acik kalmiyor.
+- Uygulama: Dropdown header tipografisi, summary satiri ve `View all notifications` footer linki daha profesyonel stillerle guncellendi.
+- Uygulama: Admin-panel ve CRM assetleri yeniden publish edildi.
+- Uygulama: Dashboard kartlarina kontrollu ic scroll paneli eklendi; uzun liste/trend icerikleri karti uzatmak yerine kart icinde scroll oluyor.
+- Uygulama: Dashboard kartlarinin sag ustune expand button eklendi; tiklaninca kart fullscreen benzeri sabit overlay modunda buyuyor.
+- Uygulama: Dashboard AJAX region yenilenince expand button'larin tekrar baglanmasi icin CRM JS, admin rehydrate akisina entegre edildi.
+- Dogrulama: Pint formatter basarili.
+- Dogrulama: `vendor:publish --tag=admin-panel-assets --force` ve `vendor:publish --tag=crm-assets --force` Docker icinde basarili.
+- Dogrulama: Hedefli testler basarili: `CrmNotificationsModuleTest`, `CrmAdminRoutingTest`, `CrmDashboardModuleTest` => `19 passed (188 assertions)`.
+- Dogrulama: `php artisan route:cache`, `php artisan config:cache`, `php artisan view:cache` basarili; ardindan `php artisan optimize:clear` calistirildi.
+- Dogrulama: Full test suite Docker icinde basarili: `162 passed (1194 assertions)`.
+- Dogrulama: `git diff --check` temiz.
+
+## Notification Hidden State Fix ve Dashboard Yukseklik Dengelemesi
+
+- Baslangic: Kullanici yeni screenshot ile dropdown API cevabi dogru olmasina ragmen loading/error/empty state'lerin ayni anda gorunur kaldigini bildirdi; bu sira dashboard kartlarinda desktop gorunumde gereksiz dikey uzama ve bosluk problemi tekrar teyit edildi.
+- Tespit: Sorun JS degil, admin-panel baz katmaninda global `[hidden]` stilinin tanimli olmamasi nedeniyle hidden attribute'lu notification state bloklarinin gercekte saklanmamasi idi.
+- Uygulama: `admin-panel` base CSS icine `[hidden] { display: none !important; }` eklendi. Bu sayede notification dropdown, bulk actions ve benzeri hidden state kullanan bilesenler tarayicida tutarli calisir hale getirildi.
+- Uygulama: Dashboard iki kolonlu grid `stretch` yerine `start` hizasina cekildi; kartlarin yuksekligi artik komsu kartin boyuna zorla eslenmiyor.
+- Uygulama: Dashboard kartlari icin `height: auto` ve daha kontrollu panel yukseklik limitleri tanimlandi; uzun icerikler kart icinde scroll olurken desktop bosluklari belirgin sekilde azaltildi.
+- Uygulama: Admin-panel CSS/JS ile CRM dashboard CSS/JS yuklemelerine filemtime tabanli query-string version eklendi. Publish sonrasi tarayicinin eski asset'i cache'den gostermesi engellendi.
+- Uygulama: Docker icinde `vendor:publish --tag=admin-panel-assets --force` ve `vendor:publish --tag=crm-assets --force` tekrar calistirildi; ardindan `php artisan optimize:clear` ile view/cache temizlendi.
+- Dogrulama: Browser oturumunda seeded kullanici ile login yapilarak bell dropdown canli olarak kontrol edildi; `Loading` ve `Notifications could not be loaded` state'leri gorunmez, `All caught up` ve empty state tutarli.
+- Dogrulama: Hedefli testler basarili: `CrmDashboardModuleTest`, `CrmNotificationsModuleTest` => `12 passed (59 assertions)`.
+- Dogrulama: `git diff --check` temiz.

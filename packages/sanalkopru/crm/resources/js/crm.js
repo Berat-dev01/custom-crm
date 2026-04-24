@@ -476,7 +476,282 @@
         });
     }
 
+    function animateDashboardBars() {
+        const dashboard = document.querySelector('[data-crm-module="dashboard"]');
+
+        if (!dashboard) {
+            return;
+        }
+
+        dashboard.querySelectorAll('.crm-dashboard-bar > span, .crm-dashboard-split-bars > span').forEach((span) => {
+            if (span.dataset.crmBarAnimated === '1') {
+                return;
+            }
+
+            span.dataset.crmBarAnimated = '1';
+
+            const target = span.style.width;
+
+            span.style.transition = 'none';
+            span.style.width = '0';
+
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    span.style.transition = '';
+                    span.style.width = target;
+                });
+            });
+        });
+    }
+
+    function animateDashboardNumbers() {
+        const dashboard = document.querySelector('[data-crm-module="dashboard"]');
+
+        if (!dashboard) {
+            return;
+        }
+
+        dashboard.querySelectorAll('[data-crm-count-up]').forEach((card) => {
+            if (card.dataset.crmCountAnimated === '1') {
+                return;
+            }
+
+            card.dataset.crmCountAnimated = '1';
+
+            const target = parseInt(card.dataset.crmCountUp, 10);
+
+            if (isNaN(target) || target === 0) {
+                return;
+            }
+
+            const h3 = card.querySelector('h3');
+
+            if (!h3) {
+                return;
+            }
+
+            const originalText = h3.textContent.trim();
+            const duration = Math.min(1200, 400 + target * 6);
+            const startTime = performance.now();
+
+            function easeOutCubic(t) {
+                return 1 - Math.pow(1 - t, 3);
+            }
+
+            function tick(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = Math.round(easeOutCubic(progress) * target);
+
+                h3.textContent = current.toLocaleString();
+
+                if (progress < 1) {
+                    requestAnimationFrame(tick);
+                } else {
+                    h3.textContent = originalText;
+                }
+            }
+
+            h3.textContent = '0';
+            requestAnimationFrame(tick);
+        });
+    }
+
+    function animateDashboardRegion() {
+        const region = document.getElementById('crm-dashboard-region');
+
+        if (!region) {
+            return;
+        }
+
+        region.classList.remove('crm-region-fade');
+        void region.offsetWidth;
+        region.classList.add('crm-region-fade');
+    }
+
+    function collapseCard(card) {
+        const backdrop = document.querySelector('.crm-dashboard-backdrop');
+        const icon = card.querySelector('[data-crm-dashboard-expand] [data-lucide]');
+
+        card.classList.remove('is-expanded');
+        backdrop?.remove();
+
+        // Restore card to its original position in the DOM
+        if (card._crmPortalAnchor) {
+            card._crmPortalAnchor.replaceWith(card);
+            delete card._crmPortalAnchor;
+        }
+
+        if (icon) {
+            icon.setAttribute('data-lucide', 'expand');
+            window.AdminPanel?.refreshIcons?.();
+        }
+    }
+
+    function expandCard(card) {
+        document.querySelectorAll('[data-crm-dashboard-card].is-expanded').forEach(collapseCard);
+
+        const icon = card.querySelector('[data-crm-dashboard-expand] [data-lucide]');
+
+        // Portal: move card to body so position:fixed is relative to viewport,
+        // not a parent with CSS transform (animation creates containing block).
+        const anchor = document.createElement('div');
+        anchor.style.display = 'contents';
+        card.replaceWith(anchor);
+        card._crmPortalAnchor = anchor;
+        document.body.appendChild(card);
+
+        const backdrop = document.createElement('div');
+        backdrop.className = 'crm-dashboard-backdrop';
+        backdrop.addEventListener('click', () => collapseCard(card));
+        document.body.appendChild(backdrop);
+
+        card.classList.add('is-expanded');
+
+        if (icon) {
+            icon.setAttribute('data-lucide', 'shrink');
+            window.AdminPanel?.refreshIcons?.();
+        }
+    }
+
+    function initializeDashboardCards() {
+        const dashboard = document.querySelector('[data-crm-module="dashboard"]');
+
+        if (!dashboard) {
+            return;
+        }
+
+        dashboard.querySelectorAll('[data-crm-dashboard-card]').forEach((card) => {
+            if (card.dataset.crmDashboardReady === '1') {
+                return;
+            }
+
+            card.dataset.crmDashboardReady = '1';
+
+            const button = card.querySelector('[data-crm-dashboard-expand]');
+
+            if (button) {
+                button.addEventListener('click', () => {
+                    card.classList.contains('is-expanded') ? collapseCard(card) : expandCard(card);
+                });
+            }
+        });
+    }
+
+    function initializeDashboardCardPagination() {
+        document.querySelectorAll('[data-crm-paginate]').forEach((panel) => {
+            if (panel.dataset.crmPaginateReady === '1') {
+                return;
+            }
+
+            panel.dataset.crmPaginateReady = '1';
+
+            const pageSize = parseInt(panel.dataset.crmPageSize || '5', 10);
+            const items = Array.from(
+                panel.querySelectorAll(':scope > .crm-dashboard-row, :scope > .crm-list-item, :scope > .crm-timeline-item'),
+            );
+
+            if (items.length <= pageSize) {
+                return;
+            }
+
+            let currentPage = 0;
+            const totalPages = Math.ceil(items.length / pageSize);
+
+            const prevBtn = document.createElement('button');
+            prevBtn.type = 'button';
+            prevBtn.className = 'crm-dashboard-pager-btn';
+            prevBtn.setAttribute('aria-label', 'Previous page');
+            prevBtn.innerHTML = '<i data-lucide="chevron-left" width="14" height="14"></i>';
+
+            const info = document.createElement('span');
+            info.className = 'crm-dashboard-pager-info';
+
+            const nextBtn = document.createElement('button');
+            nextBtn.type = 'button';
+            nextBtn.className = 'crm-dashboard-pager-btn';
+            nextBtn.setAttribute('aria-label', 'Next page');
+            nextBtn.innerHTML = '<i data-lucide="chevron-right" width="14" height="14"></i>';
+
+            const footer = document.createElement('div');
+            footer.className = 'crm-dashboard-pagination';
+            footer.appendChild(prevBtn);
+            footer.appendChild(info);
+            footer.appendChild(nextBtn);
+
+            panel.insertAdjacentElement('afterend', footer);
+
+            function renderPage() {
+                const start = currentPage * pageSize;
+                const end = start + pageSize;
+
+                items.forEach((item, i) => {
+                    if (i >= start && i < end) {
+                        item.removeAttribute('hidden');
+                    } else {
+                        item.setAttribute('hidden', '');
+                    }
+                });
+
+                info.textContent = `${currentPage + 1} / ${totalPages}`;
+                prevBtn.disabled = currentPage === 0;
+                nextBtn.disabled = currentPage === totalPages - 1;
+                window.AdminPanel?.refreshIcons?.();
+
+                if (!panel._minHeightLocked) {
+                    requestAnimationFrame(() => {
+                        const h = panel.offsetHeight;
+
+                        if (h > 0) {
+                            panel.style.minHeight = h + 'px';
+                            panel._minHeightLocked = true;
+                        }
+                    });
+                }
+            }
+
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 0) {
+                    currentPage--;
+                    renderPage();
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < totalPages - 1) {
+                    currentPage++;
+                    renderPage();
+                }
+            });
+
+            renderPage();
+        });
+    }
+
+    function extendAdminRehydrate() {
+        if (!window.AdminPanel || window.AdminPanel._crmDashboardPatched === true) {
+            return;
+        }
+
+        const original = window.AdminPanel.rehydrate;
+
+        window.AdminPanel.rehydrate = function () {
+            if (typeof original === 'function') {
+                original();
+            }
+
+            animateDashboardRegion();
+            initializeDashboardCards();
+            initializeDashboardCardPagination();
+            animateDashboardBars();
+            animateDashboardNumbers();
+        };
+
+        window.AdminPanel._crmDashboardPatched = true;
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+        extendAdminRehydrate();
         initializeGlobalSearchShortcut();
         initializeFormStates();
         initializeToasts();
@@ -484,5 +759,9 @@
         initializeQuoteItems();
         initializeAjaxForms();
         initializeImportPreviewForms();
+        initializeDashboardCards();
+        initializeDashboardCardPagination();
+        animateDashboardBars();
+        animateDashboardNumbers();
     });
 })();

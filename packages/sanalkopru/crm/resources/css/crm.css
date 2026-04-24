@@ -123,6 +123,25 @@
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     }
 
+    .crm-two-column {
+        align-items: start;
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .crm-dashboard-masonry {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .crm-dashboard-col {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
     .crm-dashboard-section-label {
         color: #334155;
         font-size: 0.9rem;
@@ -138,6 +157,109 @@
         font-weight: 700;
         margin-left: 8px;
         text-transform: none;
+    }
+
+    .crm-dashboard-card {
+        align-self: start;
+        height: auto;
+        width: 100%;
+    }
+
+    .crm-dashboard-expand {
+        align-items: center;
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: 5px;
+        color: #64748b;
+        cursor: pointer;
+        display: inline-flex;
+        flex: 0 0 auto;
+        height: 26px;
+        justify-content: center;
+        padding: 0;
+        transition: background 120ms, border-color 120ms, color 120ms;
+        width: 26px;
+    }
+
+    .crm-dashboard-expand:hover {
+        background: #f1f5f9;
+        border-color: #e2e8f0;
+        color: #0f172a;
+    }
+
+    .crm-dashboard-panel {
+        align-content: start;
+    }
+
+    .crm-dashboard-pagination {
+        align-items: center;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        padding: 10px 16px;
+        padding-bottom: 0 !important;
+    }
+
+    .crm-dashboard-pager-btn {
+        align-items: center;
+        background: none;
+        border: 1px solid #e2e8f0;
+        border-radius: 5px;
+        color: #475569;
+        cursor: pointer;
+        display: inline-flex;
+        height: 28px;
+        justify-content: center;
+        padding: 0 8px;
+        font-size: 12px;
+        transition: background 120ms, border-color 120ms, color 120ms;
+    }
+
+    .crm-dashboard-pager-btn:hover:not(:disabled) {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+        color: #0f172a;
+    }
+
+    .crm-dashboard-pager-btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.38;
+    }
+
+    .crm-dashboard-pager-info {
+        color: #64748b;
+        font-size: 12px;
+        min-width: 52px;
+        text-align: center;
+    }
+
+    .crm-dashboard-card.is-expanded {
+        display: flex;
+        flex-direction: column;
+        inset: 20px;
+        margin: 0;
+        position: fixed;
+        z-index: 1200;
+    }
+
+    .crm-dashboard-card.is-expanded > div:last-child {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .crm-dashboard-card.is-expanded .crm-dashboard-panel {
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    .crm-dashboard-backdrop {
+        background: rgba(15, 23, 42, 0.5);
+        inset: 0;
+        position: fixed;
+        z-index: 1190;
     }
 
     .crm-admin-card {
@@ -360,6 +482,17 @@
 
     .crm-notification-footer {
         margin-top: 16px;
+    }
+
+    @media (max-width: 1024px) {
+        .crm-two-column,
+        .crm-dashboard-masonry {
+            grid-template-columns: 1fr;
+        }
+
+        .crm-dashboard-card.is-expanded {
+            inset: 8px;
+        }
     }
 
     .crm-sr-only {
@@ -956,6 +1089,7 @@
         background: #0ea5e9;
         display: block;
         height: 100%;
+        transition: width 700ms cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .crm-dashboard-split-bars {
@@ -970,6 +1104,36 @@
 
     .crm-dashboard-split-bars .is-lost {
         background: #dc2626;
+    }
+
+    @keyframes crm-page-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    [data-crm-module="dashboard"] {
+        animation: crm-page-in 0.28s ease-out both;
+    }
+
+    .crm-region-fade {
+        animation: crm-page-in 0.22s ease-out both;
+    }
+
+    .crm-dashboard-header h1 {
+        font-size: 1.3rem;
+        letter-spacing: -0.02em;
+        margin: 0 0 3px;
+    }
+
+    .crm-dashboard-meta {
+        color: #64748b;
+        font-size: 0.8rem;
+        margin: 0;
+    }
+
+    .crm-dashboard-meta-sep {
+        margin: 0 4px;
+        opacity: 0.45;
     }
 
     @keyframes crm-spin {

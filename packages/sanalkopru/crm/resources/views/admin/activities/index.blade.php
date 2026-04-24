@@ -74,8 +74,9 @@
                         </x-admin-panel::button>
                     @endcan
                 </x-admin-panel::bulk-actions>
+            </form>
 
-                <x-admin-panel::card>
+            <x-admin-panel::card>
                     <x-slot:header>
                         Timeline
                     </x-slot:header>
@@ -99,6 +100,7 @@
                                 name="record_ids[]"
                                 value="{{ $activity->id }}"
                                 class="form-check-input crm-activity-selector"
+                                form="crm-activity-bulk"
                             >
                         </td>
                         <td>
@@ -138,7 +140,6 @@
 
                     <x-admin-panel::pagination :paginator="$activities" class="crm-pagination" />
                 </x-admin-panel::card>
-            </form>
         </div>
 
         @foreach($activities as $activity)

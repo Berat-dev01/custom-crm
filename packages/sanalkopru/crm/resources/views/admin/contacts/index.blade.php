@@ -125,8 +125,9 @@
                         </x-admin-panel::button>
                     @endcan
                 </x-admin-panel::bulk-actions>
+            </form>
 
-                <x-admin-panel::card>
+            <x-admin-panel::card>
                     <x-slot:header>
                         Contacts
                     </x-slot:header>
@@ -140,6 +141,7 @@
                                         name="contact_ids[]"
                                         value="{{ $contact->id }}"
                                         class="form-check-input crm-contact-selector"
+                                        form="crm-contact-bulk"
                                     >
                                 </td>
                                 <td>
@@ -194,7 +196,6 @@
 
                     <x-admin-panel::pagination :paginator="$contacts" class="crm-pagination" />
                 </x-admin-panel::card>
-            </form>
         </div>
 
         @foreach($contacts as $contact)
