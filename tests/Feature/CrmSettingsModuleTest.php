@@ -15,6 +15,7 @@ use Sanalkopru\Crm\Services\Ai\AiDriverManager;
 use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 use Sanalkopru\Crm\Services\Quotes\QuoteNumberGenerator;
 use Sanalkopru\Crm\Services\Quotes\QuotePdfRenderer;
+use Sanalkopru\Crm\Services\Settings\CrmSettingsManager;
 use Sanalkopru\Crm\Support\Ai\AiDriver;
 use Tests\TestCase;
 
@@ -65,7 +66,9 @@ class CrmSettingsModuleTest extends TestCase
                 'quote_prefix' => 'SK-',
                 'quote_terms' => 'Default settings terms.',
                 'notify_task_reminders' => '1',
+                'notify_task_assignments' => '0',
                 'notify_quote_status_changes' => '0',
+                'notify_import_status_updates' => '1',
                 'ai_enabled' => '1',
                 'ai_driver' => 'gemini',
                 'ai_model' => 'gemini-test-model',
@@ -98,6 +101,8 @@ class CrmSettingsModuleTest extends TestCase
         $this->assertSame('Sanal Kopru CRM', $renderer->companyProfile()['name']);
         $this->assertSame('9876543210', $renderer->companyProfile()['tax_number']);
         $this->assertNotNull($renderer->logoPath());
+        $this->assertFalse((bool) app(CrmSettingsManager::class)->get('notify_task_assignments'));
+        $this->assertTrue((bool) app(CrmSettingsManager::class)->get('notify_import_status_updates'));
 
         $ai = app(AiDriverManager::class);
         $this->assertTrue($ai->enabled());
@@ -120,7 +125,9 @@ class CrmSettingsModuleTest extends TestCase
                 'quote_prefix' => 'PV-',
                 'quote_terms' => 'Preview settings terms.',
                 'notify_task_reminders' => '1',
+                'notify_task_assignments' => '1',
                 'notify_quote_status_changes' => '1',
+                'notify_import_status_updates' => '1',
                 'ai_enabled' => '0',
                 'ai_driver' => 'openai',
                 'ai_model' => '',
@@ -153,7 +160,9 @@ class CrmSettingsModuleTest extends TestCase
                 'default_tax_rate' => '20',
                 'quote_prefix' => 'CRM-',
                 'notify_task_reminders' => '1',
+                'notify_task_assignments' => '1',
                 'notify_quote_status_changes' => '1',
+                'notify_import_status_updates' => '1',
                 'ai_enabled' => '0',
                 'ai_driver' => 'openai',
             ])

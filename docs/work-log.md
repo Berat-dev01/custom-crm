@@ -192,3 +192,57 @@
 - Dogrulama: `php artisan test` Docker icinde basarili: `145 passed (1104 assertions)`.
 - Dogrulama: `php artisan route:cache`, `php artisan config:cache`, `php artisan view:cache` basarili; ardindan `php artisan optimize:clear` calistirildi.
 - Dogrulama: `git diff --check` temiz.
+
+## Dashboard AJAX, Liste Siklik Ayari ve Notification Foundation
+
+- Baslangic: Dashboard period filtresi kullanicida "degismiyor" hissi verdigi icin once bu yuzey AJAX ve gercek period mantigiyla guclendirildi.
+- Uygulama: Dashboard icerigi `data-admin-ajax-list` region yapisina tasindi; period degisince tam sayfa yenilemeden dashboard bolgesi guncellenir hale getirildi.
+- Uygulama: Dashboard trend hesabi sabit aylik mantiktan cikarildi. Secilen araliga gore saatlik, gunluk veya aylik bucket ureten period-aware trend yapisi eklendi.
+- Uygulama: Admin-panel ve CRM spacing degerleri sikilastirildi; card, filter shell, bulk action ve sayfa grid bosluklari daha profesyonel ve compact hale getirildi.
+- Uygulama: Contacts disindaki ana liste ekranlarina da ortak bulk selection + quick action yapisi tasindi. Companies, deals, tasks, quotes, activities ve tags modullerinde varsayilan bulk delete akisi eklendi.
+- Uygulama: Bulk delete icin ilgili controller ve route aksiyonlari eklendi; iliskili kayit korumalari gereken yerlerde korundu.
+- Uygulama: Notification center foundation kuruldu. `GET /admin/crm/notifications`, `POST /admin/crm/notifications/{id}/read` ve `POST /admin/crm/notifications/read-all` endpointleri eklendi.
+- Uygulama: `NotificationCenter` service ile bell dropdown icin standart payload yapisi kuruldu: unread count, item listesi, icon, variant, relative time ve hedef URL.
+- Uygulama: Navbar bell dropdown artik gercek veriyle doluyor; unread badge, mark-as-read, mark-all-read ve hata/loading/empty state bloklari admin-panel layout seviyesinde baglandi.
+- Uygulama: Admin-panel JS icine notification polling altyapisi eklendi. Dropdown acilisinda ve gorunur sekmede 3 saniyede bir veri tazeleniyor.
+- Uygulama: Task reminder notification payload'i dropdown'da anlamli gorunmesi icin standart alanlarla genislestirildi.
+- Dogrulama: `php artisan vendor:publish --tag=admin-panel-assets --force` ve `php artisan vendor:publish --tag=crm-assets --force` Docker icinde basarili.
+- Dogrulama: `php artisan route:cache`, `php artisan config:cache`, `php artisan view:cache` basarili; ardindan `php artisan optimize:clear` calistirildi.
+- Dogrulama: Full test suite Docker icinde basarili: `154 passed (1154 assertions)`.
+- Dogrulama: `git diff --check` temiz.
+
+## Notification Faz C - Ilk Business Event Seti
+
+- Baslangic: Bell dropdown artik sadece task reminder gosteren temel yapi olmaktan cikarilip gercek CRM olaylariyla beslenmeye baslandi.
+- Uygulama: `NotificationPreferences` ile ayarlardaki `notify_task_reminders` ve `notify_quote_status_changes` anahtarlari gercek davranisa baglandi.
+- Uygulama: `CrmBusinessNotifier` service katmani eklendi. Recipient secimi, duplicate owner/deal owner temizligi ve actor self-notify engellemesi burada merkezilestirildi.
+- Uygulama: `TaskAssignmentNotification` eklendi. Task ilk kez baska bir kullaniciya atandiginda veya baska kullaniciya yeniden atandiginda bell dropdown icin database notification olusuyor.
+- Uygulama: `QuoteStatusChangedNotification` eklendi. Quote `sent`, `accepted`, `rejected` ve `expired` durumlarina gectiginde quote owner ve gerekiyorsa deal owner bilgilendiriliyor.
+- Uygulama: Quote status notification'lari duplicate recipient uretmeyecek sekilde owner/deal owner bazinda dedupe edildi; aksiyonu yapan kullaniciya ayni olay tekrar bildirim olarak donmuyor.
+- Uygulama: `ImportStatusNotification` eklendi. Import queue threshold'u asan islerde creator kullaniciya queued bildirimi; process tamamlandiginda completed veya completed_with_errors bildirimi gidiyor.
+- Uygulama: `UpsertTask`, `SendQuote`, `AcceptQuote`, `RejectQuote`, `ExpireQuote` ve `CrmDataTransferService` ilgili notification akislariyla baglandi.
+- Uygulama: `crm:tasks:send-reminders` komutu artik notification ayarina saygi duyuyor; task reminder kapaliysa bildirim gondermiyor.
+- Uygulama: Notification center icon/variant haritasi yeni kind degerleri icin genisletildi: task assigned/reassigned, import completed_with_errors ve quote status turleri.
+- Dogrulama: Pint formatter basarili.
+- Dogrulama: Hedefli testler basarili: `CrmTasksModuleTest`, `CrmQuotesModuleTest`, `CrmDataTransferModuleTest`, `CrmTaskReminderCommandTest`, `CrmNotificationsModuleTest` => `27 passed (192 assertions)`.
+- Dogrulama: `php artisan route:cache`, `php artisan config:cache`, `php artisan view:cache` basarili; ardindan proje test akisina uygun olarak `php artisan optimize:clear` calistirildi.
+- Dogrulama: Full test suite Docker icinde basarili: `158 passed (1174 assertions)`.
+- Dogrulama: `git diff --check` temiz.
+
+## Notification Faz D - Preferences ve Gurultu Kontrolu
+
+- Baslangic: Notification center gercek eventlerle dolmaya basladigi icin bir sonraki zorunlu adim gurultu kontrolu ve settings tarafini derinlestirmek oldu.
+- Uygulama: Settings ekranina iki yeni toggle eklendi: `notify_task_assignments` ve `notify_import_status_updates`.
+- Uygulama: `UpdateCrmSettingsRequest` ve `CrmSettingsManager` yeni notification tercihlerini resmi ayar anahtarlari olarak okuyup yazacak sekilde genisletildi.
+- Uygulama: `NotificationPreferences` artik task reminder, task assignment, quote status ve import status akislari icin ayar okuyor.
+- Uygulama: `CrmBusinessNotifier` task assignment ve import status bildirimlerinde yeni toggle'lara saygi duyar hale getirildi.
+- Uygulama: Duplicate unread suppression eklendi. Ayni kullanicida ayni kind + entity signature ile okunmamis notification zaten varsa ikinci kez uretilmiyor.
+- Uygulama: Suppression kapsaminda quote status, task assignment/reassignment ve import queued/completed bildirimleri koruma altina alindi.
+- Uygulama: Settings testi yeni toggle'larin saklandigini dogrular hale getirildi.
+- Uygulama: Task assignment ve import notification'lari icin "ayar kapaliysa gonderme" feature testleri eklendi.
+- Uygulama: Duplicate unread suppression icin notification feature testi eklendi.
+- Dogrulama: Pint formatter basarili.
+- Dogrulama: Hedefli testler basarili: `CrmSettingsModuleTest`, `CrmTasksModuleTest`, `CrmDataTransferModuleTest`, `CrmNotificationsModuleTest` => `25 passed (147 assertions)`.
+- Dogrulama: `php artisan route:cache`, `php artisan config:cache`, `php artisan view:cache` basarili; ardindan proje akisina uygun olarak `php artisan optimize:clear` calistirildi.
+- Dogrulama: Full test suite Docker icinde basarili: `161 passed (1187 assertions)`.
+- Dogrulama: `git diff --check` temiz.

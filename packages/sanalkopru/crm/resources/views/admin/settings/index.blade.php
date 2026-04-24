@@ -63,9 +63,19 @@
                         <span>Send task reminder notifications</span>
                     </label>
                     <label class="crm-checkbox-row">
+                        <input type="hidden" name="notify_task_assignments" value="0">
+                        <input type="checkbox" name="notify_task_assignments" value="1" @checked(old('notify_task_assignments', $settings['notify_task_assignments']))>
+                        <span>Notify task assignment and reassignment</span>
+                    </label>
+                    <label class="crm-checkbox-row">
                         <input type="hidden" name="notify_quote_status_changes" value="0">
                         <input type="checkbox" name="notify_quote_status_changes" value="1" @checked(old('notify_quote_status_changes', $settings['notify_quote_status_changes']))>
                         <span>Notify quote status changes</span>
+                    </label>
+                    <label class="crm-checkbox-row">
+                        <input type="hidden" name="notify_import_status_updates" value="0">
+                        <input type="checkbox" name="notify_import_status_updates" value="1" @checked(old('notify_import_status_updates', $settings['notify_import_status_updates']))>
+                        <span>Notify import queued and completion updates</span>
                     </label>
                 </div>
             </x-admin-panel::card>

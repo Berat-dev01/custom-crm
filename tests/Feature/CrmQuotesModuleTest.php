@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Sanalkopru\Crm\Database\Seeders\CrmPermissionSeeder;
 use Sanalkopru\Crm\Models\Company;
 use Sanalkopru\Crm\Models\Contact;
@@ -12,6 +13,7 @@ use Sanalkopru\Crm\Models\DealStage;
 use Sanalkopru\Crm\Models\Quote;
 use Sanalkopru\Crm\Models\QuoteItem;
 use Sanalkopru\Crm\Models\Tag;
+use Sanalkopru\Crm\Notifications\QuoteStatusChangedNotification;
 use Tests\TestCase;
 
 class CrmQuotesModuleTest extends TestCase
@@ -152,10 +154,13 @@ class CrmQuotesModuleTest extends TestCase
 
     public function test_quote_status_actions_and_duplicate_work(): void
     {
+        Notification::fake();
+
         $open = DealStage::factory()->create(['name' => 'Open', 'slug' => 'open', 'position' => 1, 'is_won' => false, 'is_lost' => false]);
         $won = DealStage::factory()->won()->create(['position' => 2]);
-        $deal = Deal::factory()->create(['stage_id' => $open->id, 'status' => 'open']);
-        $quote = Quote::factory()->create(['deal_id' => $deal->id, 'status' => 'draft']);
+        $recipient = User::factory()->create();
+        $deal = Deal::factory()->create(['stage_id' => $open->id, 'status' => 'open', 'owner_id' => $recipient->id]);
+        $quote = Quote::factory()->create(['deal_id' => $deal->id, 'owner_id' => $recipient->id, 'status' => 'draft']);
         QuoteItem::factory()->create(['quote_id' => $quote->id, 'position' => 1]);
 
         $this->actingAs($this->admin, 'admin')
@@ -165,6 +170,11 @@ class CrmQuotesModuleTest extends TestCase
         $quote->refresh();
         $this->assertSame('sent', $quote->status);
         $this->assertNotNull($quote->sent_at);
+        Notification::assertSentTo(
+            $recipient,
+            QuoteStatusChangedNotification::class,
+            fn (QuoteStatusChangedNotification $notification): bool => $notification->quote->is($quote) && $notification->status === 'sent'
+        );
         $this->assertDatabaseHas('activities', [
             'activityable_type' => $deal::class,
             'activityable_id' => $deal->id,
@@ -180,6 +190,11 @@ class CrmQuotesModuleTest extends TestCase
         $this->assertSame('accepted', $quote->status);
         $this->assertSame('won', $deal->status);
         $this->assertSame($won->id, $deal->stage_id);
+        Notification::assertSentTo(
+            $recipient,
+            QuoteStatusChangedNotification::class,
+            fn (QuoteStatusChangedNotification $notification): bool => $notification->quote->is($quote) && $notification->status === 'accepted'
+        );
 
         $this->actingAs($this->admin, 'admin')
             ->post(route('crm.quotes.duplicate', $quote))
@@ -194,11 +209,38 @@ class CrmQuotesModuleTest extends TestCase
             ->patch(route('crm.quotes.reject', $copy))
             ->assertRedirect(route('crm.quotes.show', $copy));
         $this->assertSame('rejected', $copy->refresh()->status);
+        Notification::assertSentTo(
+            $recipient,
+            QuoteStatusChangedNotification::class,
+            fn (QuoteStatusChangedNotification $notification): bool => $notification->quote->is($copy) && $notification->status === 'rejected'
+        );
 
         $this->actingAs($this->admin, 'admin')
             ->patch(route('crm.quotes.expire', $copy))
             ->assertRedirect(route('crm.quotes.show', $copy));
         $this->assertSame('expired', $copy->refresh()->status);
+        Notification::assertSentTo(
+            $recipient,
+            QuoteStatusChangedNotification::class,
+            fn (QuoteStatusChangedNotification $notification): bool => $notification->quote->is($copy->fresh()) && $notification->status === 'expired'
+        );
+        Notification::assertCount(4);
+    }
+
+    public function test_quote_status_notifications_can_be_disabled_from_settings_defaults(): void
+    {
+        Notification::fake();
+        config(['crm.notifications.quote_status_changes' => false]);
+
+        $recipient = User::factory()->create();
+        $quote = Quote::factory()->create(['owner_id' => $recipient->id, 'status' => 'draft']);
+        QuoteItem::factory()->create(['quote_id' => $quote->id, 'position' => 1]);
+
+        $this->actingAs($this->admin, 'admin')
+            ->patch(route('crm.quotes.send', $quote))
+            ->assertRedirect(route('crm.quotes.show', $quote));
+
+        Notification::assertNothingSent();
     }
 
     public function test_quote_pdf_preview_and_download_are_available(): void

@@ -8,6 +8,7 @@ use Sanalkopru\Crm\Http\Controllers\Admin\ContactsController;
 use Sanalkopru\Crm\Http\Controllers\Admin\DataTransferController;
 use Sanalkopru\Crm\Http\Controllers\Admin\DealsController;
 use Sanalkopru\Crm\Http\Controllers\Admin\DealStagesController;
+use Sanalkopru\Crm\Http\Controllers\Admin\NotificationsController;
 use Sanalkopru\Crm\Http\Controllers\Admin\QuotesController;
 use Sanalkopru\Crm\Http\Controllers\Admin\SavedFiltersController;
 use Sanalkopru\Crm\Http\Controllers\Admin\SearchController;
@@ -28,6 +29,9 @@ Route::middleware(config('crm.routes.middleware', ['web']))
             ->group(function () {
                 Route::get('/', DashboardController::class)->name('dashboard');
                 Route::get('search', SearchController::class)->name('search');
+                Route::get('notifications', [NotificationsController::class, 'index'])->name('notifications.index');
+                Route::post('notifications/read-all', [NotificationsController::class, 'readAll'])->name('notifications.read-all');
+                Route::post('notifications/{notification}/read', [NotificationsController::class, 'read'])->name('notifications.read');
 
                 Route::get('imports/{import:public_id}/errors', [DataTransferController::class, 'errors'])->name('imports.errors');
 

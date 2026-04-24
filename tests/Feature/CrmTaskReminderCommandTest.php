@@ -57,4 +57,24 @@ class CrmTaskReminderCommandTest extends TestCase
         Notification::assertCount(1);
         $this->assertNotNull($dueTask->refresh()->reminder_notified_at);
     }
+
+    public function test_task_reminder_command_respects_notification_setting(): void
+    {
+        config(['crm.notifications.task_reminders' => false]);
+        Notification::fake();
+
+        $assignee = User::factory()->create();
+        Task::factory()->create([
+            'assigned_to' => $assignee->id,
+            'status' => 'open',
+            'reminder_at' => now()->subMinute(),
+            'reminder_notified_at' => null,
+        ]);
+
+        $this->artisan('crm:tasks:send-reminders')
+            ->expectsOutput('Sent 0 CRM task reminder notification(s).')
+            ->assertSuccessful();
+
+        Notification::assertNothingSent();
+    }
 }

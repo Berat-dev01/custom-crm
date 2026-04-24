@@ -5,6 +5,7 @@ namespace Sanalkopru\Crm\Console;
 use Illuminate\Console\Command;
 use Sanalkopru\Crm\Models\Task;
 use Sanalkopru\Crm\Notifications\TaskReminderNotification;
+use Sanalkopru\Crm\Services\Notifications\NotificationPreferences;
 
 class SendTaskRemindersCommand extends Command
 {
@@ -12,8 +13,14 @@ class SendTaskRemindersCommand extends Command
 
     protected $description = 'Send due CRM task reminder notifications.';
 
-    public function handle(): int
+    public function handle(NotificationPreferences $preferences): int
     {
+        if (! $preferences->taskRemindersEnabled()) {
+            $this->info('Sent 0 CRM task reminder notification(s).');
+
+            return self::SUCCESS;
+        }
+
         $sent = 0;
 
         Task::query()

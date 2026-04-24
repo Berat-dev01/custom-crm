@@ -26,6 +26,7 @@ use Sanalkopru\Crm\Models\DealStage;
 use Sanalkopru\Crm\Models\Quote;
 use Sanalkopru\Crm\Services\Audit\CrmAuditLogger;
 use Sanalkopru\Crm\Services\Configuration\MoneySettings;
+use Sanalkopru\Crm\Services\Notifications\CrmBusinessNotifier;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CrmDataTransferService
@@ -40,7 +41,8 @@ class CrmDataTransferService
         private readonly UpsertCompany $upsertCompany,
         private readonly UpsertDeal $upsertDeal,
         private readonly MoneySettings $money,
-        private readonly CrmAuditLogger $audit
+        private readonly CrmAuditLogger $audit,
+        private readonly CrmBusinessNotifier $notifications
     ) {}
 
     /**
@@ -130,6 +132,7 @@ class CrmDataTransferService
 
         if ($totalRows > (int) config('crm.data_transfer.queue_threshold', 500)) {
             ProcessCrmImport::dispatch($import->id, $user?->getAuthIdentifier());
+            $this->notifications->importQueued($import);
 
             return [
                 'import_id' => $import->public_id,
@@ -207,6 +210,10 @@ class CrmDataTransferService
             'error_report_path' => $reportPath,
             'finished_at' => now(),
         ])->save();
+
+        if ($import->created_by) {
+            $this->notifications->importCompleted($import->fresh(['creator']));
+        }
 
         return [
             'import_id' => $import->public_id,

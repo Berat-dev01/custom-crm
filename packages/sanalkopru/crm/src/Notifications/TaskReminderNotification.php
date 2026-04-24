@@ -38,8 +38,10 @@ class TaskReminderNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
+            'kind' => 'task_reminder',
             'task_id' => $this->task->id,
-            'title' => $this->task->title,
+            'title' => 'Task reminder',
+            'body' => $this->task->title,
             'due_at' => $this->task->due_at?->toISOString(),
             'priority' => $this->task->priority,
             'url' => route('crm.tasks.show', $this->task),

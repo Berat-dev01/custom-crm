@@ -11,6 +11,7 @@ use Sanalkopru\Crm\Models\Company;
 use Sanalkopru\Crm\Models\Deal;
 use Sanalkopru\Crm\Models\DealStage;
 use Sanalkopru\Crm\Models\Task as CrmTask;
+use Sanalkopru\Crm\Notifications\TaskAssignmentNotification;
 use Sanalkopru\Crm\Notifications\TaskReminderNotification;
 use Tests\TestCase;
 
@@ -152,6 +153,95 @@ class CrmTasksModuleTest extends TestCase
             ->assertOk()
             ->assertSee('Deal follow up')
             ->assertSee('Related Deal');
+    }
+
+    public function test_task_assignment_notifies_new_assignee_and_reassignment(): void
+    {
+        Notification::fake();
+
+        $company = Company::factory()->create(['name' => 'Notify Co']);
+        $firstAssignee = User::factory()->create();
+        $secondAssignee = User::factory()->create();
+
+        $this->actingAs($this->admin, 'admin')
+            ->post(route('crm.tasks.store'), [
+                'title' => 'Assigned by manager',
+                'description' => 'Owner should see this in bell.',
+                'taskable_type' => 'company',
+                'taskable_id' => $company->id,
+                'assigned_to' => $firstAssignee->id,
+                'due_at' => '2026-05-01 09:00:00',
+                'priority' => 'high',
+                'status' => 'open',
+            ])
+            ->assertRedirect();
+
+        $task = CrmTask::query()->where('title', 'Assigned by manager')->firstOrFail();
+
+        Notification::assertSentTo(
+            $firstAssignee,
+            TaskAssignmentNotification::class,
+            fn (TaskAssignmentNotification $notification): bool => $notification->task->is($task) && ! $notification->reassigned
+        );
+
+        $this->actingAs($this->admin, 'admin')
+            ->put(route('crm.tasks.update', $task), [
+                'title' => 'Assigned by manager',
+                'description' => 'Owner should see this in bell.',
+                'taskable_type' => 'company',
+                'taskable_id' => $company->id,
+                'assigned_to' => $secondAssignee->id,
+                'due_at' => '2026-05-02 09:00:00',
+                'priority' => 'urgent',
+                'status' => 'in_progress',
+            ])
+            ->assertRedirect(route('crm.tasks.show', $task));
+
+        Notification::assertSentTo(
+            $secondAssignee,
+            TaskAssignmentNotification::class,
+            fn (TaskAssignmentNotification $notification): bool => $notification->task->is($task->fresh()) && $notification->reassigned
+        );
+    }
+
+    public function test_task_assignment_notifications_can_be_disabled_from_settings_defaults(): void
+    {
+        Notification::fake();
+        config(['crm.notifications.task_reminders' => true]);
+
+        $this->actingAs($this->admin, 'admin')
+            ->put(route('crm.settings.update'), [
+                'company_name' => 'Task Prefs Co',
+                'default_currency' => 'TRY',
+                'default_tax_rate' => '20',
+                'quote_prefix' => 'CRM-',
+                'quote_terms' => '',
+                'notify_task_reminders' => '1',
+                'notify_task_assignments' => '0',
+                'notify_quote_status_changes' => '1',
+                'notify_import_status_updates' => '1',
+                'ai_enabled' => '0',
+                'ai_driver' => 'openai',
+                'ai_model' => '',
+            ])
+            ->assertRedirect(route('crm.settings.index'));
+
+        $company = Company::factory()->create();
+        $assignee = User::factory()->create();
+
+        $this->actingAs($this->admin, 'admin')
+            ->post(route('crm.tasks.store'), [
+                'title' => 'Silent assignment',
+                'taskable_type' => 'company',
+                'taskable_id' => $company->id,
+                'assigned_to' => $assignee->id,
+                'due_at' => '2026-05-01 09:00:00',
+                'priority' => 'normal',
+                'status' => 'open',
+            ])
+            ->assertRedirect();
+
+        Notification::assertNothingSent();
     }
 
     public function test_due_task_reminders_send_queued_notifications_once(): void

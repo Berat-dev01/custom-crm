@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Queue;
 use Sanalkopru\Crm\Database\Seeders\CrmDealStageSeeder;
 use Sanalkopru\Crm\Database\Seeders\CrmPermissionSeeder;
@@ -15,6 +16,8 @@ use Sanalkopru\Crm\Models\CrmImport;
 use Sanalkopru\Crm\Models\Deal;
 use Sanalkopru\Crm\Models\DealStage;
 use Sanalkopru\Crm\Models\Quote;
+use Sanalkopru\Crm\Notifications\ImportStatusNotification;
+use Sanalkopru\Crm\Services\DataTransfer\CrmDataTransferService;
 use Tests\TestCase;
 
 class CrmDataTransferModuleTest extends TestCase
@@ -183,6 +186,7 @@ class CrmDataTransferModuleTest extends TestCase
     public function test_large_imports_are_queued(): void
     {
         Queue::fake();
+        Notification::fake();
         config(['crm.data_transfer.queue_threshold' => 1]);
 
         $file = UploadedFile::fake()->createWithContent('contacts.csv', implode("\n", [
@@ -202,9 +206,77 @@ class CrmDataTransferModuleTest extends TestCase
             'status' => 'pending',
             'total_rows' => 2,
         ]);
+        Notification::assertSentTo(
+            $this->admin,
+            ImportStatusNotification::class,
+            fn (ImportStatusNotification $notification): bool => $notification->status === 'queued'
+        );
 
         $result = session('crm_import_result');
         $this->assertTrue($result['queued']);
         $this->assertSame(0, CrmImport::query()->firstOrFail()->processed_rows);
+    }
+
+    public function test_processed_import_sends_completion_notification_to_creator(): void
+    {
+        Notification::fake();
+
+        $file = UploadedFile::fake()->createWithContent('companies.csv', implode("\n", [
+            'name,email,phone,website,tax_number,sector,city,country',
+            'Valid Queue Co,hello@queue-valid.test,+905551112233,https://queue-valid.test,TR-200,Technology,Istanbul,TR',
+            'Broken Queue Co,not-an-email,+905551112233,https://queue-broken.test,TR-201,Technology,Istanbul,TR',
+        ]));
+
+        config(['crm.data_transfer.queue_threshold' => 1]);
+
+        $this->actingAs($this->admin, 'admin')
+            ->post(route('crm.companies.import.store'), ['file' => $file])
+            ->assertRedirect(route('crm.companies.import'));
+
+        $import = CrmImport::query()->latest('id')->firstOrFail();
+
+        app(CrmDataTransferService::class)->process($import, $this->admin);
+
+        Notification::assertSentTo(
+            $this->admin,
+            ImportStatusNotification::class,
+            fn (ImportStatusNotification $notification): bool => $notification->import->is($import->fresh()) && $notification->status === 'completed_with_errors'
+        );
+    }
+
+    public function test_import_status_notifications_can_be_disabled_from_settings(): void
+    {
+        Queue::fake();
+        Notification::fake();
+        config(['crm.data_transfer.queue_threshold' => 1]);
+
+        $this->actingAs($this->admin, 'admin')
+            ->put(route('crm.settings.update'), [
+                'company_name' => 'Import Prefs Co',
+                'default_currency' => 'TRY',
+                'default_tax_rate' => '20',
+                'quote_prefix' => 'CRM-',
+                'quote_terms' => '',
+                'notify_task_reminders' => '1',
+                'notify_task_assignments' => '1',
+                'notify_quote_status_changes' => '1',
+                'notify_import_status_updates' => '0',
+                'ai_enabled' => '0',
+                'ai_driver' => 'openai',
+                'ai_model' => '',
+            ])
+            ->assertRedirect(route('crm.settings.index'));
+
+        $file = UploadedFile::fake()->createWithContent('contacts.csv', implode("\n", [
+            'full_name,email,lifecycle_stage',
+            'First Silent,first-silent@example.com,lead',
+            'Second Silent,second-silent@example.com,lead',
+        ]));
+
+        $this->actingAs($this->admin, 'admin')
+            ->post(route('crm.contacts.import.store'), ['file' => $file])
+            ->assertRedirect(route('crm.contacts.import'));
+
+        Notification::assertNothingSent();
     }
 }
