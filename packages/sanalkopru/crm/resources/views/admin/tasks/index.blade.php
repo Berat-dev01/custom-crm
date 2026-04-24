@@ -82,9 +82,8 @@
                         </x-admin-panel::button>
                     @endcan
                 </x-admin-panel::bulk-actions>
-            </form>
 
-            <x-admin-panel::card>
+                <x-admin-panel::card>
                     <x-slot:header>
                         {{ ucfirst($filters['scope']) }} Tasks
                     </x-slot:header>
@@ -108,7 +107,6 @@
                                 name="record_ids[]"
                                 value="{{ $task->id }}"
                                 class="form-check-input crm-task-selector"
-                                form="crm-task-bulk"
                             >
                         </td>
                         <td>
@@ -154,6 +152,7 @@
 
                     <x-admin-panel::pagination :paginator="$tasks" class="crm-pagination" />
                 </x-admin-panel::card>
+            </form>
         </div>
 
         @foreach($tasks as $task)
