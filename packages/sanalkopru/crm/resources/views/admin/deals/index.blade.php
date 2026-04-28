@@ -202,7 +202,7 @@
                                         </a>
                                         <div class="crm-kanban-card-meta">
                                             <span>{{ $deal->company?->name ?: $deal->contact?->full_name ?: 'No account' }}</span>
-                                            <span>{{ $crmFormat->money($deal->value, $deal->currency) }}</span>
+                                            <span class="crm-kanban-card-meta-value">{{ $crmFormat->money($deal->value, $deal->currency) }}</span>
                                         </div>
                                         <div class="crm-kanban-card-footer">
                                             <span>{{ $deal->expected_close_date ? $crmFormat->date($deal->expected_close_date) : 'No close date' }}</span>

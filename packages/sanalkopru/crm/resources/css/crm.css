@@ -112,7 +112,7 @@
     }
 
     .crm-admin-header h1 {
-        font-size: 2rem;
+        font-size: 1.5rem;
         line-height: 1.2;
         margin: 0;
     }
@@ -619,10 +619,10 @@
     .crm-kanban-board {
         align-items: stretch;
         display: grid;
-        gap: 14px;
-        grid-auto-columns: minmax(280px, 320px);
+        gap: 10px;
+        grid-auto-columns: minmax(230px, 255px);
         grid-auto-flow: column;
-        min-height: 520px;
+        min-height: 400px;
     }
 
     .crm-kanban-column {
@@ -630,55 +630,76 @@
         border: 1px solid #e2e8f0;
         border-radius: 8px;
         display: grid;
-        grid-template-rows: auto minmax(180px, 1fr);
-        min-height: 480px;
+        grid-template-rows: auto minmax(140px, 1fr);
+        min-height: 360px;
     }
 
     .crm-kanban-column-header {
         border-bottom: 1px solid #e2e8f0;
         display: grid;
-        gap: 8px;
-        padding: 14px;
+        gap: 5px;
+        padding: 10px 12px;
     }
 
     .crm-kanban-column-title {
         align-items: center;
         display: flex;
-        gap: 8px;
+        gap: 6px;
         justify-content: space-between;
     }
 
     .crm-kanban-column-title h2 {
-        font-size: 1rem;
+        font-size: 0.875rem;
         margin: 0;
     }
 
     .crm-kanban-column-meta {
         align-items: center;
-        color: #64748b;
         display: flex;
-        font-size: 0.82rem;
-        gap: 8px;
+        font-size: 0.78rem;
+        gap: 6px;
         justify-content: space-between;
+    }
+
+    [data-crm-stage-count] {
+        background: #e2e8f0;
+        border-radius: 4px;
+        color: #475569;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 1px 5px;
+    }
+
+    [data-crm-stage-value] {
+        color: #0f172a;
+        font-size: 0.78rem;
+        font-variant-numeric: tabular-nums;
+        font-weight: 700;
+        letter-spacing: -0.01em;
     }
 
     .crm-kanban-list {
         align-content: start;
         display: grid;
-        gap: 10px;
+        gap: 8px;
         min-height: 100%;
-        padding: 12px;
+        padding: 8px 10px;
     }
 
     .crm-kanban-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
-        border-radius: 8px;
+        border-radius: 7px;
         box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
         cursor: grab;
         display: grid;
-        gap: 10px;
-        padding: 12px;
+        gap: 7px;
+        padding: 10px;
+    }
+
+    .crm-kanban-card:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.07);
     }
 
     .crm-kanban-card:active {
@@ -691,7 +712,9 @@
 
     .crm-kanban-card-title {
         color: #0f172a;
-        font-weight: 700;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        line-height: 1.35;
         text-decoration: none;
     }
 
@@ -699,14 +722,30 @@
         color: #075985;
     }
 
-    .crm-kanban-card-meta,
-    .crm-kanban-card-footer {
+    .crm-kanban-card-meta {
         align-items: center;
-        color: #64748b;
+        color: #475569;
         display: flex;
         flex-wrap: wrap;
-        font-size: 0.82rem;
-        gap: 8px;
+        font-size: 0.75rem;
+        gap: 3px 6px;
+        justify-content: space-between;
+    }
+
+    .crm-kanban-card-meta-value {
+        color: #0f172a;
+        font-variant-numeric: tabular-nums;
+        font-weight: 600;
+        font-size: 0.75rem;
+    }
+
+    .crm-kanban-card-footer {
+        align-items: center;
+        color: #94a3b8;
+        display: flex;
+        flex-wrap: wrap;
+        font-size: 0.72rem;
+        gap: 3px 6px;
     }
 
     .crm-kanban-badge {
@@ -714,17 +753,17 @@
         border-radius: 999px;
         color: #3730a3;
         display: inline-flex;
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         font-weight: 700;
-        padding: 3px 7px;
+        padding: 2px 6px;
     }
 
     .crm-kanban-more {
         border: 1px dashed #cbd5e1;
-        border-radius: 8px;
-        color: #475569;
-        font-size: 0.875rem;
-        padding: 0.75rem;
+        border-radius: 6px;
+        color: #64748b;
+        font-size: 0.75rem;
+        padding: 0.625rem;
         text-align: center;
     }
 
