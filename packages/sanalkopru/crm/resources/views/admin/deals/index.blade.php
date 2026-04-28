@@ -66,7 +66,7 @@
             </div>
         </header>
 
-        <div id="crm-deals-list" class="admin-ajax-region" data-admin-ajax-list>
+        <div id="crm-deals-list" class="admin-ajax-region" data-admin-ajax-list data-crm-deals-view="{{ $filters['view'] }}">
             <x-admin-panel::filter-shell :action="route('crm.deals.index')" :reset-url="route('crm.deals.index', ['view' => $filters['view']])" :active-count="$activeFilterCount">
                 <x-slot:compact>
                     <input type="hidden" name="view" value="{{ $filters['view'] }}">
