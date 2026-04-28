@@ -10,6 +10,7 @@ use Sanalkopru\Crm\Models\Quote;
 use Sanalkopru\Crm\Models\Task;
 use Sanalkopru\Crm\Notifications\TaskReminderNotification;
 use Sanalkopru\Crm\Services\Notifications\CrmBusinessNotifier;
+use Sanalkopru\Crm\Support\CrmLabelCatalog;
 use Tests\TestCase;
 
 class CrmNotificationsModuleTest extends TestCase
@@ -41,7 +42,7 @@ class CrmNotificationsModuleTest extends TestCase
             ->assertOk()
             ->assertJsonPath('unread_count', 1)
             ->assertJsonPath('items.0.kind', 'task_reminder')
-            ->assertJsonPath('items.0.title', 'Task reminder')
+            ->assertJsonPath('items.0.title', trans('crm::notifications.task_reminder.database_title'))
             ->assertJsonPath('items.0.body', 'Call procurement')
             ->assertJsonPath('items.0.unread', true);
     }
@@ -106,6 +107,14 @@ class CrmNotificationsModuleTest extends TestCase
         $notifier->quoteStatusChanged($quote, 'sent');
 
         $this->assertSame(1, $this->admin->fresh()->unreadNotifications()->count());
-        $this->assertSame('quote_sent', data_get($this->admin->fresh()->unreadNotifications()->first()?->data, 'kind'));
+        $notification = $this->admin->fresh()->unreadNotifications()->first();
+
+        $this->assertSame('quote_sent', data_get($notification?->data, 'kind'));
+        $this->assertSame(
+            trans('crm::notifications.quote_status_changed.title', [
+                'status' => app(CrmLabelCatalog::class)->status('sent'),
+            ]),
+            data_get($notification?->data, 'title')
+        );
     }
 }

@@ -25,17 +25,20 @@ class QuoteStatusChangedNotification extends Notification
      */
     public function toArray(object $notifiable): array
     {
-        $label = ucfirst($this->status);
-        $body = $this->quote->quote_number;
-
-        if ($this->quote->company?->name) {
-            $body .= ' - '.$this->quote->company->name;
-        }
+        $statusLabel = app(\Sanalkopru\Crm\Support\CrmLabelCatalog::class)->status($this->status);
+        $body = $this->quote->company?->name
+            ? trans('crm::notifications.quote_status_changed.body_with_company', [
+                'quote' => $this->quote->quote_number,
+                'company' => $this->quote->company->name,
+            ])
+            : trans('crm::notifications.quote_status_changed.body_without_company', [
+                'quote' => $this->quote->quote_number,
+            ]);
 
         return [
             'kind' => 'quote_'.$this->status,
             'quote_id' => $this->quote->id,
-            'title' => 'Quote '.$label,
+            'title' => trans('crm::notifications.quote_status_changed.title', ['status' => $statusLabel]),
             'body' => $body,
             'status' => $this->status,
             'url' => route('crm.quotes.show', $this->quote),

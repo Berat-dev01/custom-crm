@@ -28,7 +28,9 @@ class TaskAssignmentNotification extends Notification
         return [
             'kind' => $this->reassigned ? 'task_reassigned' : 'task_assigned',
             'task_id' => $this->task->id,
-            'title' => $this->reassigned ? 'Task reassigned' : 'Task assigned',
+            'title' => $this->reassigned
+                ? trans('crm::notifications.task_assignment.reassigned_title')
+                : trans('crm::notifications.task_assignment.assigned_title'),
             'body' => $this->task->title,
             'priority' => $this->task->priority,
             'due_at' => $this->task->due_at?->toISOString(),

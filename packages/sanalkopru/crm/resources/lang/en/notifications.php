@@ -1,0 +1,34 @@
+<?php
+
+return [
+    'task_reminder' => [
+        'mail_subject' => 'CRM Task Reminder: :task',
+        'mail_intro' => 'A CRM task reminder is due.',
+        'mail_due_at' => 'Due at: :value',
+        'mail_no_due_date' => 'No due date',
+        'mail_action' => 'Open Tasks',
+        'database_title' => 'Task reminder',
+    ],
+    'task_assignment' => [
+        'assigned_title' => 'Task assigned',
+        'reassigned_title' => 'Task reassigned',
+    ],
+    'quote_status_changed' => [
+        'title' => 'Quote :status',
+        'body_with_company' => ':quote - :company',
+        'body_without_company' => ':quote',
+    ],
+    'import_status' => [
+        'queued_title' => ':module import queued',
+        'queued_body' => ':filename is queued for background processing.',
+        'completed_with_errors_title' => ':module import finished with errors',
+        'completed_title' => ':module import completed',
+        'completed_body' => ':created created, :failed failed.',
+    ],
+    'center' => [
+        'default_title' => 'Notification',
+        'fallback_due_at' => 'Due at :value',
+        'fallback_priority' => 'Priority: :value',
+        'fallback_open' => 'Open to review the latest CRM update.',
+    ],
+];

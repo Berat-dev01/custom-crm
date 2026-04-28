@@ -5,10 +5,17 @@ namespace Sanalkopru\Crm\Services\Notifications;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Notifications\DatabaseNotification;
+use Sanalkopru\Crm\Support\CrmFormatter;
+use Sanalkopru\Crm\Support\CrmLabelCatalog;
 
 class NotificationCenter
 {
     private const LIMIT = 8;
+
+    public function __construct(
+        private readonly CrmFormatter $formatter,
+        private readonly CrmLabelCatalog $labels
+    ) {}
 
     /**
      * @return array{items: list<array<string, mixed>>, unread_count: int, has_more: bool}
@@ -77,7 +84,7 @@ class NotificationCenter
     {
         $data = $notification->data;
         $kind = (string) ($data['kind'] ?? 'system');
-        $title = (string) ($data['title'] ?? $data['subject'] ?? 'Notification');
+        $title = (string) ($data['title'] ?? $data['subject'] ?? trans('crm::notifications.center.default_title'));
         $body = (string) ($data['body'] ?? $this->fallbackBody($data));
         $icon = $this->icon($kind);
 
@@ -102,14 +109,18 @@ class NotificationCenter
     private function fallbackBody(array $data): string
     {
         if (! empty($data['due_at'])) {
-            return 'Due at '.date('Y-m-d H:i', strtotime((string) $data['due_at']));
+            return trans('crm::notifications.center.fallback_due_at', [
+                'value' => $this->formatter->datetime((string) $data['due_at']),
+            ]);
         }
 
         if (! empty($data['priority'])) {
-            return 'Priority: '.ucfirst((string) $data['priority']);
+            return trans('crm::notifications.center.fallback_priority', [
+                'value' => $this->labels->status((string) $data['priority']),
+            ]);
         }
 
-        return 'Open to review the latest CRM update.';
+        return trans('crm::notifications.center.fallback_open');
     }
 
     /**

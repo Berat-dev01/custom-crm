@@ -573,6 +573,24 @@ $validator->errors()->add(
 
 ## Faz 8: Notification ve mail metinlerini cevir
 
+### Faz 8 Uygulama Ozeti
+
+Durum: tamamlandi.
+
+- `packages/sanalkopru/crm/resources/lang/en/notifications.php` ve `tr/notifications.php` eklendi; mail subject/action metinleri, database notification title/body kaliplari ve notification center fallback metinleri `crm::notifications.*` altinda toplandi
+- `TaskReminderNotification` artik mail subject, intro, due-date line ve action label icin translation kullaniyor; database notification title'i da locale-aware hale geldi
+- `TaskAssignmentNotification`, `QuoteStatusChangedNotification` ve `ImportStatusNotification` icindeki title/body metinleri translation key'lerine tasindi
+- `QuoteStatusChangedNotification` icinde quote status label'i `CrmLabelCatalog` uzerinden locale-aware uretiliyor; `ImportStatusNotification` da modul adini merkezi label katalogundan aliyor
+- `NotificationCenter` fallback title/body uretimini translation sistemine baglayacak sekilde guncellendi; due date ve priority fallback'lari artik locale-aware
+- Notification testleri sabit Ingilizce string yerine translation sonucunu dogrulayacak sekilde guncellendi; import status notification title/body beklentileri de test kapsaminda
+- Docker icinde package notification translation yuklemesi `Gorev hatirlatmasi`, `Sirketler ice aktarma tamamlandi` ve `En son CRM guncellemesini incelemek icin acin.` ciktilariyla dogrulandi
+- Docker icinde hedefli notification testleri basarili gecti:
+  - `CrmNotificationsModuleTest`
+  - `CrmDataTransferModuleTest`
+- Docker icinde tum test suiti tekrar kosuldu ve basarili gecti: `162 passed`
+
+Bu faz sonunda notification title/body, task reminder mail metinleri ve notification center fallback mesajlari da locale-aware oldu. Boylece kullanicinin dogrudan gordugu bildirim akislari backend localization sisteminin disinda kalan son buyuk alanlardan biri olmaktan cikti.
+
 Notification'lar kullanicinin dogrudan gordugu alanlar oldugu icin localization kapsaminda mutlaka tamamlanmali.
 
 Kontrol listesi:

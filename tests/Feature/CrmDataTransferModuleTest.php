@@ -18,6 +18,7 @@ use Sanalkopru\Crm\Models\DealStage;
 use Sanalkopru\Crm\Models\Quote;
 use Sanalkopru\Crm\Notifications\ImportStatusNotification;
 use Sanalkopru\Crm\Services\DataTransfer\CrmDataTransferService;
+use Sanalkopru\Crm\Support\CrmLabelCatalog;
 use Tests\TestCase;
 
 class CrmDataTransferModuleTest extends TestCase
@@ -209,7 +210,17 @@ class CrmDataTransferModuleTest extends TestCase
         Notification::assertSentTo(
             $this->admin,
             ImportStatusNotification::class,
-            fn (ImportStatusNotification $notification): bool => $notification->status === 'queued'
+            function (ImportStatusNotification $notification) use ($file): bool {
+                $data = $notification->toArray($this->admin);
+
+                return $notification->status === 'queued'
+                    && $data['title'] === trans('crm::notifications.import_status.queued_title', [
+                        'module' => app(CrmLabelCatalog::class)->moduleLabel('contacts'),
+                    ])
+                    && $data['body'] === trans('crm::notifications.import_status.queued_body', [
+                        'filename' => $file->getClientOriginalName(),
+                    ]);
+            }
         );
 
         $result = session('crm_import_result');
@@ -240,7 +251,19 @@ class CrmDataTransferModuleTest extends TestCase
         Notification::assertSentTo(
             $this->admin,
             ImportStatusNotification::class,
-            fn (ImportStatusNotification $notification): bool => $notification->import->is($import->fresh()) && $notification->status === 'completed_with_errors'
+            function (ImportStatusNotification $notification) use ($import): bool {
+                $data = $notification->toArray($this->admin);
+
+                return $notification->import->is($import->fresh())
+                    && $notification->status === 'completed_with_errors'
+                    && $data['title'] === trans('crm::notifications.import_status.completed_with_errors_title', [
+                        'module' => app(CrmLabelCatalog::class)->moduleLabel('companies'),
+                    ])
+                    && $data['body'] === trans('crm::notifications.import_status.completed_body', [
+                        'created' => 1,
+                        'failed' => 1,
+                    ]);
+            }
         );
     }
 

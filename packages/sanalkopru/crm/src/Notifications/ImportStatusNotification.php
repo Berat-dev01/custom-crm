@@ -25,27 +25,27 @@ class ImportStatusNotification extends Notification
      */
     public function toArray(object $notifiable): array
     {
-        $module = ucfirst((string) $this->import->module);
+        $module = app(\Sanalkopru\Crm\Support\CrmLabelCatalog::class)->moduleLabel((string) $this->import->module);
+        $summary = trans('crm::notifications.import_status.completed_body', [
+            'created' => (int) $this->import->processed_rows,
+            'failed' => (int) $this->import->failed_rows,
+        ]);
 
         return match ($this->status) {
             'queued', 'pending', 'processing' => [
                 'kind' => 'import_queued',
                 'import_id' => $this->import->public_id,
                 'module' => $this->import->module,
-                'title' => $module.' import queued',
-                'body' => $this->import->filename.' is queued for background processing.',
+                'title' => trans('crm::notifications.import_status.queued_title', ['module' => $module]),
+                'body' => trans('crm::notifications.import_status.queued_body', ['filename' => $this->import->filename]),
                 'url' => route('crm.'.$this->import->module.'.import'),
             ],
             'completed_with_errors' => [
                 'kind' => 'import_completed_with_errors',
                 'import_id' => $this->import->public_id,
                 'module' => $this->import->module,
-                'title' => $module.' import finished with errors',
-                'body' => sprintf(
-                    '%d created, %d failed.',
-                    (int) $this->import->processed_rows,
-                    (int) $this->import->failed_rows
-                ),
+                'title' => trans('crm::notifications.import_status.completed_with_errors_title', ['module' => $module]),
+                'body' => $summary,
                 'url' => route('crm.'.$this->import->module.'.import'),
                 'error_report_url' => $this->import->error_report_path
                     ? route('crm.imports.errors', $this->import->public_id)
@@ -55,12 +55,8 @@ class ImportStatusNotification extends Notification
                 'kind' => 'import_completed',
                 'import_id' => $this->import->public_id,
                 'module' => $this->import->module,
-                'title' => $module.' import completed',
-                'body' => sprintf(
-                    '%d created, %d failed.',
-                    (int) $this->import->processed_rows,
-                    (int) $this->import->failed_rows
-                ),
+                'title' => trans('crm::notifications.import_status.completed_title', ['module' => $module]),
+                'body' => $summary,
                 'url' => route('crm.'.$this->import->module.'.import'),
             ],
         };

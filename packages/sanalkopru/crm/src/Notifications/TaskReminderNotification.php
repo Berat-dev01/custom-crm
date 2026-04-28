@@ -24,12 +24,15 @@ class TaskReminderNotification extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
+        $dueAt = $this->task->due_at?->format('Y-m-d H:i')
+            ?: trans('crm::notifications.task_reminder.mail_no_due_date');
+
         return (new MailMessage)
-            ->subject('CRM Task Reminder: '.$this->task->title)
-            ->line('A CRM task reminder is due.')
+            ->subject(trans('crm::notifications.task_reminder.mail_subject', ['task' => $this->task->title]))
+            ->line(trans('crm::notifications.task_reminder.mail_intro'))
             ->line($this->task->title)
-            ->line('Due at: '.($this->task->due_at?->format('Y-m-d H:i') ?: 'No due date'))
-            ->action('Open Tasks', route('crm.tasks.index'));
+            ->line(trans('crm::notifications.task_reminder.mail_due_at', ['value' => $dueAt]))
+            ->action(trans('crm::notifications.task_reminder.mail_action'), route('crm.tasks.index'));
     }
 
     /**
@@ -40,7 +43,7 @@ class TaskReminderNotification extends Notification implements ShouldQueue
         return [
             'kind' => 'task_reminder',
             'task_id' => $this->task->id,
-            'title' => 'Task reminder',
+            'title' => trans('crm::notifications.task_reminder.database_title'),
             'body' => $this->task->title,
             'due_at' => $this->task->due_at?->toISOString(),
             'priority' => $this->task->priority,
