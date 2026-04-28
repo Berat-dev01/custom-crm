@@ -25,7 +25,7 @@
                     </x-admin-panel::button>
                 @endcan
                 @can('delete', $contact)
-                    <form method="POST" action="{{ route('crm.contacts.destroy', $contact) }}" data-crm-confirm="Delete this contact?">
+                    <form method="POST" action="{{ route('crm.contacts.destroy', $contact) }}" data-crm-confirm="{{ __('Delete this contact?') }}">
                         @csrf
                         @method('DELETE')
                         <x-admin-panel::button type="submit" variant="danger" icon="trash-2">
@@ -116,7 +116,7 @@
                     </div>
                 @empty
                     <div class="crm-empty-state">
-                        <strong>No open tasks.</strong>
+                        <strong>{{ __('No open tasks.') }}</strong>
                     </div>
                 @endforelse
             </x-admin-panel::card>

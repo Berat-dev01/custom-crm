@@ -62,7 +62,7 @@ class CrmDealDetailWorkflowTest extends TestCase
             ->assertSee('Add Task')
             ->assertSee('Create Quote')
             ->assertSee('Add Activity')
-            ->assertSee('AI Email Draft')
+            ->assertSee(__('AI Email Draft'))
             ->assertSee('Important note')
             ->assertDontSee('Discovery call');
     }

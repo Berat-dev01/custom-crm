@@ -3,6 +3,7 @@
         @php
             $crmJsUrl = asset('vendor/crm/js/crm.js') . '?v=' . (@filemtime(public_path('vendor/crm/js/crm.js')) ?: time());
         @endphp
+        @include('crm::admin.partials.translations')
         <script src="{{ $crmJsUrl }}"></script>
     @endpush
 @endonce

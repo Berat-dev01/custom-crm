@@ -31,7 +31,7 @@
                     </x-admin-panel::button>
                 @endcan
                 @can('delete', $company)
-                    <form method="POST" action="{{ route('crm.companies.destroy', $company) }}" data-crm-confirm="Delete this company?">
+                    <form method="POST" action="{{ route('crm.companies.destroy', $company) }}" data-crm-confirm="{{ __('Delete this company?') }}">
                         @csrf
                         @method('DELETE')
                         <x-admin-panel::button type="submit" variant="danger" icon="trash-2">
@@ -84,7 +84,7 @@
                             <div
                                 class="form-group"
                                 data-admin-select
-                                data-admin-select-placeholder="Select contacts"
+                                data-admin-select-placeholder="{{ __('Select contacts') }}"
                                 data-admin-select-searchable="1"
                                 data-admin-select-clearable="1"
                             >
@@ -172,7 +172,7 @@
                     </div>
                 @empty
                     <div class="crm-empty-state">
-                        <strong>No open tasks.</strong>
+                        <strong>{{ __('No open tasks.') }}</strong>
                     </div>
                 @endforelse
             </x-admin-panel::card>

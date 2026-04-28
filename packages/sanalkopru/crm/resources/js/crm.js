@@ -1,5 +1,20 @@
 (() => {
+    const crmTranslations = window.CrmTranslations || {};
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    function crmT(key, fallback, replace = {}) {
+        let message = crmTranslations[key];
+
+        if (typeof message !== 'string') {
+            message = fallback || key;
+        }
+
+        Object.keys(replace).forEach((token) => {
+            message = message.replace(`:${token}`, String(replace[token]));
+        });
+
+        return message;
+    }
 
     function syncEmptyState(list) {
         const hasCards = list.querySelector('.crm-kanban-card') !== null;
@@ -9,7 +24,7 @@
         } else if (!hasCards && !emptyState) {
             const el = document.createElement('div');
             el.className = 'crm-empty-state';
-            el.innerHTML = '<strong>No deals.</strong><p>Drag deals here as the pipeline develops.</p>';
+            el.innerHTML = `<strong>${crmT('no_deals_title', 'No deals.')}</strong><p>${crmT('no_deals_body', 'Drag deals here as the pipeline develops.')}</p>`;
             list.prepend(el);
         }
     }
@@ -31,7 +46,7 @@
         const dialog = document.querySelector('[data-crm-lost-dialog]');
 
         if (!dialog || typeof dialog.showModal !== 'function') {
-            return window.prompt('Lost reason') || null;
+            return window.prompt(crmT('lost_reason', 'Lost Reason')) || null;
         }
 
         const form = dialog.querySelector('form');
@@ -130,12 +145,12 @@
 
             const data = await response.json();
             updateKanbanAggregates(data.stages || []);
-            window.AdminPanel?.toast('Deal moved.', 'success');
+            window.AdminPanel?.toast(crmT('deal_moved', 'Deal moved.'), 'success');
         } catch (error) {
             restoreCard(card, sourceList, sourceIndex);
             syncEmptyState(targetList);
             syncEmptyState(sourceList);
-            window.AdminPanel?.toast('Deal could not be moved. Please refresh and try again.', 'danger');
+            window.AdminPanel?.toast(crmT('deal_move_failed', 'Deal could not be moved. Please refresh and try again.'), 'danger');
         } finally {
             card.classList.remove('is-moving');
         }
@@ -371,11 +386,11 @@
                     const data = await response.json();
 
                     if (!response.ok) {
-                        window.AdminPanel?.toast(data.message || 'Request failed.', 'danger');
+                        window.AdminPanel?.toast(data.message || crmT('request_failed', 'Request failed.'), 'danger');
                         return;
                     }
 
-                    window.AdminPanel?.toast(data.message || 'Done.', 'success');
+                    window.AdminPanel?.toast(data.message || crmT('request_done', 'Done.'), 'success');
 
                     const aiContent = data.draft || data.summary;
 
@@ -387,7 +402,7 @@
                             const contentEl = container.querySelector('[data-crm-ai-content]');
 
                             if (labelEl) {
-                                labelEl.textContent = form.dataset.crmAiLabel || 'AI Result';
+                                labelEl.textContent = form.dataset.crmAiLabel || crmT('ai_result', 'AI Result');
                             }
 
                             if (contentEl) {
@@ -419,7 +434,7 @@
                         window.AdminPanel?.rehydrate?.();
                     }
                 } catch (_error) {
-                    window.AdminPanel?.toast('Request failed. Please try again.', 'danger');
+                    window.AdminPanel?.toast(crmT('request_failed_retry', 'Request failed. Please try again.'), 'danger');
                 } finally {
                     form.classList.remove('crm-is-submitting');
 
@@ -483,7 +498,7 @@
                         window.AdminPanel?.rehydrate?.();
                     }
                 } catch (_e) {
-                    window.AdminPanel?.toast('Preview failed. Please try again.', 'danger');
+                    window.AdminPanel?.toast(crmT('preview_failed_retry', 'Preview failed. Please try again.'), 'danger');
                 } finally {
                     form.classList.remove('crm-is-submitting');
 
@@ -684,7 +699,7 @@
             const prevBtn = document.createElement('button');
             prevBtn.type = 'button';
             prevBtn.className = 'crm-dashboard-pager-btn';
-            prevBtn.setAttribute('aria-label', 'Previous page');
+            prevBtn.setAttribute('aria-label', crmT('pagination_previous', 'Previous page'));
             prevBtn.innerHTML = '<i data-lucide="chevron-left" width="14" height="14"></i>';
 
             const info = document.createElement('span');
@@ -693,7 +708,7 @@
             const nextBtn = document.createElement('button');
             nextBtn.type = 'button';
             nextBtn.className = 'crm-dashboard-pager-btn';
-            nextBtn.setAttribute('aria-label', 'Next page');
+            nextBtn.setAttribute('aria-label', crmT('pagination_next', 'Next page'));
             nextBtn.innerHTML = '<i data-lucide="chevron-right" width="14" height="14"></i>';
 
             const footer = document.createElement('div');

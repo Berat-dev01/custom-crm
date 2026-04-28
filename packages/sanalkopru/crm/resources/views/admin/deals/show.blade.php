@@ -24,7 +24,7 @@
                     </x-admin-panel::button>
                 @endcan
                 @can('delete', $deal)
-                    <form method="POST" action="{{ route('crm.deals.destroy', $deal) }}" data-crm-confirm="Delete this deal?">
+                    <form method="POST" action="{{ route('crm.deals.destroy', $deal) }}" data-crm-confirm="{{ __('Delete this deal?') }}">
                         @csrf
                         @method('DELETE')
                         <x-admin-panel::button type="submit" variant="danger" icon="trash-2">
@@ -56,26 +56,26 @@
             </div>
             <div class="crm-admin-card">
                 <span class="crm-admin-card-label">Next Task</span>
-                <strong>{{ $nextTask?->title ?: 'No open task' }}</strong>
-                <p>{{ $nextTask?->due_at?->format('Y-m-d H:i') ?: 'Nothing scheduled' }}</p>
+                <strong>{{ $nextTask?->title ?: __('No open task') }}</strong>
+                <p>{{ $nextTask?->due_at?->format('Y-m-d H:i') ?: __('Nothing scheduled') }}</p>
             </div>
         </div>
 
         <div class="crm-highlight-box" data-crm-ai-result hidden>
-            <strong data-crm-ai-label>AI Result</strong>
+            <strong data-crm-ai-label>{{ __('AI Result') }}</strong>
             <pre class="crm-muted" style="white-space: pre-wrap; margin: 0;" data-crm-ai-content></pre>
         </div>
 
         @if(session('crm_ai_draft'))
             <div class="crm-highlight-box">
-                <strong>AI Email Draft</strong>
+                <strong>{{ __('AI Email Draft') }}</strong>
                 <pre class="crm-muted" style="white-space: pre-wrap; margin: 0;">{{ session('crm_ai_draft') }}</pre>
             </div>
         @endif
 
         @if(session('crm_ai_summary'))
             <div class="crm-highlight-box">
-                <strong>AI Summary</strong>
+                <strong>{{ __('AI Summary') }}</strong>
                 <pre class="crm-muted" style="white-space: pre-wrap; margin: 0;">{{ session('crm_ai_summary') }}</pre>
             </div>
         @endif
@@ -132,7 +132,7 @@
                                 <form method="POST" action="{{ route('crm.deals.close-lost', $deal) }}" class="crm-inline-form" data-crm-ajax-form>
                                     @csrf
                                     @method('PATCH')
-                                    <input name="lost_reason" class="form-control" placeholder="Lost reason" required>
+                                    <input name="lost_reason" class="form-control" placeholder="{{ __('Lost Reason') }}" required>
                                     <x-admin-panel::button type="submit" variant="danger" icon="x">
                                         Mark Lost
                                     </x-admin-panel::button>
@@ -142,22 +142,22 @@
                     @endcan
 
                     @can('crm.ai.use')
-                        <form method="POST" action="{{ route('crm.ai.draft-email') }}" class="crm-action-panel" data-crm-ajax-form data-crm-ai-label="AI Email Draft">
+                        <form method="POST" action="{{ route('crm.ai.draft-email') }}" class="crm-action-panel" data-crm-ajax-form data-crm-ai-label="{{ __('AI Email Draft') }}">
                             @csrf
                             <input type="hidden" name="deal_id" value="{{ $deal->id }}">
                             <input type="hidden" name="deal_title" value="{{ $deal->title }}">
                             <input type="hidden" name="brief" value="Draft a follow-up email for this deal.">
-                            <x-admin-panel::button type="submit" variant="outline" icon="sparkles" :disabled="!$aiAvailable" title="{{ $aiAvailable ? 'Draft with AI' : 'AI is disabled or missing provider credentials' }}">
-                                AI Email Draft
+                            <x-admin-panel::button type="submit" variant="outline" icon="sparkles" :disabled="!$aiAvailable" :title="$aiAvailable ? __('Draft with AI') : trans('crm::messages.ai.not_configured')">
+                                {{ __('AI Email Draft') }}
                             </x-admin-panel::button>
                         </form>
 
-                        <form method="POST" action="{{ route('crm.ai.summarize') }}" class="crm-action-panel" data-crm-ajax-form data-crm-ai-label="{{ $deal->status === 'lost' ? 'AI Lost Deal Analysis' : 'AI Timeline Summary' }}">
+                        <form method="POST" action="{{ route('crm.ai.summarize') }}" class="crm-action-panel" data-crm-ajax-form data-crm-ai-label="{{ $deal->status === 'lost' ? __('AI Lost Deal Analysis') : __('AI Timeline Summary') }}">
                             @csrf
                             <input type="hidden" name="type" value="{{ $deal->status === 'lost' ? 'lost_deal' : 'deal_timeline' }}">
                             <input type="hidden" name="deal_id" value="{{ $deal->id }}">
-                            <x-admin-panel::button type="submit" variant="ghost" icon="sparkles" :disabled="!$aiAvailable" title="{{ $aiAvailable ? 'Summarize with AI' : 'AI is disabled or missing provider credentials' }}">
-                                {{ $deal->status === 'lost' ? 'AI Lost Deal Analysis' : 'AI Timeline Summary' }}
+                            <x-admin-panel::button type="submit" variant="ghost" icon="sparkles" :disabled="!$aiAvailable" :title="$aiAvailable ? __('Summarize with AI') : trans('crm::messages.ai.not_configured')">
+                                {{ $deal->status === 'lost' ? __('AI Lost Deal Analysis') : __('AI Timeline Summary') }}
                             </x-admin-panel::button>
                         </form>
                     @endcan
@@ -176,7 +176,7 @@
                         @csrf
                         <x-admin-panel::input name="title" label="Title" required />
                         <x-admin-panel::select name="priority" label="Priority" :options="$taskPriorities" selected="normal" required />
-                        <x-admin-panel::select name="assigned_to" label="Assignee" :options="$owners" :selected="$deal->owner_id" placeholder="Unassigned" />
+                        <x-admin-panel::select name="assigned_to" label="Assignee" :options="$owners" :selected="$deal->owner_id" placeholder="{{ __('Unassigned') }}" />
                         <x-admin-panel::input name="due_at" label="Due At" type="datetime-local" />
                         <x-admin-panel::input name="reminder_at" label="Reminder At" type="datetime-local" />
                         <x-admin-panel::textarea name="description" label="Description" class="crm-span-2" rows="3" />
@@ -196,10 +196,10 @@
                     @forelse($openTasks as $task)
                         <div class="crm-list-item">
                             <strong>{{ $task->title }}</strong>
-                            <span>{{ $task->due_at?->format('Y-m-d H:i') ?: 'No due date' }} / {{ $task->assignee?->name ?: 'Unassigned' }} / {{ $crmFormat->status($task->priority) }}</span>
+                            <span>{{ $task->due_at?->format('Y-m-d H:i') ?: __('No due date') }} / {{ $task->assignee?->name ?: __('Unassigned') }} / {{ $crmFormat->status($task->priority) }}</span>
                         </div>
                     @empty
-                        <p class="crm-muted">No open tasks.</p>
+                        <p class="crm-muted">{{ __('No open tasks.') }}</p>
                     @endforelse
                 </div>
             </x-admin-panel::card>
@@ -274,7 +274,7 @@
                 </x-slot:header>
 
                 <form method="GET" action="{{ route('crm.deals.show', $deal) }}" class="crm-inline-form">
-                    <x-admin-panel::select name="activity_type" label="Filter" :options="$activityTypes" :selected="$activityFilter" placeholder="All activity" />
+                    <x-admin-panel::select name="activity_type" label="Filter" :options="$activityTypes" :selected="$activityFilter" placeholder="{{ __('All activity') }}" />
                     <x-admin-panel::button type="submit" icon="filter">Apply</x-admin-panel::button>
                     <x-admin-panel::button :href="route('crm.deals.show', $deal)" variant="ghost">Reset</x-admin-panel::button>
                 </form>

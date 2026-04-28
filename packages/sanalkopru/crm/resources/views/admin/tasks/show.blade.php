@@ -45,7 +45,7 @@
                     <x-admin-panel::button :href="route('crm.tasks.edit', $task)" icon="pencil">Edit</x-admin-panel::button>
                 @endcan
                 @can('delete', $task)
-                    <form method="POST" action="{{ route('crm.tasks.destroy', $task) }}" data-crm-confirm="Delete this task?">
+                    <form method="POST" action="{{ route('crm.tasks.destroy', $task) }}" data-crm-confirm="{{ __('Delete this task?') }}">
                         @csrf
                         @method('DELETE')
                         <x-admin-panel::button type="submit" variant="danger" icon="trash-2">Delete</x-admin-panel::button>
@@ -64,13 +64,13 @@
             />
             <x-admin-panel::stat-card
                 label="Due Date"
-                :value="$task->due_at?->format('d M Y') ?: 'No due date'"
+                :value="$task->due_at?->format('d M Y') ?: __('No due date')"
                 icon="calendar"
                 variant="warning"
             />
             <x-admin-panel::stat-card
                 label="Assignee"
-                :value="$task->assignee?->name ?: 'Unassigned'"
+                :value="$task->assignee?->name ?: __('Unassigned')"
                 icon="user"
                 variant="primary"
             />

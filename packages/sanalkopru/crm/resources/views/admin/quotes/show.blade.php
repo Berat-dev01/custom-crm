@@ -12,13 +12,13 @@
         @include('crm::admin.partials.status')
 
         <div class="crm-highlight-box" data-crm-ai-result hidden>
-            <strong data-crm-ai-label>AI Result</strong>
+            <strong data-crm-ai-label>{{ __('AI Result') }}</strong>
             <pre class="crm-muted" style="white-space: pre-wrap; margin: 0;" data-crm-ai-content></pre>
         </div>
 
         @if(session('crm_ai_draft'))
             <div class="crm-highlight-box">
-                <strong>AI Follow-up Draft</strong>
+                <strong>{{ __('AI Follow-up Draft') }}</strong>
                 <pre class="crm-muted" style="white-space: pre-wrap; margin: 0;">{{ session('crm_ai_draft') }}</pre>
             </div>
         @endif
@@ -44,7 +44,7 @@
                     </x-admin-panel::button>
                 @endcan
                 @can('delete', $quote)
-                    <form method="POST" action="{{ route('crm.quotes.destroy', $quote) }}" data-crm-confirm="Delete this quote?">
+                    <form method="POST" action="{{ route('crm.quotes.destroy', $quote) }}" data-crm-confirm="{{ __('Delete this quote?') }}">
                         @csrf
                         @method('DELETE')
                         <x-admin-panel::button type="submit" variant="danger" icon="trash-2">
@@ -145,12 +145,12 @@
                             </form>
                         @endcan
                         @can('crm.ai.use')
-                            <form method="POST" action="{{ route('crm.ai.follow-up') }}" data-crm-ajax-form data-crm-ai-label="AI Follow-up Draft">
+                            <form method="POST" action="{{ route('crm.ai.follow-up') }}" data-crm-ajax-form data-crm-ai-label="{{ __('AI Follow-up Draft') }}">
                                 @csrf
                                 <input type="hidden" name="quote_id" value="{{ $quote->id }}">
                                 <input type="hidden" name="brief" value="Draft a polite follow-up for this quote.">
-                                <x-admin-panel::button type="submit" variant="outline" icon="sparkles" :disabled="!$aiAvailable" title="{{ $aiAvailable ? 'Draft with AI' : 'AI is disabled or missing provider credentials' }}">
-                                    AI Follow-up
+                                <x-admin-panel::button type="submit" variant="outline" icon="sparkles" :disabled="!$aiAvailable" :title="$aiAvailable ? __('Draft with AI') : trans('crm::messages.ai.not_configured')">
+                                    {{ __('AI Follow-up') }}
                                 </x-admin-panel::button>
                             </form>
                         @endcan
