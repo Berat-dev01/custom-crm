@@ -51,6 +51,7 @@ use Sanalkopru\Crm\Services\Configuration\UiSettings;
 use Sanalkopru\Crm\Services\Navigation\CrmNavigation;
 use Sanalkopru\Crm\Services\Settings\CrmSettingsManager;
 use Sanalkopru\Crm\Support\CrmFormatter;
+use Sanalkopru\Crm\Support\CrmLabelCatalog;
 
 class CrmServiceProvider extends ServiceProvider
 {
@@ -68,6 +69,7 @@ class CrmServiceProvider extends ServiceProvider
         $this->app->singleton(CrmNavigation::class);
         $this->app->singleton(UiSettings::class);
         $this->app->singleton(CrmFormatter::class);
+        $this->app->singleton(CrmLabelCatalog::class);
         $this->app->singleton(CrmSettingsManager::class);
     }
 

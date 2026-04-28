@@ -20,10 +20,14 @@ use Sanalkopru\Crm\Models\Quote;
 use Sanalkopru\Crm\Models\SavedFilter;
 use Sanalkopru\Crm\Models\Task;
 use Sanalkopru\Crm\Services\Tasks\TaskQuery;
+use Sanalkopru\Crm\Support\CrmLabelCatalog;
 
 class TasksController extends Controller
 {
-    public function __construct(private readonly TaskQuery $tasks) {}
+    public function __construct(
+        private readonly TaskQuery $tasks,
+        private readonly CrmLabelCatalog $labels
+    ) {}
 
     public function index(Request $request): View
     {
@@ -149,8 +153,8 @@ class TasksController extends Controller
             'tasks' => $this->tasks->paginate($request, $scope),
             'filters' => $this->tasks->filters($request, $scope),
             'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
-            'priorities' => $this->priorities(),
-            'statuses' => $this->statuses(),
+            'priorities' => $this->labels->taskPriorities(),
+            'statuses' => $this->labels->taskStatuses(),
             'savedFilters' => SavedFilter::query()->forModule('tasks')->visibleTo($request->user())->orderBy('name')->get(),
         ]);
     }
@@ -163,9 +167,9 @@ class TasksController extends Controller
         return [
             'task' => $task,
             'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
-            'priorities' => $this->priorities(),
-            'statuses' => $this->statuses(),
-            'taskableTypes' => $this->taskableTypes(),
+            'priorities' => $this->labels->taskPriorities(),
+            'statuses' => $this->labels->taskStatuses(),
+            'taskableTypes' => $this->labels->relatedRecordTypes(),
             'taskableOptions' => [
                 'contact' => Contact::query()->orderBy('full_name')->limit(250)->get(['id', 'full_name']),
                 'company' => Company::query()->orderBy('name')->limit(250)->get(['id', 'name']),
@@ -173,45 +177,6 @@ class TasksController extends Controller
                 'quote' => Quote::query()->orderByDesc('created_at')->limit(250)->get(['id', 'quote_number']),
             ],
             'selectedTaskableType' => $this->selectedTaskableType($task),
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function priorities(): array
-    {
-        return [
-            'low' => 'Low',
-            'normal' => 'Normal',
-            'high' => 'High',
-            'urgent' => 'Urgent',
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function statuses(): array
-    {
-        return [
-            'open' => 'Open',
-            'in_progress' => 'In Progress',
-            'completed' => 'Completed',
-            'cancelled' => 'Cancelled',
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function taskableTypes(): array
-    {
-        return [
-            'contact' => 'Contact',
-            'company' => 'Company',
-            'deal' => 'Deal',
-            'quote' => 'Quote',
         ];
     }
 

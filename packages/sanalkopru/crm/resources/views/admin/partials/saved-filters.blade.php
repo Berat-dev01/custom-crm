@@ -30,11 +30,11 @@
                 name="visibility"
                 label="Visibility"
                 selected="private"
-                :options="['private' => 'Private', 'public' => 'Public']"
+                :options="app(\Sanalkopru\Crm\Support\CrmLabelCatalog::class)->savedFilterVisibilities()"
                 required
             />
             <div class="crm-filter-actions">
-                <x-admin-panel::button type="submit" icon="save">Save Current Filter</x-admin-panel::button>
+                <x-admin-panel::button type="submit" icon="save">{{ __('Save Current Filter') }}</x-admin-panel::button>
             </div>
         </form>
     @endcan

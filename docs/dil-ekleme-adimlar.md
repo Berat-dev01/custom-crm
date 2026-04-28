@@ -487,6 +487,21 @@ Yuksek oncelikli dosyalar:
 
 ## Faz 6: Navigation ve option labellarini merkezilestir
 
+### Faz 6 Uygulama Ozeti
+
+Durum: tamamlandi.
+
+- `packages/sanalkopru/crm/src/Support/CrmLabelCatalog.php` eklendi ve CRM tarafindaki navigation, status, priority, activity type, related record type, discount type, visibility ve role label'lari tek merkezde toplandi
+- `CrmNavigation`, `CrmFormatter` ve `DashboardReport` bu merkezi label katalogunu kullanacak sekilde guncellendi
+- `ContactsController`, `DealsController`, `QuotesController`, `TasksController`, `ActivitiesController` ve `UsersController` icindeki daginik option/label map'leri kaldirildi; bunlar `CrmLabelCatalog` uzerinden resolve edilmeye baslandi
+- CRM timeline ve saved filter partial'lari da merkezi label akisina baglandi; activity type ve filter visibility metinleri artik locale-aware hale geldi
+- `packages/sanalkopru/crm/resources/lang/tr.json` dosyasi Faz 5 kapsamindaki gorunur metinlere ek olarak Faz 6'da merkezilestirilen domain label'larini da kapsayacak sekilde genisletildi
+- Docker icinde `php artisan view:cache` basarili calisti
+- Docker icinde package translation yuklemesi `Genel Bakis`, `Potansiyel Musteri`, `Devam Ediyor` ve `Mevcut Filtreyi Kaydet` ciktilariyla dogrulandi
+- Docker icinde tum test suiti tekrar kosuldu ve basarili gecti: `162 passed`
+
+Bu faz sonunda CRM paketindeki navigation ve secim listesi labellari artik controller bazli daginik map'ler yerine tek bir merkezi katalogdan geliyor. Bu da Faz 7'de request, validation, notification ve backend mesajlarini cevirirken ana domain terminolojisini tekrar tekrar elle yonetme ihtiyacini azaltir.
+
 `packages/sanalkopru/crm/src/Services/Navigation/CrmNavigation.php` icinde label'lar su an Ingilizce raw string.
 
 Oneri:

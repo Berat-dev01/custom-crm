@@ -15,9 +15,12 @@ use Sanalkopru\Crm\Models\Deal;
 use Sanalkopru\Crm\Models\DealStage;
 use Sanalkopru\Crm\Models\Quote;
 use Sanalkopru\Crm\Models\Task;
+use Sanalkopru\Crm\Support\CrmFormatter;
 
 class DashboardReport
 {
+    public function __construct(private readonly CrmFormatter $formatter) {}
+
     /**
      * @return array<string, mixed>
      */
@@ -243,7 +246,7 @@ class DashboardReport
         return collect(['draft', 'sent', 'accepted', 'rejected', 'expired'])
             ->map(fn (string $status): array => [
                 'status' => $status,
-                'label' => ucfirst($status),
+                'label' => $this->formatter->status($status),
                 'total' => (int) ($counts[$status] ?? 0),
             ]);
     }

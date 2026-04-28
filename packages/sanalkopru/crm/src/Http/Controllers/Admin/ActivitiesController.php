@@ -18,10 +18,14 @@ use Sanalkopru\Crm\Models\Quote;
 use Sanalkopru\Crm\Models\SavedFilter;
 use Sanalkopru\Crm\Services\Activities\ActivityLogger;
 use Sanalkopru\Crm\Services\Activities\ActivityQuery;
+use Sanalkopru\Crm\Support\CrmLabelCatalog;
 
 class ActivitiesController extends Controller
 {
-    public function __construct(private readonly ActivityQuery $activities) {}
+    public function __construct(
+        private readonly ActivityQuery $activities,
+        private readonly CrmLabelCatalog $labels
+    ) {}
 
     public function index(Request $request): View
     {
@@ -39,8 +43,8 @@ class ActivitiesController extends Controller
         return view('crm::admin.activities.index', [
             'activities' => $this->activities->paginate($request),
             'filters' => $this->activities->filters($request),
-            'types' => $this->activityTypes(),
-            'activityableTypes' => $this->activityableTypes(),
+            'types' => $this->labels->activityTypes(),
+            'activityableTypes' => $this->labels->relatedRecordTypes(),
             'users' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
             'savedFilters' => SavedFilter::query()->forModule('activities')->visibleTo($request->user())->orderBy('name')->get(),
         ]);
@@ -134,8 +138,8 @@ class ActivitiesController extends Controller
     {
         return [
             'activity' => $activity,
-            'types' => array_intersect_key($this->activityTypes(), array_flip(['note', 'call', 'email', 'meeting'])),
-            'activityableTypes' => $this->activityableTypes(),
+            'types' => array_intersect_key($this->labels->activityTypes(), array_flip(['note', 'call', 'email', 'meeting'])),
+            'activityableTypes' => $this->labels->relatedRecordTypes(),
             'activityableOptions' => [
                 'contact' => Contact::query()->orderBy('full_name')->limit(250)->get(['id', 'full_name']),
                 'company' => Company::query()->orderBy('name')->limit(250)->get(['id', 'name']),
@@ -143,36 +147,6 @@ class ActivitiesController extends Controller
                 'quote' => Quote::query()->orderByDesc('created_at')->limit(250)->get(['id', 'quote_number']),
             ],
             'selectedActivityableType' => $this->selectedActivityableType($activity),
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function activityTypes(): array
-    {
-        return [
-            'note' => 'Note',
-            'call' => 'Call',
-            'email' => 'Email',
-            'meeting' => 'Meeting',
-            'task_completed' => 'Task Completed',
-            'quote_sent' => 'Quote Sent',
-            'deal_moved' => 'Deal Moved',
-            'system' => 'System',
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function activityableTypes(): array
-    {
-        return [
-            'contact' => 'Contact',
-            'company' => 'Company',
-            'deal' => 'Deal',
-            'quote' => 'Quote',
         ];
     }
 

@@ -44,7 +44,7 @@ class CrmGlobalSearch
             $groups['contacts']['items'] = $contacts
                 ->map(fn (Contact $contact): array => [
                     'title' => $contact->full_name,
-                    'subtitle' => collect([$contact->company?->name, $contact->email, $contact->phone])->filter()->implode(' / ') ?: 'Contact',
+                    'subtitle' => collect([$contact->company?->name, $contact->email, $contact->phone])->filter()->implode(' / ') ?: __('Contact'),
                     'url' => route('crm.contacts.show', $contact),
                     'badge' => $this->formatter->status((string) $contact->lifecycle_stage),
                 ])
@@ -67,9 +67,9 @@ class CrmGlobalSearch
             $groups['companies']['items'] = $companies
                 ->map(fn (Company $company): array => [
                     'title' => $company->name,
-                    'subtitle' => collect([$company->sector, $company->city, $company->email])->filter()->implode(' / ') ?: 'Company',
+                    'subtitle' => collect([$company->sector, $company->city, $company->email])->filter()->implode(' / ') ?: __('Company'),
                     'url' => route('crm.companies.show', $company),
-                    'badge' => $company->sector ?: 'Company',
+                    'badge' => $company->sector ?: __('Company'),
                 ])
                 ->all();
             $groups['companies']['total'] = count($groups['companies']['items']);
@@ -144,10 +144,10 @@ class CrmGlobalSearch
     private function emptyGroups(): array
     {
         return [
-            'contacts' => ['label' => 'Contacts', 'permission' => 'crm.contacts.view', 'total' => 0, 'items' => []],
-            'companies' => ['label' => 'Companies', 'permission' => 'crm.companies.view', 'total' => 0, 'items' => []],
-            'deals' => ['label' => 'Deals', 'permission' => 'crm.deals.view', 'total' => 0, 'items' => []],
-            'quotes' => ['label' => 'Quotes', 'permission' => 'crm.quotes.view', 'total' => 0, 'items' => []],
+            'contacts' => ['label' => __('Contacts'), 'permission' => 'crm.contacts.view', 'total' => 0, 'items' => []],
+            'companies' => ['label' => __('Companies'), 'permission' => 'crm.companies.view', 'total' => 0, 'items' => []],
+            'deals' => ['label' => __('Deals'), 'permission' => 'crm.deals.view', 'total' => 0, 'items' => []],
+            'quotes' => ['label' => __('Quotes'), 'permission' => 'crm.quotes.view', 'total' => 0, 'items' => []],
         ];
     }
 }

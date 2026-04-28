@@ -30,11 +30,15 @@ use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 use Sanalkopru\Crm\Services\Quotes\QuotePdfRenderer;
 use Sanalkopru\Crm\Services\Quotes\QuoteQuery;
 use Sanalkopru\Crm\Support\CrmExportSchema;
+use Sanalkopru\Crm\Support\CrmLabelCatalog;
 use Symfony\Component\HttpFoundation\Response;
 
 class QuotesController extends Controller
 {
-    public function __construct(private readonly QuoteQuery $quotes) {}
+    public function __construct(
+        private readonly QuoteQuery $quotes,
+        private readonly CrmLabelCatalog $labels
+    ) {}
 
     public function index(Request $request): View
     {
@@ -46,7 +50,7 @@ class QuotesController extends Controller
             'filters' => $this->quotes->filters($request),
             'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
             'tags' => Tag::query()->orderBy('name')->get(['id', 'name', 'color']),
-            'statuses' => $this->statuses(),
+            'statuses' => $this->labels->quoteStatuses(),
             'savedFilters' => SavedFilter::query()->forModule('quotes')->visibleTo($request->user())->orderBy('name')->get(),
             'exportColumns' => CrmExportSchema::columns('quotes'),
             'exportFormats' => CrmExportSchema::formats('quotes'),
@@ -249,8 +253,8 @@ class QuotesController extends Controller
             'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
             'tags' => Tag::query()->orderBy('name')->get(['id', 'name', 'color']),
             'selectedTags' => $quote->exists ? $quote->tags()->pluck('tags.id')->all() : [],
-            'statuses' => $this->statuses(),
-            'discountTypes' => $this->discountTypes(),
+            'statuses' => $this->labels->quoteStatuses(),
+            'discountTypes' => $this->labels->discountTypes(),
             'currencies' => array_combine(
                 config('crm.money.supported_currencies', ['TRY', 'USD', 'EUR']),
                 config('crm.money.supported_currencies', ['TRY', 'USD', 'EUR'])
@@ -279,36 +283,11 @@ class QuotesController extends Controller
     {
         $request->validate([
             'search' => ['nullable', 'string', 'max:120'],
-            'status' => ['nullable', 'string', Rule::in(array_keys($this->statuses()))],
+            'status' => ['nullable', 'string', Rule::in(array_keys($this->labels->quoteStatuses()))],
             'owner_id' => ['nullable', 'integer', 'exists:users,id'],
             'tag_id' => ['nullable', 'integer', 'exists:tags,id'],
             'valid_from' => ['nullable', 'date'],
             'valid_to' => ['nullable', 'date'],
         ]);
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function statuses(): array
-    {
-        return [
-            'draft' => 'Draft',
-            'sent' => 'Sent',
-            'accepted' => 'Accepted',
-            'rejected' => 'Rejected',
-            'expired' => 'Expired',
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function discountTypes(): array
-    {
-        return [
-            'fixed' => 'Fixed',
-            'percentage' => 'Percentage',
-        ];
     }
 }

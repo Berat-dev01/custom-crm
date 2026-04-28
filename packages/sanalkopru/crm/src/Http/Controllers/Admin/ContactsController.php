@@ -25,13 +25,15 @@ use Sanalkopru\Crm\Services\Contacts\ContactCsvExporter;
 use Sanalkopru\Crm\Services\Contacts\ContactImportService;
 use Sanalkopru\Crm\Services\Contacts\ContactQuery;
 use Sanalkopru\Crm\Support\CrmExportSchema;
+use Sanalkopru\Crm\Support\CrmLabelCatalog;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ContactsController extends Controller
 {
     public function __construct(
         private readonly ContactQuery $contacts,
-        private readonly CrmAuditLogger $audit
+        private readonly CrmAuditLogger $audit,
+        private readonly CrmLabelCatalog $labels
     ) {}
 
     public function index(Request $request): View
@@ -45,7 +47,7 @@ class ContactsController extends Controller
             'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
             'tags' => Tag::query()->orderBy('name')->get(['id', 'name', 'color']),
             'savedFilters' => SavedFilter::query()->forModule('contacts')->visibleTo($request->user())->orderBy('name')->get(),
-            'lifecycleStages' => $this->lifecycleStages(),
+            'lifecycleStages' => $this->labels->lifecycleStages(),
             'exportColumns' => CrmExportSchema::columns('contacts'),
             'exportFormats' => CrmExportSchema::formats('contacts'),
         ]);
@@ -186,35 +188,8 @@ class ContactsController extends Controller
             'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
             'tags' => Tag::query()->orderBy('name')->get(['id', 'name', 'color']),
             'selectedTags' => $contact->exists ? $contact->tags()->pluck('tags.id')->all() : [],
-            'lifecycleStages' => $this->lifecycleStages(),
-            'sources' => $this->sources(),
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function lifecycleStages(): array
-    {
-        return [
-            'lead' => 'Lead',
-            'prospect' => 'Prospect',
-            'customer' => 'Customer',
-            'inactive' => 'Inactive',
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function sources(): array
-    {
-        return [
-            'website' => 'Website',
-            'referral' => 'Referral',
-            'event' => 'Event',
-            'outbound' => 'Outbound',
-            'partner' => 'Partner',
+            'lifecycleStages' => $this->labels->lifecycleStages(),
+            'sources' => $this->labels->contactSources(),
         ];
     }
 

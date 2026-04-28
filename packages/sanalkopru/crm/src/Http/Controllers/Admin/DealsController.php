@@ -32,10 +32,14 @@ use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 use Sanalkopru\Crm\Services\Deals\DealQuery;
 use Sanalkopru\Crm\Support\CrmExportSchema;
 use Sanalkopru\Crm\Support\CrmFormatter;
+use Sanalkopru\Crm\Support\CrmLabelCatalog;
 
 class DealsController extends Controller
 {
-    public function __construct(private readonly DealQuery $deals) {}
+    public function __construct(
+        private readonly DealQuery $deals,
+        private readonly CrmLabelCatalog $labels
+    ) {}
 
     public function index(Request $request): View
     {
@@ -60,7 +64,7 @@ class DealsController extends Controller
             'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
             'tags' => Tag::query()->orderBy('name')->get(['id', 'name', 'color']),
             'savedFilters' => SavedFilter::query()->forModule('deals')->visibleTo($request->user())->orderBy('name')->get(),
-            'statuses' => $this->statuses(),
+            'statuses' => $this->labels->dealStatuses(),
             'exportColumns' => CrmExportSchema::columns('deals'),
             'exportFormats' => CrmExportSchema::formats('deals'),
         ]);
@@ -118,9 +122,9 @@ class DealsController extends Controller
                 config('crm.money.supported_currencies', ['TRY', 'USD', 'EUR']),
                 config('crm.money.supported_currencies', ['TRY', 'USD', 'EUR'])
             ),
-            'activityTypes' => $this->activityTypes(),
+            'activityTypes' => $this->labels->activityTypes(),
             'activityFilter' => $request->string('activity_type')->toString(),
-            'taskPriorities' => $this->taskPriorities(),
+            'taskPriorities' => $this->labels->taskPriorities(),
             'aiAvailable' => app(AiDriverManager::class)->available(),
             'defaultTaxRate' => app(MoneySettings::class)->defaultTaxRate(),
             'defaultTerms' => app(MoneySettings::class)->quoteTerms(),
@@ -203,7 +207,7 @@ class DealsController extends Controller
             return [
                 'id' => $stageId,
                 'deals_count' => $count,
-                'count_label' => $count.' '.($count === 1 ? 'deal' : 'deals'),
+                'count_label' => __(':count deals', ['count' => $count]),
                 'value_label' => $formatter->money($value),
             ];
         })->values();
@@ -339,7 +343,7 @@ class DealsController extends Controller
             'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
             'tags' => Tag::query()->orderBy('name')->get(['id', 'name', 'color']),
             'selectedTags' => $deal->exists ? $deal->tags()->pluck('tags.id')->all() : [],
-            'statuses' => $this->statuses(),
+            'statuses' => $this->labels->dealStatuses(),
             'currencies' => array_combine(
                 config('crm.money.supported_currencies', ['TRY', 'USD', 'EUR']),
                 config('crm.money.supported_currencies', ['TRY', 'USD', 'EUR'])
@@ -350,45 +354,4 @@ class DealsController extends Controller
         ];
     }
 
-    /**
-     * @return array<string, string>
-     */
-    private function statuses(): array
-    {
-        return [
-            'open' => 'Open',
-            'won' => 'Won',
-            'lost' => 'Lost',
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function activityTypes(): array
-    {
-        return [
-            'note' => 'Note',
-            'call' => 'Call',
-            'email' => 'Email',
-            'meeting' => 'Meeting',
-            'task_completed' => 'Task Completed',
-            'quote_sent' => 'Quote Sent',
-            'deal_moved' => 'Deal Moved',
-            'system' => 'System',
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function taskPriorities(): array
-    {
-        return [
-            'low' => 'Low',
-            'normal' => 'Normal',
-            'high' => 'High',
-            'urgent' => 'Urgent',
-        ];
-    }
 }

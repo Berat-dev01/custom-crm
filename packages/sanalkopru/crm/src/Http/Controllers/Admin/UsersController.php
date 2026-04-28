@@ -11,11 +11,15 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Sanalkopru\Crm\Services\Authorization\PermissionCatalog;
+use Sanalkopru\Crm\Support\CrmLabelCatalog;
 use Spatie\Permission\Models\Role;
 
 class UsersController extends Controller
 {
-    public function __construct(private readonly PermissionCatalog $catalog) {}
+    public function __construct(
+        private readonly PermissionCatalog $catalog,
+        private readonly CrmLabelCatalog $labels
+    ) {}
 
     public function index(): View
     {
@@ -160,9 +164,7 @@ class UsersController extends Controller
 
     private function crmRoles(): array
     {
-        return collect($this->catalog->roles())
-            ->mapWithKeys(fn (array $role, string $key): array => [$key => $role['name']])
-            ->all();
+        return $this->labels->crmRoles();
     }
 
     private function currentCrmRoleKey(User $user): ?string

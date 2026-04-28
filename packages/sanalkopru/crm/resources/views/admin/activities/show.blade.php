@@ -31,16 +31,7 @@
             'meeting' => 'warning',
             default => 'secondary',
         };
-        $typeLabel = match($activity->type) {
-            'note' => 'Note',
-            'call' => 'Call',
-            'email' => 'Email',
-            'meeting' => 'Meeting',
-            'task_completed' => 'Task Completed',
-            'quote_sent' => 'Quote Sent',
-            'deal_moved' => 'Stage Change',
-            default => ucfirst(str_replace('_', ' ', $activity->type)),
-        };
+        $typeLabel = $crmFormat->activityType($activity->type);
     @endphp
 
     <section class="crm-admin-page" data-crm-module="activities">

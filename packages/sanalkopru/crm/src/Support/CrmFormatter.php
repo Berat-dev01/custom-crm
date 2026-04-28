@@ -9,7 +9,10 @@ use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 
 class CrmFormatter
 {
-    public function __construct(private readonly MoneySettings $money) {}
+    public function __construct(
+        private readonly MoneySettings $money,
+        private readonly CrmLabelCatalog $labels
+    ) {}
 
     public function money(float|int|string|null $amount, ?string $currency = null): string
     {
@@ -34,7 +37,12 @@ class CrmFormatter
 
     public function status(string $status): string
     {
-        return str($status)->replace('_', ' ')->headline()->toString();
+        return $this->labels->status($status);
+    }
+
+    public function activityType(string $type): string
+    {
+        return $this->labels->activityTypes()[$type] ?? $this->status($type);
     }
 
     private function carbon(DateTimeInterface|string|null $value): ?CarbonInterface

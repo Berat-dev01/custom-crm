@@ -8,18 +8,7 @@
             'meeting' => 'warning',
             default => 'secondary',
         };
-        $typeLabel = match($activity->type) {
-            'note' => 'Note',
-            'call' => 'Call',
-            'email' => 'Email',
-            'meeting' => 'Meeting',
-            'task_completed' => 'Task Completed',
-            'quote_sent' => 'Quote Sent',
-            'deal_moved' => 'Stage Change',
-            'deal_won' => 'Deal Won',
-            'deal_lost' => 'Deal Lost',
-            default => ucfirst(str_replace('_', ' ', $activity->type)),
-        };
+        $typeLabel = $crmFormat->activityType($activity->type);
     @endphp
     <div class="crm-timeline-item{{ $isSystem ? ' crm-timeline-item--system' : '' }}">
         <div class="crm-timeline-item-header">
