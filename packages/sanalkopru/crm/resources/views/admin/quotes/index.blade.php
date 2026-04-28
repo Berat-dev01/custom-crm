@@ -109,7 +109,7 @@
                             <td>{{ $quote->company?->name ?: $quote->contact?->full_name ?: '-' }}</td>
                             <td>
                                 <x-admin-panel::badge variant="{{ $quote->status === 'accepted' ? 'success' : ($quote->status === 'rejected' ? 'danger' : 'info') }}">
-                                    {{ ucfirst($quote->status) }}
+                                    {{ $crmFormat->status($quote->status) }}
                                 </x-admin-panel::badge>
                             </td>
                             <td>{{ $crmFormat->money($quote->grand_total, $quote->currency) }}</td>

@@ -144,7 +144,7 @@
                     <div class="crm-list-item">
                         <a href="{{ route('crm.quotes.show', $quote) }}">{{ $quote->quote_number }}</a>
                         <span>
-                            <x-admin-panel::badge :variant="$quoteStatusVariant" size="sm">{{ ucfirst($quote->status) }}</x-admin-panel::badge>
+                            <x-admin-panel::badge :variant="$quoteStatusVariant" size="sm">{{ $crmFormat->status($quote->status) }}</x-admin-panel::badge>
                             {{ number_format((float) $quote->grand_total, 2) }} {{ $quote->currency }}
                         </span>
                     </div>
@@ -161,12 +161,12 @@
                 <x-slot:header>Tasks</x-slot:header>
                 @forelse($openTasks as $task)
                     @php
-                        $priorityVariant = match($task->priority) { 'high' => 'danger', 'medium' => 'warning', default => 'secondary' };
+                        $priorityVariant = match($task->priority) { 'high', 'urgent' => 'danger', 'normal' => 'warning', default => 'secondary' };
                     @endphp
                     <div class="crm-list-item">
                         <a href="{{ route('crm.tasks.show', $task) }}">{{ $task->title }}</a>
                         <span>
-                            <x-admin-panel::badge :variant="$priorityVariant" size="sm">{{ ucfirst($task->priority) }}</x-admin-panel::badge>
+                            <x-admin-panel::badge :variant="$priorityVariant" size="sm">{{ $crmFormat->status($task->priority) }}</x-admin-panel::badge>
                             {{ $task->due_at?->diffForHumans() ?: 'No due date' }}
                         </span>
                     </div>

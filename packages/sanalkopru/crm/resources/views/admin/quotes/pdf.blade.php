@@ -257,7 +257,7 @@
             <div class="header-right">
                 <div class="quote-title">Teklif</div>
                 <div class="quote-number">{{ $quote->quote_number }}</div>
-                <div class="badge">{{ ucfirst($quote->status) }}</div>
+                <div class="badge">{{ $crmFormat->status($quote->status) }}</div>
             </div>
         </section>
 
@@ -325,7 +325,7 @@
                             <td class="number">{{ $quote->currency }} {{ number_format((float) $item->unit_price, 2) }}</td>
                             <td class="number">
                                 @if($item->discount_type)
-                                    {{ $item->discount_type === 'percentage' ? '%' : $quote->currency }} {{ number_format((float) $item->discount_value, 2) }}
+                                    {{ $crmFormat->status($item->discount_type) }} / {{ $item->discount_type === 'percentage' ? '%' : $quote->currency }} {{ number_format((float) $item->discount_value, 2) }}
                                 @else
                                     -
                                 @endif

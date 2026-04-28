@@ -149,7 +149,7 @@
                                 </td>
                                 <td>{{ $contact->company?->name ?: '-' }}</td>
                                 <td>
-                                    <x-admin-panel::badge variant="info">{{ ucfirst($contact->lifecycle_stage) }}</x-admin-panel::badge>
+                                    <x-admin-panel::badge variant="info">{{ $crmFormat->status($contact->lifecycle_stage) }}</x-admin-panel::badge>
                                 </td>
                                 <td>{{ $contact->owner?->name ?: '-' }}</td>
                                 <td>

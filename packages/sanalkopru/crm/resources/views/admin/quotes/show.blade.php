@@ -62,7 +62,7 @@
             <div class="crm-admin-card">
                 <span class="crm-admin-card-label">Grand Total</span>
                 <strong>{{ $quote->currency }} {{ number_format((float) $quote->grand_total, 2) }}</strong>
-                <p>{{ ucfirst($quote->status) }}</p>
+                <p>{{ $crmFormat->status($quote->status) }}</p>
             </div>
             <div class="crm-admin-card">
                 <span class="crm-admin-card-label">Subtotal</span>
@@ -198,7 +198,7 @@
                         </td>
                         <td>{{ number_format((float) $item->quantity, 3) }}</td>
                         <td>{{ $quote->currency }} {{ number_format((float) $item->unit_price, 2) }}</td>
-                        <td>{{ $item->discount_type ? ucfirst($item->discount_type).' '.$item->discount_value : '-' }}</td>
+                        <td>{{ $item->discount_type ? $crmFormat->status($item->discount_type).' '.$item->discount_value : '-' }}</td>
                         <td>{{ number_format((float) $item->tax_rate, 2) }}%</td>
                         <td>{{ $quote->currency }} {{ number_format((float) $item->line_total, 2) }}</td>
                     </tr>

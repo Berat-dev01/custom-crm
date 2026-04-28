@@ -40,6 +40,7 @@ class DealResource extends JsonResource
             'position' => $this->position,
             'expected_close_date' => $this->expected_close_date?->toDateString(),
             'status' => $this->status,
+            'status_label' => $this->labelFor($this->status),
             'lost_reason' => $this->lost_reason,
             'closed_at' => $this->closed_at?->toISOString(),
             'owner_id' => $this->owner_id,

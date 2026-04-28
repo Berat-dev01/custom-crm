@@ -47,7 +47,7 @@
             <div class="crm-admin-card">
                 <span class="crm-admin-card-label">Weighted Value</span>
                 <strong>{{ $deal->currency }} {{ number_format($weightedValue, 2) }}</strong>
-                <p>{{ ucfirst($deal->status) }}</p>
+                <p>{{ $crmFormat->status($deal->status) }}</p>
             </div>
             <div class="crm-admin-card">
                 <span class="crm-admin-card-label">Stage</span>
@@ -196,7 +196,7 @@
                     @forelse($openTasks as $task)
                         <div class="crm-list-item">
                             <strong>{{ $task->title }}</strong>
-                            <span>{{ $task->due_at?->format('Y-m-d H:i') ?: 'No due date' }} / {{ $task->assignee?->name ?: 'Unassigned' }} / {{ ucfirst($task->priority) }}</span>
+                            <span>{{ $task->due_at?->format('Y-m-d H:i') ?: 'No due date' }} / {{ $task->assignee?->name ?: 'Unassigned' }} / {{ $crmFormat->status($task->priority) }}</span>
                         </div>
                     @empty
                         <p class="crm-muted">No open tasks.</p>
@@ -239,7 +239,7 @@
                     @forelse($deal->quotes as $quote)
                         <div class="crm-list-item">
                             <strong><a href="{{ route('crm.quotes.show', $quote) }}">{{ $quote->quote_number }}</a></strong>
-                            <span>{{ ucfirst($quote->status) }} / {{ $quote->currency }} {{ number_format((float) $quote->grand_total, 2) }}</span>
+                            <span>{{ $crmFormat->status($quote->status) }} / {{ $quote->currency }} {{ number_format((float) $quote->grand_total, 2) }}</span>
                         </div>
                     @empty
                         <p class="crm-muted">No quotes yet.</p>

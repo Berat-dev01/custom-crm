@@ -25,7 +25,7 @@
             default => '-',
         };
         $statusVariant = match($task->status) { 'completed' => 'success', 'in_progress' => 'warning', default => 'secondary' };
-        $priorityVariant = match($task->priority) { 'high' => 'danger', 'medium' => 'warning', default => 'secondary' };
+        $priorityVariant = match($task->priority) { 'high', 'urgent' => 'danger', 'normal' => 'warning', default => 'secondary' };
     @endphp
 
     <section class="crm-admin-page" data-crm-module="tasks">
@@ -36,8 +36,8 @@
                 <p class="crm-admin-eyebrow">CRM / Tasks</p>
                 <h1>{{ $task->title }}</h1>
                 <p class="crm-muted" style="display:flex;gap:8px;align-items:center;margin-top:4px;">
-                    <x-admin-panel::badge :variant="$statusVariant">{{ ucfirst(str_replace('_', ' ', $task->status)) }}</x-admin-panel::badge>
-                    <x-admin-panel::badge :variant="$priorityVariant">{{ ucfirst($task->priority) }} priority</x-admin-panel::badge>
+                    <x-admin-panel::badge :variant="$statusVariant">{{ $crmFormat->status($task->status) }}</x-admin-panel::badge>
+                    <x-admin-panel::badge :variant="$priorityVariant">{{ $crmFormat->status($task->priority) }}</x-admin-panel::badge>
                 </p>
             </div>
             <div class="crm-admin-actions">
@@ -58,7 +58,7 @@
         <div class="crm-admin-grid">
             <x-admin-panel::stat-card
                 label="Status"
-                :value="ucfirst(str_replace('_', ' ', $task->status))"
+                :value="$crmFormat->status($task->status)"
                 icon="circle-check"
                 :variant="$statusVariant"
             />

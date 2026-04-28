@@ -1,7 +1,9 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', __('Import').' '.__((string) Str::headline($module)))
-@section('page-title', __('Import').' '.__((string) Str::headline($module)))
+@php($moduleLabel = $crmFormat->module($module))
+
+@section('title', __('Import').' '.$moduleLabel)
+@section('page-title', __('Import').' '.$moduleLabel)
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -13,8 +15,8 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / {{ __((string) Str::headline($module)) }}</p>
-                <h1>{{ __('Import') }} {{ __((string) Str::headline($module)) }}</h1>
+                <p class="crm-admin-eyebrow">CRM / {{ $moduleLabel }}</p>
+                <h1>{{ __('Import') }} {{ $moduleLabel }}</h1>
             </div>
             <div class="crm-admin-actions">
                 <x-admin-panel::button :href="route('crm.'.$module.'.template')" variant="outline" icon="download">

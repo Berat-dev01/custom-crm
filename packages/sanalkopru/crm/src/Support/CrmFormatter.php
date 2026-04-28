@@ -45,6 +45,16 @@ class CrmFormatter
         return $this->labels->activityTypes()[$type] ?? $this->status($type);
     }
 
+    public function module(string $module): string
+    {
+        return $this->labels->moduleLabel($module);
+    }
+
+    public function relatedRecordTypeFromModel(?string $modelClass): ?string
+    {
+        return $this->labels->relatedRecordTypeLabelFromModel($modelClass);
+    }
+
     private function carbon(DateTimeInterface|string|null $value): ?CarbonInterface
     {
         if (! $value) {

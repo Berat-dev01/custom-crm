@@ -2,6 +2,10 @@
 
 namespace Sanalkopru\Crm\Support;
 
+use Sanalkopru\Crm\Models\Company;
+use Sanalkopru\Crm\Models\Contact;
+use Sanalkopru\Crm\Models\Deal;
+use Sanalkopru\Crm\Models\Quote;
 use Sanalkopru\Crm\Services\Authorization\PermissionCatalog;
 
 class CrmLabelCatalog
@@ -215,6 +219,24 @@ class CrmLabelCatalog
             'users' => __('Users'),
             default => __((string) str($module)->replace('_', ' ')->headline()),
         };
+    }
+
+    public function relatedRecordTypeKeyFromModel(?string $modelClass): ?string
+    {
+        return match ($modelClass) {
+            Contact::class => 'contact',
+            Company::class => 'company',
+            Deal::class => 'deal',
+            Quote::class => 'quote',
+            default => null,
+        };
+    }
+
+    public function relatedRecordTypeLabelFromModel(?string $modelClass): ?string
+    {
+        $key = $this->relatedRecordTypeKeyFromModel($modelClass);
+
+        return $key ? ($this->relatedRecordTypes()[$key] ?? $this->status($key)) : null;
     }
 
     public function status(string $value): string

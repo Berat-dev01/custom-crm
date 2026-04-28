@@ -608,6 +608,36 @@ Oncelikli dosyalar:
 
 ## Faz 9: Domain label ve enum benzeri degerleri cevir
 
+### Faz 9 Uygulama Ozeti
+
+Durum: tamamlandi.
+
+- `CrmLabelCatalog` ve `CrmFormatter` genisletildi; modul label ve model sinifindan related-record label uretimi merkezi hale getirildi
+- CRM admin ekranlarindaki kalan raw enum gosterimleri temizlendi:
+  - contact lifecycle/source
+  - deal/quote/task status badge'leri
+  - task priority badge'leri
+  - quote item discount type label'lari
+  - import/export modal icindeki modul label'lari
+- `contacts.show`, `companies.show`, `deals.show`, `quotes.show`, `quotes.index`, `tasks.show`, `quotes.pdf`, `contacts.index` ve benzeri detail/list ekranlari artik `ucfirst(...)` yerine merkezi label akisindan besleniyor
+- Eski varyant map'lerde kalan hatali `medium` kontrolu temizlendi; task priority varyantlari mevcut domain degerleriyle (`normal`, `high`, `urgent`) uyumlu hale getirildi
+- API resource katmanina backward-compatible label alanlari eklendi:
+  - `lifecycle_stage_label`
+  - `source_label`
+  - `status_label`
+  - `priority_label`
+  - `discount_type_label`
+  - taskable icin `type_key` ve `type_label`
+- Boylece raw veritabani degerleri korunurken UI ve API tuketicileri ayni enum alanlarin locale-aware label karsiligini alabiliyor
+- Docker icinde API/resource ve modul label dogrulamasi `Potansiyel Musteri`, `Acil` ve `Teklifler` ciktilariyla yapildi
+- Docker icinde hedefli testler basarili gecti:
+  - `CrmApiModuleTest`
+  - `CrmQuotesModuleTest`
+  - `CrmContactsModuleTest`
+- Docker icinde tum test suiti tekrar kosuldu ve basarili gecti: `162 passed`
+
+Bu faz sonunda enum benzeri domain degerleri icin veritabani degerleri degismeden, gosterim label'i merkezi ve locale-aware hale geldi. Sonraki fazlarda frontend data-attribute veya JS uzerinden bu alanlar kullanilsa bile ayni label katmani tekrar kullanilabilir.
+
 Asagidaki alanlar UI'da label olarak cikiyorsa translation altina alinmali:
 
 - status: `open`, `won`, `lost`
