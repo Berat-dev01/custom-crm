@@ -1,6 +1,19 @@
 (() => {
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 
+    function syncEmptyState(list) {
+        const hasCards = list.querySelector('.crm-kanban-card') !== null;
+        const emptyState = list.querySelector('.crm-empty-state');
+        if (hasCards && emptyState) {
+            emptyState.remove();
+        } else if (!hasCards && !emptyState) {
+            const el = document.createElement('div');
+            el.className = 'crm-empty-state';
+            el.innerHTML = '<strong>No deals.</strong><p>Drag deals here as the pipeline develops.</p>';
+            list.prepend(el);
+        }
+    }
+
     function restoreCard(card, sourceList, sourceIndex) {
         if (!sourceList) {
             return;
@@ -120,6 +133,8 @@
             window.AdminPanel?.toast('Deal moved.', 'success');
         } catch (error) {
             restoreCard(card, sourceList, sourceIndex);
+            syncEmptyState(targetList);
+            syncEmptyState(sourceList);
             window.AdminPanel?.toast('Deal could not be moved. Please refresh and try again.', 'danger');
         } finally {
             card.classList.remove('is-moving');
@@ -147,6 +162,8 @@
                         return;
                     }
 
+                    syncEmptyState(event.to);
+                    syncEmptyState(event.from);
                     moveDeal(event.item, event.to, event.from, event.oldIndex || 0);
                 },
             });
