@@ -64,7 +64,7 @@ abstract class CrmResourceController extends Controller
     {
         $this->authorizeAction('delete');
 
-        abort(Response::HTTP_NOT_IMPLEMENTED, "{$this->title} delete action is not implemented yet.");
+        abort(Response::HTTP_NOT_IMPLEMENTED, trans('crm::messages.resources.delete_not_implemented', ['title' => $this->title]));
     }
 
     protected function authorizeAction(string $action): void
@@ -85,7 +85,7 @@ abstract class CrmResourceController extends Controller
     protected function notImplemented(string $action): JsonResponse
     {
         return response()->json([
-            'message' => "{$this->title} {$action} action is registered and awaits module implementation.",
+            'message' => trans('crm::messages.resources.action_registered', ['title' => $this->title, 'action' => $action]),
         ], Response::HTTP_NOT_IMPLEMENTED);
     }
 }

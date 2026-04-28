@@ -113,7 +113,7 @@ class AiAssistant
     private function run(callable $callback): AiResult
     {
         if (! $this->manager->available()) {
-            return AiResult::unavailable('AI is disabled or missing provider credentials.');
+            return AiResult::unavailable(trans('crm::messages.ai.not_configured'));
         }
 
         try {
@@ -121,9 +121,9 @@ class AiAssistant
 
             return $content !== ''
                 ? AiResult::success($content)
-                : AiResult::failure('AI returned an empty draft. Please try again.');
+                : AiResult::failure(trans('crm::messages.ai.empty_draft'));
         } catch (Throwable) {
-            return AiResult::failure('AI request failed or timed out. Please try again later.');
+            return AiResult::failure(trans('crm::messages.ai.request_failed_retry'));
         }
     }
 

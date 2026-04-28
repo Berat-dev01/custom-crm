@@ -66,7 +66,7 @@ class ContactsController extends Controller
 
         return redirect()
             ->route('crm.contacts.show', $contact)
-            ->with('crm_status', 'Contact created.');
+            ->with('crm_status', trans('crm::messages.contacts.created'));
     }
 
     public function show(Contact $contact): View
@@ -104,7 +104,7 @@ class ContactsController extends Controller
 
         return redirect()
             ->route('crm.contacts.show', $contact)
-            ->with('crm_status', 'Contact updated.');
+            ->with('crm_status', trans('crm::messages.contacts.updated'));
     }
 
     public function destroy(Contact $contact): RedirectResponse
@@ -116,7 +116,7 @@ class ContactsController extends Controller
 
         return redirect()
             ->route('crm.contacts.index')
-            ->with('crm_status', 'Contact deleted.');
+            ->with('crm_status', trans('crm::messages.contacts.deleted'));
     }
 
     public function bulkDelete(BulkDeleteContactsRequest $request): RedirectResponse
@@ -131,7 +131,7 @@ class ContactsController extends Controller
                 $contact->delete();
             });
 
-        return back()->with('crm_status', 'Selected contacts deleted.');
+        return back()->with('crm_status', trans('crm::messages.contacts.bulk_deleted'));
     }
 
     public function bulkTags(BulkAssignContactTagsRequest $request): RedirectResponse
@@ -141,7 +141,7 @@ class ContactsController extends Controller
             ->get()
             ->each(fn (Contact $contact) => $contact->tags()->syncWithoutDetaching($request->validated('tag_ids')));
 
-        return back()->with('crm_status', 'Tags assigned to selected contacts.');
+        return back()->with('crm_status', trans('crm::messages.contacts.tags_assigned'));
     }
 
     public function export(Request $request, ContactCsvExporter $exporter): StreamedResponse
@@ -165,7 +165,10 @@ class ContactsController extends Controller
         return redirect()
             ->route('crm.contacts.import')
             ->with('crm_import_result', $result)
-            ->with('crm_status', "{$result['created']} contacts imported, {$result['failed']} rows failed.");
+            ->with('crm_status', trans_choice('crm::messages.contacts.imported', (int) $result['created'], [
+                'created' => $result['created'],
+                'failed' => $result['failed'],
+            ]));
     }
 
     public function storeNote(StoreContactNoteRequest $request, Contact $contact, AddContactNote $addNote): RedirectResponse
@@ -174,7 +177,7 @@ class ContactsController extends Controller
 
         return redirect()
             ->route('crm.contacts.show', $contact)
-            ->with('crm_status', 'Note added.');
+            ->with('crm_status', trans('crm::messages.contacts.note_added'));
     }
 
     /**

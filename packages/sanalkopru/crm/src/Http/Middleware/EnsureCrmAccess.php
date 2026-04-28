@@ -31,14 +31,14 @@ class EnsureCrmAccess
             Auth::guard($guard)->logout();
 
             if ($request->expectsJson()) {
-                abort(403, 'Account is inactive.');
+                abort(403, trans('crm::messages.auth.account_inactive'));
             }
 
             $loginRoute = (string) config('admin-panel.login_route', 'admin.login');
 
             abort_unless(Route::has($loginRoute), 403);
 
-            return redirect()->route($loginRoute)->withErrors(['email' => 'This account has been deactivated.']);
+            return redirect()->route($loginRoute)->withErrors(['email' => trans('crm::messages.auth.account_deactivated')]);
         }
 
         if ($request->user($guard)) {

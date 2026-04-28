@@ -38,7 +38,7 @@ class NotificationsController extends Controller
         $this->notifications->markRead($request->user('admin'), $notification);
 
         if (! $request->expectsJson()) {
-            return back()->with('crm_status', 'Notification marked as read.');
+            return back()->with('crm_status', trans('crm::messages.notifications.marked_read'));
         }
 
         return response()->json($this->notifications->payload($request->user('admin')));
@@ -51,7 +51,7 @@ class NotificationsController extends Controller
         $this->notifications->markAllRead($request->user('admin'));
 
         if (! $request->expectsJson()) {
-            return back()->with('crm_status', 'Notifications marked as read.');
+            return back()->with('crm_status', trans('crm::messages.notifications.marked_all_read'));
         }
 
         return response()->json($this->notifications->payload($request->user('admin')));

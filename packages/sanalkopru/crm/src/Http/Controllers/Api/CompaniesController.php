@@ -29,7 +29,7 @@ class CompaniesController extends Controller
         $company = $upsert->handle(new Company, $request->payload(), $request->user());
 
         return (new CompanyResource($company->load(['owner', 'tags'])))
-            ->additional(['message' => 'Company created.'])
+            ->additional(['message' => trans('crm::messages.companies.created')])
             ->response()
             ->setStatusCode(201);
     }
@@ -46,7 +46,7 @@ class CompaniesController extends Controller
         $company = $upsert->handle($company, $request->payload(), $request->user());
 
         return (new CompanyResource($company->load(['owner', 'tags'])))
-            ->additional(['message' => 'Company updated.']);
+            ->additional(['message' => trans('crm::messages.companies.updated')]);
     }
 
     private function validateIndex(Request $request): void

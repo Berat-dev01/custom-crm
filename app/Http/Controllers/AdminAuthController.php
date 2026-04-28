@@ -24,7 +24,7 @@ class AdminAuthController extends Controller
 
         if (! Auth::guard('admin')->attempt($credentials, $request->boolean('remember'))) {
             return back()
-                ->withErrors(['email' => 'The provided credentials do not match our records.'])
+                ->withErrors(['email' => trans('auth.failed')])
                 ->onlyInput('email');
         }
 

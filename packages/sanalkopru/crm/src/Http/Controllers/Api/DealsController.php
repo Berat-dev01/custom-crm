@@ -32,7 +32,7 @@ class DealsController extends Controller
         $deal = $upsert->handle(new Deal, $request->payload(), $request->user());
 
         return (new DealResource($deal->load(['stage', 'company', 'contact', 'owner', 'tags'])))
-            ->additional(['message' => 'Deal created.'])
+            ->additional(['message' => trans('crm::messages.deals.created')])
             ->response()
             ->setStatusCode(201);
     }
@@ -51,7 +51,7 @@ class DealsController extends Controller
         $deal = $upsert->handle($deal, $request->payload(), $request->user());
 
         return (new DealResource($deal->load(['stage', 'company', 'contact', 'owner', 'tags'])))
-            ->additional(['message' => 'Deal updated.']);
+            ->additional(['message' => trans('crm::messages.deals.updated')]);
     }
 
     public function move(MoveDealRequest $request, Deal $deal, MoveDealToStage $moveDeal): DealResource
@@ -67,7 +67,7 @@ class DealsController extends Controller
         );
 
         return (new DealResource($deal->load(['stage', 'company', 'contact', 'owner', 'tags'])))
-            ->additional(['message' => 'Deal moved.']);
+            ->additional(['message' => trans('crm::messages.deals.moved')]);
     }
 
     private function validateIndex(Request $request): void

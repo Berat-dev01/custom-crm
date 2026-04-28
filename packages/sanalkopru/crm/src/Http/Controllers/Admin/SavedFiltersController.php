@@ -25,7 +25,7 @@ class SavedFiltersController extends Controller
             'user_id' => $request->user()?->id,
         ]);
 
-        return back()->with('crm_status', 'Saved filter created.');
+        return back()->with('crm_status', trans('crm::messages.saved_filters.created'));
     }
 
     public function apply(SavedFilter $savedFilter): RedirectResponse
@@ -41,7 +41,7 @@ class SavedFiltersController extends Controller
 
         $savedFilter->delete();
 
-        return back()->with('crm_status', 'Saved filter deleted.');
+        return back()->with('crm_status', trans('crm::messages.saved_filters.deleted'));
     }
 
     private function authorizeAccess(SavedFilter $savedFilter): void
@@ -49,7 +49,7 @@ class SavedFiltersController extends Controller
         Gate::authorize("crm.{$savedFilter->module}.view");
 
         if ($savedFilter->visibility === 'private' && $savedFilter->user_id !== request()->user()?->id) {
-            abort(403);
+            abort(403, trans('crm::messages.saved_filters.private_access_denied'));
         }
     }
 

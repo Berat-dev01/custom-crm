@@ -58,7 +58,7 @@ class CompaniesController extends Controller
 
         return redirect()
             ->route('crm.companies.show', $company)
-            ->with('crm_status', 'Company created.');
+            ->with('crm_status', trans('crm::messages.companies.created'));
     }
 
     public function show(Company $company): View
@@ -102,7 +102,7 @@ class CompaniesController extends Controller
 
         return redirect()
             ->route('crm.companies.show', $company)
-            ->with('crm_status', 'Company updated.');
+            ->with('crm_status', trans('crm::messages.companies.updated'));
     }
 
     public function destroy(Company $company): RedirectResponse
@@ -111,7 +111,7 @@ class CompaniesController extends Controller
 
         if ($company->contacts()->exists() || $company->deals()->exists() || $company->quotes()->exists()) {
             return back()->withErrors([
-                'company' => 'Company has related contacts, deals or quotes. Move those records before deleting it.',
+                'company' => trans('crm::messages.companies.has_related_records'),
             ]);
         }
 
@@ -119,7 +119,7 @@ class CompaniesController extends Controller
 
         return redirect()
             ->route('crm.companies.index')
-            ->with('crm_status', 'Company deleted.');
+            ->with('crm_status', trans('crm::messages.companies.deleted'));
     }
 
     public function bulkDelete(Request $request): RedirectResponse
@@ -151,11 +151,11 @@ class CompaniesController extends Controller
             });
 
         $message = $deleted > 0
-            ? "{$deleted} company(s) deleted."
-            : 'No companies were deleted.';
+            ? trans_choice('crm::messages.companies.bulk_deleted', $deleted, ['count' => $deleted])
+            : trans('crm::messages.companies.none_deleted');
 
         if ($blocked > 0) {
-            $message .= " {$blocked} company(s) skipped because they still have related records.";
+            $message .= ' '.trans_choice('crm::messages.companies.bulk_skipped_related', $blocked, ['count' => $blocked]);
         }
 
         return back()->with('crm_status', $message);
@@ -170,7 +170,7 @@ class CompaniesController extends Controller
 
         return redirect()
             ->route('crm.companies.show', $company)
-            ->with('crm_status', 'Contacts attached.');
+            ->with('crm_status', trans('crm::messages.companies.contacts_attached'));
     }
 
     /**

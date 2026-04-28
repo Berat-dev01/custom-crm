@@ -41,7 +41,7 @@ class DealStagesController extends Controller
 
         return redirect()
             ->route('crm.deal-stages.index')
-            ->with('crm_status', 'Deal stage created.');
+            ->with('crm_status', trans('crm::messages.deal_stages.created'));
     }
 
     public function edit(DealStage $dealStage): View
@@ -62,7 +62,7 @@ class DealStagesController extends Controller
 
         return redirect()
             ->route('crm.deal-stages.index')
-            ->with('crm_status', 'Deal stage updated.');
+            ->with('crm_status', trans('crm::messages.deal_stages.updated'));
     }
 
     public function destroy(
@@ -74,7 +74,7 @@ class DealStagesController extends Controller
 
         return redirect()
             ->route('crm.deal-stages.index')
-            ->with('crm_status', 'Deal stage deleted.');
+            ->with('crm_status', trans('crm::messages.deal_stages.deleted'));
     }
 
     public function reorder(ReorderDealStagesRequest $request, ReorderDealStages $reorder): RedirectResponse
@@ -83,6 +83,6 @@ class DealStagesController extends Controller
 
         return redirect()
             ->route('crm.deal-stages.index')
-            ->with('crm_status', 'Deal stages reordered.');
+            ->with('crm_status', trans('crm::messages.deal_stages.reordered'));
     }
 }

@@ -202,6 +202,21 @@ class CrmLabelCatalog
             ->all();
     }
 
+    public function moduleLabel(string $module): string
+    {
+        return match ($module) {
+            'contacts' => __('Contacts'),
+            'companies' => __('Companies'),
+            'deals' => __('Deals'),
+            'tasks' => __('Tasks'),
+            'quotes' => __('Quotes'),
+            'activities' => __('Activities'),
+            'tags' => __('Tags'),
+            'users' => __('Users'),
+            default => __((string) str($module)->replace('_', ' ')->headline()),
+        };
+    }
+
     public function status(string $value): string
     {
         $labels = [

@@ -18,7 +18,7 @@ class DeleteDealStage
 
         if ($deals->isNotEmpty() && ! $replacementStageId) {
             throw ValidationException::withMessages([
-                'replacement_stage_id' => 'This stage has deals. Choose a replacement stage before deleting it.',
+                'replacement_stage_id' => trans('crm::messages.deal_stages.replacement_required'),
             ]);
         }
 

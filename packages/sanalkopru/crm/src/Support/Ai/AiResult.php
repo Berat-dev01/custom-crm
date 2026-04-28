@@ -16,14 +16,14 @@ class AiResult
         return new self(true, $content);
     }
 
-    public static function unavailable(string $message = 'AI is not configured yet.'): self
+    public static function unavailable(?string $message = null): self
     {
-        return new self(false, null, $message, 202);
+        return new self(false, null, $message ?: trans('crm::messages.ai.not_configured'), 202);
     }
 
-    public static function failure(string $message = 'AI request failed. Please try again later.'): self
+    public static function failure(?string $message = null): self
     {
-        return new self(false, null, $message, 503);
+        return new self(false, null, $message ?: trans('crm::messages.ai.request_failed_retry'), 503);
     }
 
     /**

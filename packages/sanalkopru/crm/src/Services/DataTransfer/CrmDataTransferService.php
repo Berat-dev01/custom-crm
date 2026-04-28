@@ -539,7 +539,7 @@ class CrmDataTransferService
         }
 
         if (in_array($key, $seen[$module] ?? [], true)) {
-            return 'Duplicate row in import file.';
+            return trans('crm::messages.import.duplicate_row');
         }
 
         $seen[$module][] = $key;
@@ -551,7 +551,7 @@ class CrmDataTransferService
                 ->when($payload['contact_id'] ?? null, fn ($query, int $contactId) => $query->where('contact_id', $contactId))
                 ->exists();
 
-            return $exists ? 'Duplicate deal already exists.' : null;
+            return $exists ? trans('crm::messages.import.duplicate_deal') : null;
         }
 
         return null;

@@ -90,7 +90,7 @@ class AiController extends Controller
         }
 
         return back()
-            ->with('crm_status', $result->ok ? 'AI draft prepared.' : ($result->message ?: 'AI request failed.'))
+            ->with('crm_status', $result->ok ? trans('crm::messages.ai.draft_prepared') : ($result->message ?: trans('crm::messages.ai.request_failed')))
             ->with($sessionKey, $result->content);
     }
 }

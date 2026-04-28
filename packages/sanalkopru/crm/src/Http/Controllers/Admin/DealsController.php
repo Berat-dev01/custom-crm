@@ -83,7 +83,7 @@ class DealsController extends Controller
 
         return redirect()
             ->route('crm.deals.show', $deal)
-            ->with('crm_status', 'Deal created.');
+            ->with('crm_status', trans('crm::messages.deals.created'));
     }
 
     public function show(Request $request, Deal $deal): View
@@ -144,7 +144,7 @@ class DealsController extends Controller
 
         return redirect()
             ->route('crm.deals.show', $deal)
-            ->with('crm_status', 'Deal updated.');
+            ->with('crm_status', trans('crm::messages.deals.updated'));
     }
 
     public function destroy(Deal $deal): RedirectResponse
@@ -155,7 +155,7 @@ class DealsController extends Controller
 
         return redirect()
             ->route('crm.deals.index')
-            ->with('crm_status', 'Deal deleted.');
+            ->with('crm_status', trans('crm::messages.deals.deleted'));
     }
 
     public function bulkDelete(Request $request): RedirectResponse
@@ -175,7 +175,7 @@ class DealsController extends Controller
                 $deal->delete();
             });
 
-        return back()->with('crm_status', 'Selected deals deleted.');
+        return back()->with('crm_status', trans('crm::messages.deals.bulk_deleted'));
     }
 
     public function move(MoveDealRequest $request, Deal $deal, MoveDealToStage $moveDeal): JsonResponse
@@ -213,7 +213,7 @@ class DealsController extends Controller
         })->values();
 
         return response()->json([
-            'message' => 'Deal moved.',
+            'message' => trans('crm::messages.deals.moved'),
             'deal' => [
                 'id' => $deal->id,
                 'stage_id' => $deal->stage_id,
@@ -241,14 +241,14 @@ class DealsController extends Controller
 
         if ($request->expectsJson()) {
             return response()->json([
-                'message' => 'Deal stage updated.',
+                'message' => trans('crm::messages.deals.stage_updated'),
                 'redirect' => route('crm.deals.show', $deal),
             ]);
         }
 
         return redirect()
             ->route('crm.deals.show', $deal)
-            ->with('crm_status', 'Deal stage updated.');
+            ->with('crm_status', trans('crm::messages.deals.stage_updated'));
     }
 
     public function closeWon(Deal $deal, MoveDealToStage $moveDeal): JsonResponse|RedirectResponse
@@ -260,14 +260,14 @@ class DealsController extends Controller
 
         if (request()->expectsJson()) {
             return response()->json([
-                'message' => 'Deal marked as won.',
+                'message' => trans('crm::messages.deals.marked_won'),
                 'redirect' => route('crm.deals.show', $deal),
             ]);
         }
 
         return redirect()
             ->route('crm.deals.show', $deal)
-            ->with('crm_status', 'Deal marked as won.');
+            ->with('crm_status', trans('crm::messages.deals.marked_won'));
     }
 
     public function closeLost(CloseDealAsLostRequest $request, Deal $deal, MoveDealToStage $moveDeal): JsonResponse|RedirectResponse
@@ -279,14 +279,14 @@ class DealsController extends Controller
 
         if ($request->expectsJson()) {
             return response()->json([
-                'message' => 'Deal marked as lost.',
+                'message' => trans('crm::messages.deals.marked_lost'),
                 'redirect' => route('crm.deals.show', $deal),
             ]);
         }
 
         return redirect()
             ->route('crm.deals.show', $deal)
-            ->with('crm_status', 'Deal marked as lost.');
+            ->with('crm_status', trans('crm::messages.deals.marked_lost'));
     }
 
     public function storeTask(StoreDealTaskRequest $request, Deal $deal, AddDealTask $addTask): JsonResponse|RedirectResponse
@@ -296,12 +296,12 @@ class DealsController extends Controller
         $addTask->handle($deal, $request->validated(), $request->user());
 
         if ($request->expectsJson()) {
-            return response()->json(['message' => 'Task added to deal.']);
+            return response()->json(['message' => trans('crm::messages.deals.task_added')]);
         }
 
         return redirect()
             ->route('crm.deals.show', $deal)
-            ->with('crm_status', 'Task added to deal.');
+            ->with('crm_status', trans('crm::messages.deals.task_added'));
     }
 
     public function storeQuote(StoreDealQuoteRequest $request, Deal $deal, CreateDealQuote $createQuote): RedirectResponse
@@ -312,7 +312,7 @@ class DealsController extends Controller
 
         return redirect()
             ->route('crm.deals.show', $deal)
-            ->with('crm_status', 'Quote created for deal.');
+            ->with('crm_status', trans('crm::messages.deals.quote_created'));
     }
 
     public function storeActivity(StoreDealActivityRequest $request, Deal $deal, AddDealActivity $addActivity): JsonResponse|RedirectResponse
@@ -322,12 +322,12 @@ class DealsController extends Controller
         $addActivity->handle($deal, $request->validated(), $request->user());
 
         if ($request->expectsJson()) {
-            return response()->json(['message' => 'Activity added to deal.']);
+            return response()->json(['message' => trans('crm::messages.deals.activity_added')]);
         }
 
         return redirect()
             ->route('crm.deals.show', $deal)
-            ->with('crm_status', 'Activity added to deal.');
+            ->with('crm_status', trans('crm::messages.deals.activity_added'));
     }
 
     /**

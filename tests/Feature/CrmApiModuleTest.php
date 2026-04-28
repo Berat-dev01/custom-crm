@@ -45,7 +45,7 @@ class CrmApiModuleTest extends TestCase
 
         $this->getJson('/api/crm/contacts')
             ->assertUnauthorized()
-            ->assertJsonPath('message', 'Unauthenticated.');
+            ->assertJsonPath('message', trans('crm::messages.api.unauthenticated'));
     }
 
     public function test_bearer_token_can_list_and_create_contacts(): void
@@ -70,7 +70,7 @@ class CrmApiModuleTest extends TestCase
                 'owner_id' => $this->owner->id,
             ])
             ->assertCreated()
-            ->assertJsonPath('message', 'Contact created.')
+            ->assertJsonPath('message', trans('crm::messages.contacts.created'))
             ->assertJsonPath('data.full_name', 'API Contact');
 
         $this->assertDatabaseHas('contacts', [
@@ -135,14 +135,14 @@ class CrmApiModuleTest extends TestCase
                 'position' => 1,
             ])
             ->assertOk()
-            ->assertJsonPath('message', 'Deal moved.')
+            ->assertJsonPath('message', trans('crm::messages.deals.moved'))
             ->assertJsonPath('data.stage_id', $targetStage->id)
             ->assertJsonPath('data.probability', 70);
 
         $this->withToken($this->ownerToken)
             ->postJson("/api/crm/tasks/{$task->id}/complete")
             ->assertOk()
-            ->assertJsonPath('message', 'Task completed.')
+            ->assertJsonPath('message', trans('crm::messages.tasks.completed'))
             ->assertJsonPath('data.status', 'completed');
 
         $this->assertNotNull($task->refresh()->completed_at);
@@ -168,7 +168,7 @@ class CrmApiModuleTest extends TestCase
                 ],
             ])
             ->assertCreated()
-            ->assertJsonPath('message', 'Quote created.')
+            ->assertJsonPath('message', trans('crm::messages.quotes.created'))
             ->assertJsonPath('data.company_id', $company->id)
             ->assertJsonPath('data.subtotal', 2000)
             ->assertJsonPath('data.grand_total', 2400)

@@ -526,6 +526,22 @@ Controller/service katmaninda degil, gosterime yakin yerde ceviriye gitmek daha 
 
 ## Faz 7: Validation ve backend mesajlarini cevir
 
+### Faz 7 Uygulama Ozeti
+
+Durum: tamamlandi.
+
+- `packages/sanalkopru/crm/resources/lang/en/messages.php` ve `tr/messages.php` dosyalari dolduruldu; admin flash mesajlari, API response mesajlari, AI hata durumlari, import durumlari ve erisim/guard mesajlari `crm::messages.*` altinda merkezilestirildi
+- `packages/sanalkopru/crm/resources/lang/en/validation.php` ve `tr/validation.php` eklendi; custom request validator akislari artik `crm::validation.*` key'leri uzerinden mesaj donuyor
+- `AdminAuthController`, `EnsureCrmAccess`, `AuthenticateCrmApi`, `AiAssistant`, `AiResult`, `DeleteDealStage` ve `CrmDataTransferService` icindeki kullaniciya gorunen backend stringleri translation sistemine baglandi
+- CRM admin controller'larindaki `crm_status`, `withErrors()` ve JSON `message` alanlari dogrudan translation key kullaniyor hale getirildi
+- CRM API controller'larindaki create/update/move/complete response mesajlari da ayni translation katmanina tasindi
+- Host uygulamanin `lang/en/validation.php` ve `lang/tr/validation.php` dosyalarindaki `attributes` listesi genisletildi; boylece standart Laravel validation mesajlari da CRM alanlarini daha okunur isimlerle gosteriyor
+- Docker icinde `php artisan view:cache` basarili calisti
+- Docker icinde package translation yuklemesi `Firsat kazanildi olarak isaretlendi.`, `Iliskili bir kayit secin.` ve `Kimlik dogrulamasi gerekiyor.` ciktilariyla dogrulandi
+- Docker icinde tum test suiti tekrar kosuldu ve basarili gecti: `162 passed`
+
+Bu faz sonunda validation, flash status, API response ve guard/AI hata mesajlari artik locale-aware. Sonraki notification fazinda ayni terminoloji tekrar kullanilabilecegi icin backend metinleri icin ikinci bir daginik string katmani olusmuyor.
+
 Bu faz genelde atlanir ama en onemli kalite farkini burada gorursun.
 
 ### Yapilacaklar

@@ -30,7 +30,7 @@ class QuotesController extends Controller
         $quote = $upsert->handle(new Quote, $request->payload(), $request->user());
 
         return (new QuoteResource($quote))
-            ->additional(['message' => 'Quote created.'])
+            ->additional(['message' => trans('crm::messages.quotes.created')])
             ->response()
             ->setStatusCode(201);
     }
@@ -47,7 +47,7 @@ class QuotesController extends Controller
         $quote = $upsert->handle($quote, $request->payload(), $request->user());
 
         return (new QuoteResource($quote))
-            ->additional(['message' => 'Quote updated.']);
+            ->additional(['message' => trans('crm::messages.quotes.updated')]);
     }
 
     private function validateIndex(Request $request): void

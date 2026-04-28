@@ -72,7 +72,7 @@ class UsersController extends Controller
 
         return redirect()
             ->route('crm.users.index')
-            ->with('crm_status', 'User created.');
+            ->with('crm_status', trans('crm::messages.users.created'));
     }
 
     public function edit(User $user): View
@@ -104,7 +104,7 @@ class UsersController extends Controller
 
         if ($currentRoleKey === 'owner' && $newRoleKey !== 'owner') {
             if ($this->ownerCount() <= 1) {
-                return back()->withErrors(['crm_role' => 'Cannot remove the last owner role.']);
+                return back()->withErrors(['crm_role' => trans('crm::messages.users.cannot_remove_last_owner_role')]);
             }
         }
 
@@ -121,7 +121,7 @@ class UsersController extends Controller
 
         return redirect()
             ->route('crm.users.index')
-            ->with('crm_status', 'User updated.');
+            ->with('crm_status', trans('crm::messages.users.updated'));
     }
 
     public function destroy(Request $request, User $user): RedirectResponse
@@ -129,18 +129,18 @@ class UsersController extends Controller
         Gate::authorize('crm.users.manage');
 
         if ($user->id === $request->user()->id) {
-            return back()->withErrors(['user' => 'You cannot delete your own account.']);
+            return back()->withErrors(['user' => trans('crm::messages.users.cannot_delete_own')]);
         }
 
         if ($this->currentCrmRoleKey($user) === 'owner' && $this->ownerCount() <= 1) {
-            return back()->withErrors(['user' => 'Cannot delete the last owner account.']);
+            return back()->withErrors(['user' => trans('crm::messages.users.cannot_delete_last_owner')]);
         }
 
         $user->delete();
 
         return redirect()
             ->route('crm.users.index')
-            ->with('crm_status', 'User deleted.');
+            ->with('crm_status', trans('crm::messages.users.deleted'));
     }
 
     public function toggleActive(Request $request, User $user): RedirectResponse
@@ -148,16 +148,18 @@ class UsersController extends Controller
         Gate::authorize('crm.users.manage');
 
         if ($user->id === $request->user()->id) {
-            return back()->withErrors(['user' => 'You cannot deactivate your own account.']);
+            return back()->withErrors(['user' => trans('crm::messages.users.cannot_deactivate_own')]);
         }
 
         if ($user->is_active && $this->currentCrmRoleKey($user) === 'owner' && $this->ownerCount() <= 1) {
-            return back()->withErrors(['user' => 'Cannot deactivate the last owner account.']);
+            return back()->withErrors(['user' => trans('crm::messages.users.cannot_deactivate_last_owner')]);
         }
 
         $user->forceFill(['is_active' => ! $user->is_active])->save();
 
-        $status = $user->is_active ? 'User activated.' : 'User deactivated.';
+        $status = $user->is_active
+            ? trans('crm::messages.users.activated')
+            : trans('crm::messages.users.deactivated');
 
         return back()->with('crm_status', $status);
     }

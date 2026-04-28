@@ -32,7 +32,7 @@ class TasksController extends Controller
         $task = $upsert->handle(new Task, $request->payload(), $request->user());
 
         return (new TaskResource($task->load(['assignee', 'taskable'])))
-            ->additional(['message' => 'Task created.'])
+            ->additional(['message' => trans('crm::messages.tasks.created')])
             ->response()
             ->setStatusCode(201);
     }
@@ -51,7 +51,7 @@ class TasksController extends Controller
         $task = $upsert->handle($task, $request->payload(), $request->user());
 
         return (new TaskResource($task->load(['assignee', 'taskable'])))
-            ->additional(['message' => 'Task updated.']);
+            ->additional(['message' => trans('crm::messages.tasks.updated')]);
     }
 
     public function complete(Task $task, CompleteTask $completeTask): TaskResource
@@ -61,7 +61,7 @@ class TasksController extends Controller
         $task = $completeTask->handle($task, request()->user());
 
         return (new TaskResource($task->load(['assignee', 'taskable'])))
-            ->additional(['message' => 'Task completed.']);
+            ->additional(['message' => trans('crm::messages.tasks.completed')]);
     }
 
     private function validateIndex(Request $request): void

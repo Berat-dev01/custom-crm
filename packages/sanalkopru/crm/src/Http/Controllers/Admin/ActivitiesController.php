@@ -64,7 +64,7 @@ class ActivitiesController extends Controller
 
         return redirect()
             ->route('crm.activities.show', $activity)
-            ->with('crm_status', 'Activity created.');
+            ->with('crm_status', trans('crm::messages.activities.created'));
     }
 
     public function show(Activity $activity): View
@@ -97,7 +97,7 @@ class ActivitiesController extends Controller
 
         return redirect()
             ->route('crm.activities.show', $activity)
-            ->with('crm_status', 'Activity updated.');
+            ->with('crm_status', trans('crm::messages.activities.updated'));
     }
 
     public function destroy(Activity $activity): RedirectResponse
@@ -108,7 +108,7 @@ class ActivitiesController extends Controller
 
         return redirect()
             ->route('crm.activities.index')
-            ->with('crm_status', 'Activity deleted.');
+            ->with('crm_status', trans('crm::messages.activities.deleted'));
     }
 
     public function bulkDelete(Request $request): RedirectResponse
@@ -128,7 +128,7 @@ class ActivitiesController extends Controller
                 $activity->delete();
             });
 
-        return back()->with('crm_status', 'Selected activities deleted.');
+        return back()->with('crm_status', trans('crm::messages.activities.bulk_deleted'));
     }
 
     /**

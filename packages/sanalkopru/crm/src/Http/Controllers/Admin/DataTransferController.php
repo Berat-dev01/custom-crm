@@ -8,13 +8,17 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Sanalkopru\Crm\Http\Requests\DataTransfer\ImportCrmRecordsRequest;
 use Sanalkopru\Crm\Models\CrmImport;
 use Sanalkopru\Crm\Services\DataTransfer\CrmDataTransferService;
+use Sanalkopru\Crm\Support\CrmLabelCatalog;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DataTransferController extends Controller
 {
+    public function __construct(private readonly CrmLabelCatalog $labels) {}
+
     public function importForm(string $module, CrmDataTransferService $transfer): View
     {
         Gate::authorize("crm.{$module}.import");
@@ -38,7 +42,7 @@ class DataTransferController extends Controller
         return redirect()
             ->route("crm.{$module}.import")
             ->with('crm_import_preview', $preview)
-            ->with('crm_status', 'Import preview generated. Upload the file again when you are ready to run the import.');
+            ->with('crm_status', trans('crm::messages.import.preview_generated'));
     }
 
     public function import(ImportCrmRecordsRequest $request, string $module, CrmDataTransferService $transfer): RedirectResponse
@@ -46,13 +50,18 @@ class DataTransferController extends Controller
         Gate::authorize("crm.{$module}.import");
 
         $result = $transfer->import($module, $request->file('file'), $request->user());
+        $moduleLabel = Str::lower($this->labels->moduleLabel($module));
 
         return redirect()
             ->route("crm.{$module}.import")
             ->with('crm_import_result', $result)
             ->with('crm_status', $result['queued']
-                ? ucfirst($module).' import queued for background processing.'
-                : "{$result['created']} {$module} imported, {$result['failed']} rows failed.");
+                ? trans('crm::messages.import.queued', ['module' => $moduleLabel])
+                : trans('crm::messages.import.completed', [
+                    'created' => $result['created'],
+                    'module' => $moduleLabel,
+                    'failed' => $result['failed'],
+                ]));
     }
 
     public function template(string $module, CrmDataTransferService $transfer): StreamedResponse

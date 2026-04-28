@@ -62,7 +62,7 @@ class TasksController extends Controller
 
         return redirect()
             ->route('crm.tasks.show', $task)
-            ->with('crm_status', 'Task created.');
+            ->with('crm_status', trans('crm::messages.tasks.created'));
     }
 
     public function show(Task $task): View
@@ -89,7 +89,7 @@ class TasksController extends Controller
 
         return redirect()
             ->route('crm.tasks.show', $task)
-            ->with('crm_status', 'Task updated.');
+            ->with('crm_status', trans('crm::messages.tasks.updated'));
     }
 
     public function destroy(Task $task): RedirectResponse
@@ -100,7 +100,7 @@ class TasksController extends Controller
 
         return redirect()
             ->route('crm.tasks.index')
-            ->with('crm_status', 'Task deleted.');
+            ->with('crm_status', trans('crm::messages.tasks.deleted'));
     }
 
     public function bulkDelete(Request $request): RedirectResponse
@@ -120,7 +120,7 @@ class TasksController extends Controller
                 $task->delete();
             });
 
-        return back()->with('crm_status', 'Selected tasks deleted.');
+        return back()->with('crm_status', trans('crm::messages.tasks.bulk_deleted'));
     }
 
     public function complete(Task $task, CompleteTask $completeTask): JsonResponse|RedirectResponse
@@ -130,10 +130,10 @@ class TasksController extends Controller
         $completeTask->handle($task, request()->user());
 
         if (request()->expectsJson()) {
-            return response()->json(['message' => 'Task completed.']);
+            return response()->json(['message' => trans('crm::messages.tasks.completed')]);
         }
 
-        return back()->with('crm_status', 'Task completed.');
+        return back()->with('crm_status', trans('crm::messages.tasks.completed'));
     }
 
     private function taskIndex(Request $request, ?string $scope = null): View

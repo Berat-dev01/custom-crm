@@ -30,7 +30,7 @@ class StoreDealRequest extends FormRequest
             $stage = DealStage::query()->find($this->input('stage_id'));
 
             if ($stage?->is_lost && blank($this->input('lost_reason'))) {
-                $validator->errors()->add('lost_reason', 'The lost reason field is required for lost deals.');
+                $validator->errors()->add('lost_reason', trans('crm::validation.deals.lost_reason_required_for_lost_deal'));
             }
         });
     }

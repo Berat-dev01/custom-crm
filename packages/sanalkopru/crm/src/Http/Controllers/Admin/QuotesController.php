@@ -70,7 +70,7 @@ class QuotesController extends Controller
 
         return redirect()
             ->route('crm.quotes.show', $quote)
-            ->with('crm_status', 'Quote created.');
+            ->with('crm_status', trans('crm::messages.quotes.created'));
     }
 
     public function show(Quote $quote): View
@@ -96,7 +96,7 @@ class QuotesController extends Controller
 
         return redirect()
             ->route('crm.quotes.show', $quote)
-            ->with('crm_status', 'Quote updated.');
+            ->with('crm_status', trans('crm::messages.quotes.updated'));
     }
 
     public function destroy(Quote $quote): RedirectResponse
@@ -107,7 +107,7 @@ class QuotesController extends Controller
 
         return redirect()
             ->route('crm.quotes.index')
-            ->with('crm_status', 'Quote deleted.');
+            ->with('crm_status', trans('crm::messages.quotes.deleted'));
     }
 
     public function bulkDelete(Request $request): RedirectResponse
@@ -127,7 +127,7 @@ class QuotesController extends Controller
                 $quote->delete();
             });
 
-        return back()->with('crm_status', 'Selected quotes deleted.');
+        return back()->with('crm_status', trans('crm::messages.quotes.bulk_deleted'));
     }
 
     public function send(Quote $quote, SendQuote $send): JsonResponse|RedirectResponse
@@ -137,14 +137,14 @@ class QuotesController extends Controller
 
         if (request()->expectsJson()) {
             return response()->json([
-                'message' => 'Quote marked as sent.',
+                'message' => trans('crm::messages.quotes.marked_sent'),
                 'redirect' => route('crm.quotes.show', $quote),
             ]);
         }
 
         return redirect()
             ->route('crm.quotes.show', $quote)
-            ->with('crm_status', 'Quote marked as sent.');
+            ->with('crm_status', trans('crm::messages.quotes.marked_sent'));
     }
 
     public function accept(AcceptQuoteRequest $request, Quote $quote, AcceptQuote $accept): JsonResponse|RedirectResponse
@@ -153,14 +153,14 @@ class QuotesController extends Controller
 
         if ($request->expectsJson()) {
             return response()->json([
-                'message' => 'Quote accepted.',
+                'message' => trans('crm::messages.quotes.accepted'),
                 'redirect' => route('crm.quotes.show', $quote),
             ]);
         }
 
         return redirect()
             ->route('crm.quotes.show', $quote)
-            ->with('crm_status', 'Quote accepted.');
+            ->with('crm_status', trans('crm::messages.quotes.accepted'));
     }
 
     public function reject(Quote $quote, RejectQuote $reject): JsonResponse|RedirectResponse
@@ -170,14 +170,14 @@ class QuotesController extends Controller
 
         if (request()->expectsJson()) {
             return response()->json([
-                'message' => 'Quote rejected.',
+                'message' => trans('crm::messages.quotes.rejected'),
                 'redirect' => route('crm.quotes.show', $quote),
             ]);
         }
 
         return redirect()
             ->route('crm.quotes.show', $quote)
-            ->with('crm_status', 'Quote rejected.');
+            ->with('crm_status', trans('crm::messages.quotes.rejected'));
     }
 
     public function expire(Quote $quote, ExpireQuote $expire): JsonResponse|RedirectResponse
@@ -187,14 +187,14 @@ class QuotesController extends Controller
 
         if (request()->expectsJson()) {
             return response()->json([
-                'message' => 'Quote expired.',
+                'message' => trans('crm::messages.quotes.expired'),
                 'redirect' => route('crm.quotes.show', $quote),
             ]);
         }
 
         return redirect()
             ->route('crm.quotes.show', $quote)
-            ->with('crm_status', 'Quote expired.');
+            ->with('crm_status', trans('crm::messages.quotes.expired'));
     }
 
     public function duplicate(Quote $quote, DuplicateQuote $duplicate): RedirectResponse
@@ -206,7 +206,7 @@ class QuotesController extends Controller
 
         return redirect()
             ->route('crm.quotes.edit', $newQuote)
-            ->with('crm_status', 'Quote duplicated as a draft.');
+            ->with('crm_status', trans('crm::messages.quotes.duplicated_as_draft'));
     }
 
     public function preview(Quote $quote): View

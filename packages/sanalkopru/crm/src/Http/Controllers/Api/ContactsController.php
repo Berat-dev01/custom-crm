@@ -29,7 +29,7 @@ class ContactsController extends Controller
         $contact = $upsert->handle(new Contact, $request->payload(), $request->user());
 
         return (new ContactResource($contact->load(['company', 'owner', 'tags'])))
-            ->additional(['message' => 'Contact created.'])
+            ->additional(['message' => trans('crm::messages.contacts.created')])
             ->response()
             ->setStatusCode(201);
     }
@@ -46,7 +46,7 @@ class ContactsController extends Controller
         $contact = $upsert->handle($contact, $request->payload(), $request->user());
 
         return (new ContactResource($contact->load(['company', 'owner', 'tags'])))
-            ->additional(['message' => 'Contact updated.']);
+            ->additional(['message' => trans('crm::messages.contacts.updated')]);
     }
 
     private function validateIndex(Request $request): void

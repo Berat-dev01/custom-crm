@@ -35,6 +35,6 @@ class SettingsController extends Controller
 
         return redirect()
             ->route('crm.settings.index')
-            ->with('crm_status', 'CRM settings updated.');
+            ->with('crm_status', trans('crm::messages.settings.updated'));
     }
 }

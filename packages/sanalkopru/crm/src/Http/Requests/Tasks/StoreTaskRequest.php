@@ -34,15 +34,15 @@ class StoreTaskRequest extends FormRequest
             $id = $this->input('taskable_id');
 
             if (! $type && $id) {
-                $validator->errors()->add('taskable_type', 'Choose a related record type.');
+                $validator->errors()->add('taskable_type', trans('crm::validation.tasks.related_record_type_required'));
             }
 
             if ($type && ! $id) {
-                $validator->errors()->add('taskable_id', 'Choose a related record.');
+                $validator->errors()->add('taskable_id', trans('crm::validation.tasks.related_record_required'));
             }
 
             if ($type && $id && ! $this->taskableExists($type, (int) $id)) {
-                $validator->errors()->add('taskable_id', 'The selected related record is invalid.');
+                $validator->errors()->add('taskable_id', trans('crm::validation.tasks.related_record_invalid'));
             }
         });
     }

@@ -52,7 +52,7 @@ class TagsController extends Controller
 
         return redirect()
             ->route('crm.tags.show', $tag)
-            ->with('crm_status', 'Tag created.');
+            ->with('crm_status', trans('crm::messages.tags.created'));
     }
 
     public function show(Tag $tag): View
@@ -81,7 +81,7 @@ class TagsController extends Controller
 
         return redirect()
             ->route('crm.tags.show', $tag)
-            ->with('crm_status', 'Tag updated.');
+            ->with('crm_status', trans('crm::messages.tags.updated'));
     }
 
     public function destroy(Tag $tag): RedirectResponse
@@ -92,7 +92,7 @@ class TagsController extends Controller
 
         return redirect()
             ->route('crm.tags.index')
-            ->with('crm_status', 'Tag deleted.');
+            ->with('crm_status', trans('crm::messages.tags.deleted'));
     }
 
     public function bulkDelete(Request $request): RedirectResponse
@@ -112,7 +112,7 @@ class TagsController extends Controller
                 $tag->delete();
             });
 
-        return back()->with('crm_status', 'Selected tags deleted.');
+        return back()->with('crm_status', trans('crm::messages.tags.bulk_deleted'));
     }
 
     public function bulk(BulkTagRecordsRequest $request, BulkTagRecords $bulkTagRecords): RedirectResponse
@@ -125,7 +125,7 @@ class TagsController extends Controller
             $request->user()
         );
 
-        return back()->with('crm_status', "{$count} record(s) updated.");
+        return back()->with('crm_status', trans_choice('crm::messages.tags.records_updated', $count, ['count' => $count]));
     }
 
     private function perPage(Request $request): int

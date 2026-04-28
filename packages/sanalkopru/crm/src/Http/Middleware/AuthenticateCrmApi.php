@@ -16,7 +16,7 @@ class AuthenticateCrmApi
 
         if (! $user) {
             return response()->json([
-                'message' => 'Unauthenticated.',
+                'message' => trans('crm::messages.api.unauthenticated'),
             ], 401);
         }
 

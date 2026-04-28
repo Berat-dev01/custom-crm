@@ -142,7 +142,7 @@ class CrmAiModuleTest extends TestCase
             ->assertJson([
                 'ok' => false,
                 'draft' => null,
-                'message' => 'AI is disabled or missing provider credentials.',
+                'message' => trans('crm::messages.ai.not_configured'),
             ]);
 
         $this->assertNull($this->provider->lastMethod);
@@ -161,7 +161,7 @@ class CrmAiModuleTest extends TestCase
             ->assertJson([
                 'ok' => false,
                 'summary' => null,
-                'message' => 'AI request failed or timed out. Please try again later.',
+                'message' => trans('crm::messages.ai.request_failed_retry'),
             ]);
     }
 
