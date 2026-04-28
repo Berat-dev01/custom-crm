@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class AdminAuthController extends Controller
@@ -47,8 +48,19 @@ class AdminAuthController extends Controller
         return redirect()->route('crm.dashboard');
     }
 
-    public function updateLocale(): RedirectResponse
+    public function updateLocale(Request $request): RedirectResponse
     {
+        $supportedLocales = array_keys(config('localization.supported_locales', []));
+
+        $locale = $request->validate([
+            'locale' => ['required', 'string', Rule::in($supportedLocales)],
+        ])['locale'];
+
+        $request->session()->put(
+            config('localization.session_key', 'locale'),
+            $locale
+        );
+
         return back();
     }
 }

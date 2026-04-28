@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', $quote->exists ? 'Edit Quote' : 'New Quote')
-@section('page-title', $quote->exists ? 'Edit Quote' : 'New Quote')
+@section('title', $quote->exists ? __('Edit Quote') : __('New Quote'))
+@section('page-title', $quote->exists ? __('Edit Quote') : __('New Quote'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -38,17 +38,17 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / Quotes</p>
-                <h1>{{ $quote->exists ? 'Edit Quote' : 'New Quote' }}</h1>
+                <p class="crm-admin-eyebrow">{{ __('CRM / Quotes') }}</p>
+                <h1>{{ $quote->exists ? __('Edit Quote') : __('New Quote') }}</h1>
             </div>
             <x-admin-panel::button :href="$quote->exists ? route('crm.quotes.show', $quote) : route('crm.quotes.index')" variant="ghost" icon="arrow-left">
-                Back
+                {{ __('Back') }}
             </x-admin-panel::button>
         </header>
 
         <div class="crm-context-help">
-            <strong>Quote totals are recalculated by the backend.</strong>
-            <span>Use line discounts for one item, quote discount for the whole offer, and link a deal when this quote belongs to an opportunity.</span>
+            <strong>{{ __('Quote totals are recalculated by the backend.') }}</strong>
+            <span>{{ __('Use line discounts for one item, quote discount for the whole offer, and link a deal when this quote belongs to an opportunity.') }}</span>
         </div>
 
         <form
@@ -64,7 +64,7 @@
 
             <x-admin-panel::card>
                 <x-slot:header>
-                    Quote Details
+                    {{ __('Quote Details') }}
                 </x-slot:header>
 
                 <div class="crm-form-grid">
@@ -95,12 +95,12 @@
 
             <x-admin-panel::card>
                 <x-slot:header>
-                    Line Items
+                    {{ __('Line Items') }}
                 </x-slot:header>
 
                 <x-slot:headerActions>
                     <x-admin-panel::button type="button" size="sm" variant="outline" icon="plus" data-crm-add-quote-item>
-                        Add Line
+                        {{ __('Add Line') }}
                     </x-admin-panel::button>
                 </x-slot:headerActions>
 
@@ -108,11 +108,11 @@
                     @foreach($itemRows as $index => $item)
                         <div class="crm-quote-item" data-crm-quote-item>
                             <div class="crm-quote-item-toolbar">
-                                <strong>Line <span data-crm-quote-item-number>{{ $loop->iteration }}</span></strong>
+                                <strong>{{ __('Line') }} <span data-crm-quote-item-number>{{ $loop->iteration }}</span></strong>
                                 <div class="crm-row-actions">
-                                    <button type="button" class="crm-icon-button" title="Move up" data-crm-quote-item-up>&uarr;</button>
-                                    <button type="button" class="crm-icon-button" title="Move down" data-crm-quote-item-down>&darr;</button>
-                                    <button type="button" class="crm-icon-button" title="Remove line" data-crm-remove-quote-item>&times;</button>
+                                    <button type="button" class="crm-icon-button" title="{{ __('Move up') }}" data-crm-quote-item-up>&uarr;</button>
+                                    <button type="button" class="crm-icon-button" title="{{ __('Move down') }}" data-crm-quote-item-down>&darr;</button>
+                                    <button type="button" class="crm-icon-button" title="{{ __('Remove line') }}" data-crm-remove-quote-item>&times;</button>
                                 </div>
                             </div>
 
@@ -120,36 +120,36 @@
                                 <input type="hidden" name="items[{{ $index }}][position]" value="{{ $item['position'] ?? ($index + 1) }}" data-crm-quote-item-position>
 
                                 <div class="form-group">
-                                    <label class="form-label">Name</label>
+                                    <label class="form-label">{{ __('Name') }}</label>
                                     <input name="items[{{ $index }}][name]" class="form-control" value="{{ $item['name'] ?? '' }}" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Quantity</label>
+                                    <label class="form-label">{{ __('Quantity') }}</label>
                                     <input name="items[{{ $index }}][quantity]" class="form-control" type="number" min="0.001" step="0.001" value="{{ $item['quantity'] ?? '1.000' }}" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Unit Price</label>
+                                    <label class="form-label">{{ __('Unit Price') }}</label>
                                     <input name="items[{{ $index }}][unit_price]" class="form-control" type="number" min="0" step="0.01" value="{{ $item['unit_price'] ?? '0.00' }}" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Discount Type</label>
+                                    <label class="form-label">{{ __('Discount Type') }}</label>
                                     <select name="items[{{ $index }}][discount_type]" class="form-control">
-                                        <option value="">No discount</option>
+                                        <option value="">{{ __('No discount') }}</option>
                                         @foreach($discountTypes as $value => $label)
                                             <option value="{{ $value }}" @selected(($item['discount_type'] ?? null) === $value)>{{ $label }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Discount Value</label>
+                                    <label class="form-label">{{ __('Discount Value') }}</label>
                                     <input name="items[{{ $index }}][discount_value]" class="form-control" type="number" min="0" step="0.01" value="{{ $item['discount_value'] ?? '0.00' }}">
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Tax Rate</label>
+                                    <label class="form-label">{{ __('Tax Rate') }}</label>
                                     <input name="items[{{ $index }}][tax_rate]" class="form-control" type="number" min="0" max="100" step="0.01" value="{{ $item['tax_rate'] ?? $defaultTaxRate }}">
                                 </div>
                                 <div class="form-group crm-span-2">
-                                    <label class="form-label">Description</label>
+                                    <label class="form-label">{{ __('Description') }}</label>
                                     <textarea name="items[{{ $index }}][description]" class="form-control" rows="2">{{ $item['description'] ?? '' }}</textarea>
                                 </div>
                             </div>
@@ -160,10 +160,10 @@
 
             <div class="crm-form-actions">
                 <x-admin-panel::button type="submit" icon="save">
-                    {{ $quote->exists ? 'Save Quote' : 'Create Quote' }}
+                    {{ $quote->exists ? __('Save Quote') : __('Create Quote') }}
                 </x-admin-panel::button>
                 <x-admin-panel::button :href="$quote->exists ? route('crm.quotes.show', $quote) : route('crm.quotes.index')" variant="ghost">
-                    Cancel
+                    {{ __('Cancel') }}
                 </x-admin-panel::button>
             </div>
         </form>

@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', 'Contacts')
-@section('page-title', 'Contacts')
+@section('title', __('Contacts'))
+@section('page-title', __('Contacts'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -14,13 +14,13 @@
             ->filter(fn ($value) => $value !== null && $value !== '')
             ->count();
         $tableHeaders = [
-            ['label' => new \Illuminate\Support\HtmlString('<input type="checkbox" data-admin-bulk-toggle-all class="form-check-input" aria-label="Select all contacts">'), 'width' => '36px'],
-            ['label' => 'Name'],
-            ['label' => 'Company'],
-            ['label' => 'Stage'],
-            ['label' => 'Owner'],
-            ['label' => 'Activity'],
-            ['label' => 'Actions', 'width' => '220px'],
+            ['label' => new \Illuminate\Support\HtmlString('<input type="checkbox" data-admin-bulk-toggle-all class="form-check-input" aria-label="'.e(__('Select all contacts')).'">'), 'width' => '36px'],
+            ['label' => __('Name')],
+            ['label' => __('Company')],
+            ['label' => __('Stage')],
+            ['label' => __('Owner')],
+            ['label' => __('Activity')],
+            ['label' => __('Actions'), 'width' => '220px'],
         ];
     @endphp
 
@@ -29,17 +29,17 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM</p>
-                <h1>Contacts</h1>
+                <p class="crm-admin-eyebrow">{{ __('CRM') }}</p>
+                <h1>{{ __('Contacts') }}</h1>
             </div>
 
             <div class="crm-admin-actions">
                 @can('crm.contacts.import')
                     <x-admin-panel::button :href="route('crm.contacts.template')" variant="ghost" icon="download">
-                        Template
+                        {{ __('Template') }}
                     </x-admin-panel::button>
                     <x-admin-panel::button :href="route('crm.contacts.import')" variant="outline" icon="upload">
-                        Import
+                        {{ __('Import') }}
                     </x-admin-panel::button>
                 @endcan
                 @can('crm.contacts.export')
@@ -52,7 +52,7 @@
                 @endcan
                 @can('crm.contacts.create')
                     <x-admin-panel::button :href="route('crm.contacts.create')" icon="plus">
-                        New Contact
+                        {{ __('New Contact') }}
                     </x-admin-panel::button>
                 @endcan
             </div>
@@ -74,10 +74,10 @@
                         label="Sort"
                         :selected="$filters['sort']"
                         :options="[
-                            'created_at' => 'Created',
-                            'full_name' => 'Name',
-                            'email' => 'Email',
-                            'last_contacted_at' => 'Last contacted',
+                            'created_at' => __('Created'),
+                            'full_name' => __('Name'),
+                            'email' => __('Email'),
+                            'last_contacted_at' => __('Last contacted'),
                         ]"
                     />
                 </x-slot:advanced>
@@ -93,7 +93,7 @@
                     @can('crm.contacts.update')
                         <div
                             data-admin-select
-                            data-admin-select-placeholder="Select tags"
+                            data-admin-select-placeholder="{{ __('Select tags') }}"
                             data-admin-select-searchable="1"
                             data-admin-select-clearable="1"
                         >
@@ -106,10 +106,10 @@
                         <input type="hidden" name="taggable_type" value="contact">
                         <input type="hidden" name="mode" value="detach">
                         <x-admin-panel::button type="submit" size="sm" variant="outline" icon="tag" form="crm-contact-bulk">
-                            Assign Tags
+                            {{ __('Assign Tags') }}
                         </x-admin-panel::button>
                         <x-admin-panel::button type="submit" size="sm" variant="ghost" icon="tag" form="crm-contact-bulk" formaction="{{ route('crm.tags.bulk') }}">
-                            Remove Tags
+                            {{ __('Remove Tags') }}
                         </x-admin-panel::button>
                     @endcan
                     @can('crm.contacts.delete')
@@ -122,17 +122,15 @@
                             formaction="{{ route('crm.contacts.bulk-delete') }}"
                             name="_method"
                             value="DELETE"
-                            data-crm-confirm="Delete selected contacts?"
+                            data-crm-confirm="{{ __('Delete selected contacts?') }}"
                         >
-                            Delete Selected
+                            {{ __('Delete Selected') }}
                         </x-admin-panel::button>
                     @endcan
                 </x-admin-panel::bulk-actions>
 
                 <x-admin-panel::card>
-                    <x-slot:header>
-                        Contacts
-                    </x-slot:header>
+                    <x-slot:header>{{ __('Contacts') }}</x-slot:header>
 
                     <x-admin-panel::table :headers="$tableHeaders">
                         @forelse($contacts as $contact)
@@ -147,7 +145,7 @@
                                 </td>
                                 <td>
                                     <strong>{{ $contact->full_name }}</strong>
-                                    <div class="crm-muted">{{ $contact->email ?: 'No email' }}{{ $contact->phone ? ' / '.$contact->phone : '' }}</div>
+                                    <div class="crm-muted">{{ $contact->email ?: __('No email') }}{{ $contact->phone ? ' / '.$contact->phone : '' }}</div>
                                 </td>
                                 <td>{{ $contact->company?->name ?: '-' }}</td>
                                 <td>
@@ -156,9 +154,7 @@
                                 <td>{{ $contact->owner?->name ?: '-' }}</td>
                                 <td>
                                     <span class="crm-muted">
-                                        {{ $contact->deals_count }} deals,
-                                        {{ $contact->tasks_count }} tasks,
-                                        {{ $contact->quotes_count }} quotes
+                                        {{ __(':deals deals, :tasks tasks, :quotes quotes', ['deals' => $contact->deals_count, 'tasks' => $contact->tasks_count, 'quotes' => $contact->quotes_count]) }}
                                     </span>
                                 </td>
                                 <td>
@@ -174,7 +170,7 @@
                                                 size="sm"
                                                 variant="danger"
                                                 icon="trash-2"
-                                                data-crm-confirm="Delete this contact?"
+                                                data-crm-confirm="{{ __('Delete this contact?') }}"
                                             />
                                         @endcan
                                     </div>
@@ -184,10 +180,10 @@
                             <tr>
                                 <td colspan="7">
                                     @include('crm::admin.partials.empty-state', [
-                                        'title' => 'No contacts found.',
-                                        'body' => 'Create a contact or adjust filters to continue the sales workflow.',
+                                        'title' => __('No contacts found.'),
+                                        'body' => __('Create a contact or adjust filters to continue the sales workflow.'),
                                         'actionUrl' => route('crm.contacts.create'),
-                                        'actionLabel' => 'New Contact',
+                                        'actionLabel' => __('New Contact'),
                                         'actionPermission' => 'crm.contacts.create',
                                     ])
                                 </td>

@@ -41,7 +41,7 @@ class CrmAdminRoutingTest extends TestCase
 
         $this->get('/admin/crm')
             ->assertOk()
-            ->assertSee('Dashboard');
+            ->assertSee(__('Sales Dashboard'));
     }
 
     public function test_authorized_user_can_open_module_indexes(): void
@@ -202,14 +202,14 @@ class CrmAdminRoutingTest extends TestCase
     private function modulePaths(): array
     {
         return [
-            '/admin/crm/contacts' => 'Contacts',
-            '/admin/crm/companies' => 'Companies',
-            '/admin/crm/deal-stages' => 'Deal Stages',
-            '/admin/crm/deals' => 'Deals',
-            '/admin/crm/tasks' => 'Tasks',
-            '/admin/crm/quotes' => 'Quotes',
-            '/admin/crm/activities' => 'Activities',
-            '/admin/crm/tags' => 'Tags',
+            '/admin/crm/contacts' => __('Contacts'),
+            '/admin/crm/companies' => __('Companies'),
+            '/admin/crm/deal-stages' => __('Deal Stages'),
+            '/admin/crm/deals' => __('Deals'),
+            '/admin/crm/tasks' => __('Tasks'),
+            '/admin/crm/quotes' => __('Quotes'),
+            '/admin/crm/activities' => __('Activities'),
+            '/admin/crm/tags' => __('Tags'),
         ];
     }
 }

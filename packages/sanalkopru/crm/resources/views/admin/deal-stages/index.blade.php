@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', 'Deal Stages')
-@section('page-title', 'Deal Stages')
+@section('title', __('Deal Stages'))
+@section('page-title', __('Deal Stages'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -13,30 +13,28 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / Settings</p>
-                <h1>Deal Stages</h1>
+                <p class="crm-admin-eyebrow">{{ __('CRM / Settings') }}</p>
+                <h1>{{ __('Deal Stages') }}</h1>
             </div>
 
             <x-admin-panel::button :href="route('crm.deal-stages.create')" icon="plus">
-                New Stage
+                {{ __('New Stage') }}
             </x-admin-panel::button>
         </header>
 
         <x-admin-panel::card>
-            <x-slot:header>
-                Pipeline Order
-            </x-slot:header>
+            <x-slot:header>{{ __('Pipeline Order') }}</x-slot:header>
 
             <form id="reorder-form" method="POST" action="{{ route('crm.deal-stages.reorder') }}" class="crm-stack">
                 @csrf
 
                 <x-admin-panel::table :headers="[
-                    ['label' => 'Stage'],
-                    ['label' => 'Position', 'width' => '120px'],
-                    ['label' => 'Probability', 'width' => '120px'],
-                    ['label' => 'Type', 'width' => '120px'],
-                    ['label' => 'Deals', 'width' => '90px'],
-                    ['label' => 'Actions', 'width' => '240px'],
+                    ['label' => __('Stage')],
+                    ['label' => __('Position'), 'width' => '120px'],
+                    ['label' => __('Probability'), 'width' => '120px'],
+                    ['label' => __('Type'), 'width' => '120px'],
+                    ['label' => __('Deals'), 'width' => '90px'],
+                    ['label' => __('Actions'), 'width' => '240px'],
                 ]">
                     @forelse($stages as $stage)
                         <tr>
@@ -63,11 +61,11 @@
                             <td>{{ $stage->probability }}%</td>
                             <td>
                                 @if($stage->is_won)
-                                    <span class="crm-stage-kind crm-stage-kind-won">Won</span>
+                                    <span class="crm-stage-kind crm-stage-kind-won">{{ __('Won') }}</span>
                                 @elseif($stage->is_lost)
-                                    <span class="crm-stage-kind crm-stage-kind-lost">Lost</span>
+                                    <span class="crm-stage-kind crm-stage-kind-lost">{{ __('Lost') }}</span>
                                 @else
-                                    <span class="crm-stage-kind crm-stage-kind-open">Open</span>
+                                    <span class="crm-stage-kind crm-stage-kind-open">{{ __('Open') }}</span>
                                 @endif
                             </td>
                             <td>{{ $stage->deals_count }}</td>
@@ -75,16 +73,16 @@
                                 <div class="crm-row-actions">
                                     <x-admin-panel::button :href="route('crm.deal-stages.edit', $stage)" size="sm" variant="ghost" icon="pencil" />
 
-                                    <form method="POST" action="{{ route('crm.deal-stages.destroy', $stage) }}" class="crm-inline-form" data-crm-confirm="Delete this deal stage?">
+                                    <form method="POST" action="{{ route('crm.deal-stages.destroy', $stage) }}" class="crm-inline-form" data-crm-confirm="{{ __('Delete this deal stage?') }}">
                                         @csrf
                                         @method('DELETE')
                                         @if($stage->deals_count > 0)
                                             <select
                                                 name="replacement_stage_id"
                                                 class="form-control"
-                                                aria-label="Replacement stage"
+                                                aria-label="{{ __('Replacement stage') }}"
                                             >
-                                                <option value="">Move to...</option>
+                                                <option value="">{{ __('Move to...') }}</option>
                                                 @foreach($stages as $replacementStage)
                                                     @continue($replacementStage->is($stage))
                                                     <option value="{{ $replacementStage->id }}">
@@ -100,7 +98,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="crm-empty">No deal stages found.</td>
+                            <td colspan="6" class="crm-empty">{{ __('No deal stages found.') }}</td>
                         </tr>
                     @endforelse
                 </x-admin-panel::table>
@@ -113,7 +111,7 @@
                 @enderror
 
                 <div class="crm-form-actions">
-                    <x-admin-panel::button type="submit" form="reorder-form" icon="save">Save Order</x-admin-panel::button>
+                    <x-admin-panel::button type="submit" form="reorder-form" icon="save">{{ __('Save Order') }}</x-admin-panel::button>
                 </div>
             </form>
         </x-admin-panel::card>

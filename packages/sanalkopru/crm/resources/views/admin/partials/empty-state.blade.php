@@ -1,7 +1,7 @@
 <div class="crm-empty-state">
-    <strong>{{ $title }}</strong>
+    <strong>{{ __($title) }}</strong>
     @isset($body)
-        <p>{{ $body }}</p>
+        <p>{{ __($body) }}</p>
     @endisset
     @isset($actionUrl)
         @if(empty($actionPermission) || \Illuminate\Support\Facades\Gate::allows($actionPermission))

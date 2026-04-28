@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', $user->exists ? 'Edit '.$user->name : 'New User')
-@section('page-title', $user->exists ? 'Edit '.$user->name : 'New User')
+@section('title', $user->exists ? __('Edit User: :name', ['name' => $user->name]) : __('New User'))
+@section('page-title', $user->exists ? __('Edit User: :name', ['name' => $user->name]) : __('New User'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -13,18 +13,18 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / System / Users</p>
-                <h1>{{ $user->exists ? 'Edit '.$user->name : 'New User' }}</h1>
+                <p class="crm-admin-eyebrow">{{ __('CRM / System / Users') }}</p>
+                <h1>{{ $user->exists ? __('Edit User: :name', ['name' => $user->name]) : __('New User') }}</h1>
             </div>
             <div class="crm-admin-actions">
                 <x-admin-panel::button :href="route('crm.users.index')" variant="ghost" icon="arrow-left">
-                    Back
+                    {{ __('Back') }}
                 </x-admin-panel::button>
             </div>
         </header>
 
         <x-admin-panel::card>
-            <x-slot:header>User Details</x-slot:header>
+            <x-slot:header>{{ __('User Details') }}</x-slot:header>
 
             <form method="POST"
                   action="{{ $user->exists ? route('crm.users.update', $user) : route('crm.users.store') }}"
@@ -62,7 +62,7 @@
 
                 <x-admin-panel::input
                     name="password"
-                    label="{{ $user->exists ? 'New Password (leave blank to keep current)' : 'Password' }}"
+                    label="{{ $user->exists ? __('New Password (leave blank to keep current)') : __('Password') }}"
                     type="password"
                     :required="!$user->exists"
                 />
@@ -76,7 +76,7 @@
 
                 <div class="crm-form-actions crm-span-2">
                     <x-admin-panel::button type="submit" icon="save">
-                        {{ $user->exists ? 'Update User' : 'Create User' }}
+                        {{ $user->exists ? __('Update User') : __('Create User') }}
                     </x-admin-panel::button>
                 </div>
             </form>
@@ -84,27 +84,27 @@
 
         @if($user->exists)
             <x-admin-panel::card>
-                <x-slot:header>Danger Zone</x-slot:header>
+                <x-slot:header>{{ __('Danger Zone') }}</x-slot:header>
 
                 <div class="crm-row-actions">
                     @if($user->id !== auth()->id())
-                        <form method="POST" action="{{ route('crm.users.toggle-active', $user) }}" data-admin-confirm="{{ $user->is_active ? 'Deactivate this user?' : 'Activate this user?' }}">
+                        <form method="POST" action="{{ route('crm.users.toggle-active', $user) }}" data-admin-confirm="{{ $user->is_active ? __('Deactivate this user?') : __('Activate this user?') }}">
                             @csrf
                             @method('PATCH')
                             <x-admin-panel::button type="submit" variant="{{ $user->is_active ? 'outline' : 'ghost' }}" icon="{{ $user->is_active ? 'user-x' : 'user-check' }}">
-                                {{ $user->is_active ? 'Deactivate User' : 'Activate User' }}
+                                {{ $user->is_active ? __('Deactivate User') : __('Activate User') }}
                             </x-admin-panel::button>
                         </form>
 
-                        <form method="POST" action="{{ route('crm.users.destroy', $user) }}" data-admin-confirm="Permanently delete {{ $user->name }}? This cannot be undone.">
+                        <form method="POST" action="{{ route('crm.users.destroy', $user) }}" data-admin-confirm="{{ __('Permanently delete :name? This cannot be undone.', ['name' => $user->name]) }}">
                             @csrf
                             @method('DELETE')
                             <x-admin-panel::button type="submit" variant="danger" icon="trash-2">
-                                Delete User
+                                {{ __('Delete User') }}
                             </x-admin-panel::button>
                         </form>
                     @else
-                        <p class="crm-muted">You cannot deactivate or delete your own account.</p>
+                        <p class="crm-muted">{{ __('You cannot deactivate or delete your own account.') }}</p>
                     @endif
                 </div>
             </x-admin-panel::card>

@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', 'Users')
-@section('page-title', 'Users')
+@section('title', __('Users'))
+@section('page-title', __('Users'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -13,23 +13,23 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / System</p>
-                <h1>Users</h1>
+                <p class="crm-admin-eyebrow">{{ __('CRM / System') }}</p>
+                <h1>{{ __('Users') }}</h1>
             </div>
             <div class="crm-admin-actions">
                 <x-admin-panel::button :href="route('crm.users.create')" icon="plus">
-                    New User
+                    {{ __('New User') }}
                 </x-admin-panel::button>
             </div>
         </header>
 
         <x-admin-panel::card>
             <x-admin-panel::table :headers="[
-                ['label' => 'Name'],
-                ['label' => 'Email'],
-                ['label' => 'CRM Role'],
-                ['label' => 'Status'],
-                ['label' => 'Actions', 'width' => '200px'],
+                ['label' => __('Name')],
+                ['label' => __('Email')],
+                ['label' => __('CRM Role')],
+                ['label' => __('Status')],
+                ['label' => __('Actions'), 'width' => '200px'],
             ]">
                 @forelse($users as $user)
                     @php
@@ -41,7 +41,7 @@
                         <td>
                             <strong>{{ $user->name }}</strong>
                             @if($isSelf)
-                                <span class="crm-badge-you">You</span>
+                                <span class="crm-badge-you">{{ __('You') }}</span>
                             @endif
                         </td>
                         <td>{{ $user->email }}</td>
@@ -51,14 +51,14 @@
                                     {{ $roleName }}
                                 </x-admin-panel::badge>
                             @else
-                                <span class="crm-muted">No CRM role</span>
+                                <span class="crm-muted">{{ __('No CRM role') }}</span>
                             @endif
                         </td>
                         <td>
                             @if($user->is_active)
-                                <x-admin-panel::badge variant="success">Active</x-admin-panel::badge>
+                                <x-admin-panel::badge variant="success">{{ __('Active') }}</x-admin-panel::badge>
                             @else
-                                <x-admin-panel::badge variant="danger">Inactive</x-admin-panel::badge>
+                                <x-admin-panel::badge variant="danger">{{ __('Inactive') }}</x-admin-panel::badge>
                             @endif
                         </td>
                         <td>
@@ -66,13 +66,13 @@
                                 <x-admin-panel::button :href="route('crm.users.edit', $user)" size="sm" variant="ghost" icon="pencil" />
 
                                 @if(!$isSelf)
-                                    <form method="POST" action="{{ route('crm.users.toggle-active', $user) }}" data-admin-confirm="{{ $user->is_active ? 'Deactivate this user?' : 'Activate this user?' }}">
+                                    <form method="POST" action="{{ route('crm.users.toggle-active', $user) }}" data-admin-confirm="{{ $user->is_active ? __('Deactivate this user?') : __('Activate this user?') }}">
                                         @csrf
                                         @method('PATCH')
                                         <x-admin-panel::button type="submit" size="sm" variant="{{ $user->is_active ? 'outline' : 'ghost' }}" icon="{{ $user->is_active ? 'user-x' : 'user-check' }}" />
                                     </form>
 
-                                    <form method="POST" action="{{ route('crm.users.destroy', $user) }}" data-admin-confirm="Permanently delete {{ $user->name }}? This cannot be undone.">
+                                    <form method="POST" action="{{ route('crm.users.destroy', $user) }}" data-admin-confirm="{{ __('Permanently delete :name? This cannot be undone.', ['name' => $user->name]) }}">
                                         @csrf
                                         @method('DELETE')
                                         <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" />
@@ -85,10 +85,10 @@
                     <tr>
                         <td colspan="5">
                             @include('crm::admin.partials.empty-state', [
-                                'title' => 'No users found.',
-                                'body' => 'Create the first CRM user.',
+                                'title' => __('No users found.'),
+                                'body' => __('Create the first CRM user.'),
                                 'actionUrl' => route('crm.users.create'),
-                                'actionLabel' => 'New User',
+                                'actionLabel' => __('New User'),
                                 'actionPermission' => 'crm.users.manage',
                             ])
                         </td>

@@ -36,7 +36,7 @@
     </div>
 @empty
     <div class="crm-empty-state">
-        <strong>No activity yet.</strong>
-        <p>Activities will appear here as you interact with this record.</p>
+        <strong>{{ __('No activity yet.') }}</strong>
+        <p>{{ __('Activities will appear here as you interact with this record.') }}</p>
     </div>
 @endforelse

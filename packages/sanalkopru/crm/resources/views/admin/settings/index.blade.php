@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', 'CRM Settings')
-@section('page-title', 'CRM Settings')
+@section('title', __('CRM Settings'))
+@section('page-title', __('CRM Settings'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -12,9 +12,9 @@
         @include('crm::admin.partials.status')
 
         <header class="crm-admin-header">
-            <p class="crm-admin-eyebrow">CRM / Settings</p>
-            <h1>CRM Settings</h1>
-            <p class="crm-muted">Branding, quote defaults, notifications and AI runtime options.</p>
+            <p class="crm-admin-eyebrow">{{ __('CRM / Settings') }}</p>
+            <h1>{{ __('CRM Settings') }}</h1>
+            <p class="crm-muted">{{ __('Branding, quote defaults, notifications and AI runtime options.') }}</p>
         </header>
 
         <form method="POST" action="{{ route('crm.settings.update') }}" enctype="multipart/form-data" class="crm-stack">
@@ -22,7 +22,7 @@
             @method('PUT')
 
             <x-admin-panel::card>
-                <x-slot:header>Company Branding</x-slot:header>
+                <x-slot:header>{{ __('Company Branding') }}</x-slot:header>
 
                 <div class="crm-form-grid">
                     <x-admin-panel::input name="company_name" label="Company Name" :value="old('company_name', $settings['company_name'])" required />
@@ -37,13 +37,13 @@
                 @if($logoUrl)
                     <div class="crm-settings-logo-preview">
                         <img src="{{ $logoUrl }}" alt="{{ $settings['company_name'] }}">
-                        <span>Current quote logo</span>
+                        <span>{{ __('Current quote logo') }}</span>
                     </div>
                 @endif
             </x-admin-panel::card>
 
             <x-admin-panel::card>
-                <x-slot:header>Quote Defaults</x-slot:header>
+                <x-slot:header>{{ __('Quote Defaults') }}</x-slot:header>
 
                 <div class="crm-form-grid">
                     <x-admin-panel::select name="default_currency" label="Default Currency" :options="$currencies" :selected="old('default_currency', $settings['default_currency'])" required />
@@ -54,40 +54,40 @@
             </x-admin-panel::card>
 
             <x-admin-panel::card>
-                <x-slot:header>Notifications</x-slot:header>
+                <x-slot:header>{{ __('Notifications') }}</x-slot:header>
 
                 <div class="crm-settings-toggles">
                     <label class="crm-checkbox-row">
                         <input type="hidden" name="notify_task_reminders" value="0">
                         <input type="checkbox" name="notify_task_reminders" value="1" @checked(old('notify_task_reminders', $settings['notify_task_reminders']))>
-                        <span>Send task reminder notifications</span>
+                        <span>{{ __('Send task reminder notifications') }}</span>
                     </label>
                     <label class="crm-checkbox-row">
                         <input type="hidden" name="notify_task_assignments" value="0">
                         <input type="checkbox" name="notify_task_assignments" value="1" @checked(old('notify_task_assignments', $settings['notify_task_assignments']))>
-                        <span>Notify task assignment and reassignment</span>
+                        <span>{{ __('Notify task assignment and reassignment') }}</span>
                     </label>
                     <label class="crm-checkbox-row">
                         <input type="hidden" name="notify_quote_status_changes" value="0">
                         <input type="checkbox" name="notify_quote_status_changes" value="1" @checked(old('notify_quote_status_changes', $settings['notify_quote_status_changes']))>
-                        <span>Notify quote status changes</span>
+                        <span>{{ __('Notify quote status changes') }}</span>
                     </label>
                     <label class="crm-checkbox-row">
                         <input type="hidden" name="notify_import_status_updates" value="0">
                         <input type="checkbox" name="notify_import_status_updates" value="1" @checked(old('notify_import_status_updates', $settings['notify_import_status_updates']))>
-                        <span>Notify import queued and completion updates</span>
+                        <span>{{ __('Notify import queued and completion updates') }}</span>
                     </label>
                 </div>
             </x-admin-panel::card>
 
             <x-admin-panel::card>
-                <x-slot:header>AI</x-slot:header>
+                <x-slot:header>{{ __('AI') }}</x-slot:header>
 
                 <div class="crm-form-grid">
                     <label class="crm-checkbox-row">
                         <input type="hidden" name="ai_enabled" value="0">
                         <input type="checkbox" name="ai_enabled" value="1" @checked(old('ai_enabled', $settings['ai_enabled']))>
-                        <span>Enable CRM AI actions</span>
+                        <span>{{ __('Enable CRM AI actions') }}</span>
                     </label>
                     <x-admin-panel::select name="ai_driver" label="AI Driver" :options="$aiDrivers" :selected="old('ai_driver', $settings['ai_driver'])" required />
                     <x-admin-panel::input name="ai_model" label="AI Model Override" :value="old('ai_model', $settings['ai_model'])" placeholder="Use provider default when empty" />
@@ -95,8 +95,8 @@
             </x-admin-panel::card>
 
             <div class="crm-form-actions">
-                <x-admin-panel::button type="submit" icon="save">Save Settings</x-admin-panel::button>
-                <x-admin-panel::button :href="route('crm.dashboard')" variant="ghost">Cancel</x-admin-panel::button>
+                <x-admin-panel::button type="submit" icon="save">{{ __('Save Settings') }}</x-admin-panel::button>
+                <x-admin-panel::button :href="route('crm.dashboard')" variant="ghost">{{ __('Cancel') }}</x-admin-panel::button>
             </div>
         </form>
     </section>

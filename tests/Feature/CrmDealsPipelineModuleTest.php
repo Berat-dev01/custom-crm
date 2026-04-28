@@ -65,8 +65,8 @@ class CrmDealsPipelineModuleTest extends TestCase
                 'status' => 'open',
             ]))
             ->assertOk()
-            ->assertSee('Deals Pipeline')
-            ->assertSee('New')
+            ->assertSee(__('Deals Pipeline'))
+            ->assertSee(__('New Deal'))
             ->assertSee('Proposal')
             ->assertSee('Enterprise Upgrade')
             ->assertDontSee('Small Renewal');

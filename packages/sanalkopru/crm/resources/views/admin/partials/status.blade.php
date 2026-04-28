@@ -17,7 +17,7 @@
 
 @if($crmErrors && $crmErrors->any())
     <x-admin-panel::alert variant="danger" class="crm-error-state" data-crm-error-state>
-        <strong>Please review the highlighted fields.</strong>
+        <strong>{{ __('Please review the highlighted fields.') }}</strong>
         <span>{{ $crmErrors->first() }}</span>
     </x-admin-panel::alert>
 @endif

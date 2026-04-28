@@ -82,11 +82,11 @@ class CrmGlobalSearchUxTest extends TestCase
             ->get(route('crm.contacts.index'))
             ->assertOk()
             ->assertSee('data-admin-command-palette', false)
-            ->assertSee('Overview')
-            ->assertSee('Sales')
-            ->assertSee('Customers')
-            ->assertSee('Operations')
-            ->assertSee('No contacts found.')
-            ->assertSee('New Contact');
+            ->assertSee(__('Overview'))
+            ->assertSee(__('Sales'))
+            ->assertSee(__('Customers'))
+            ->assertSee(__('Operations'))
+            ->assertSee(__('No contacts found.'))
+            ->assertSee(__('New Contact'));
     }
 }

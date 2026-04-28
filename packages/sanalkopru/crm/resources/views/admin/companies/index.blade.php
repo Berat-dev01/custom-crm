@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', 'Companies')
-@section('page-title', 'Companies')
+@section('title', __('Companies'))
+@section('page-title', __('Companies'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -14,13 +14,13 @@
             ->filter(fn ($value) => $value !== null && $value !== '')
             ->count();
         $tableHeaders = [
-            ['label' => new \Illuminate\Support\HtmlString('<input type="checkbox" data-admin-bulk-toggle-all class="form-check-input" aria-label="Select all companies">'), 'width' => '36px'],
-            ['label' => 'Name'],
-            ['label' => 'Sector'],
-            ['label' => 'Location'],
-            ['label' => 'Owner'],
-            ['label' => 'CRM Links'],
-            ['label' => 'Actions', 'width' => '220px'],
+            ['label' => new \Illuminate\Support\HtmlString('<input type="checkbox" data-admin-bulk-toggle-all class="form-check-input" aria-label="'.e(__('Select all companies')).'">'), 'width' => '36px'],
+            ['label' => __('Name')],
+            ['label' => __('Sector')],
+            ['label' => __('Location')],
+            ['label' => __('Owner')],
+            ['label' => __('CRM Links')],
+            ['label' => __('Actions'), 'width' => '220px'],
         ];
     @endphp
 
@@ -29,17 +29,17 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM</p>
-                <h1>Companies</h1>
+                <p class="crm-admin-eyebrow">{{ __('CRM') }}</p>
+                <h1>{{ __('Companies') }}</h1>
             </div>
 
             <div class="crm-admin-actions">
                 @can('crm.companies.import')
                     <x-admin-panel::button :href="route('crm.companies.template')" variant="ghost" icon="download">
-                        Template
+                        {{ __('Template') }}
                     </x-admin-panel::button>
                     <x-admin-panel::button :href="route('crm.companies.import')" variant="outline" icon="upload">
-                        Import
+                        {{ __('Import') }}
                     </x-admin-panel::button>
                 @endcan
                 @can('crm.companies.export')
@@ -52,7 +52,7 @@
                 @endcan
                 @can('crm.companies.create')
                     <x-admin-panel::button :href="route('crm.companies.create')" icon="plus">
-                        New Company
+                        {{ __('New Company') }}
                     </x-admin-panel::button>
                 @endcan
             </div>
@@ -74,10 +74,10 @@
                         label="Sort"
                         :selected="$filters['sort']"
                         :options="[
-                            'created_at' => 'Created',
-                            'name' => 'Name',
-                            'sector' => 'Sector',
-                            'city' => 'City',
+                            'created_at' => __('Created'),
+                            'name' => __('Name'),
+                            'sector' => __('Sector'),
+                            'city' => __('City'),
                         ]"
                     />
                 </x-slot:advanced>
@@ -99,17 +99,15 @@
                             variant="danger"
                             icon="trash-2"
                             form="crm-company-bulk"
-                            data-crm-confirm="Delete selected companies?"
+                            data-crm-confirm="{{ __('Delete selected companies?') }}"
                         >
-                            Delete Selected
+                            {{ __('Delete Selected') }}
                         </x-admin-panel::button>
                     @endcan
                 </x-admin-panel::bulk-actions>
 
                 <x-admin-panel::card>
-                    <x-slot:header>
-                        Companies
-                    </x-slot:header>
+                    <x-slot:header>{{ __('Companies') }}</x-slot:header>
 
                     <x-admin-panel::table :headers="$tableHeaders">
                     @forelse($companies as $company)
@@ -124,16 +122,14 @@
                             </td>
                             <td>
                                 <strong>{{ $company->name }}</strong>
-                                <div class="crm-muted">{{ $company->email ?: 'No email' }}{{ $company->phone ? ' / '.$company->phone : '' }}</div>
+                                <div class="crm-muted">{{ $company->email ?: __('No email') }}{{ $company->phone ? ' / '.$company->phone : '' }}</div>
                             </td>
                             <td>{{ $company->sector ?: '-' }}</td>
                             <td>{{ collect([$company->city, $company->country])->filter()->implode(', ') ?: '-' }}</td>
                             <td>{{ $company->owner?->name ?: '-' }}</td>
                             <td>
                                 <span class="crm-muted">
-                                    {{ $company->contacts_count }} contacts,
-                                    {{ $company->deals_count }} deals,
-                                    {{ $company->quotes_count }} quotes
+                                    {{ __(':contacts contacts, :deals deals, :quotes quotes', ['contacts' => $company->contacts_count, 'deals' => $company->deals_count, 'quotes' => $company->quotes_count]) }}
                                 </span>
                             </td>
                             <td>
@@ -143,7 +139,7 @@
                                         <x-admin-panel::button :href="route('crm.companies.edit', $company)" size="sm" variant="ghost" icon="pencil" />
                                     @endcan
                                     @can('delete', $company)
-                                        <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" form="crm-company-delete-{{ $company->id }}" data-crm-confirm="Delete this company?" />
+                                        <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" form="crm-company-delete-{{ $company->id }}" data-crm-confirm="{{ __('Delete this company?') }}" />
                                     @endcan
                                 </div>
                             </td>
@@ -152,10 +148,10 @@
                         <tr>
                             <td colspan="7">
                                 @include('crm::admin.partials.empty-state', [
-                                    'title' => 'No companies found.',
-                                    'body' => 'Add an account record or reset filters to see existing companies.',
+                                    'title' => __('No companies found.'),
+                                    'body' => __('Add an account record or reset filters to see existing companies.'),
                                     'actionUrl' => route('crm.companies.create'),
-                                    'actionLabel' => 'New Company',
+                                    'actionLabel' => __('New Company'),
                                     'actionPermission' => 'crm.companies.create',
                                 ])
                             </td>

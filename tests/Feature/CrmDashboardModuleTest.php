@@ -134,7 +134,7 @@ class CrmDashboardModuleTest extends TestCase
             ->get(route('crm.dashboard', ['period' => 'today']))
             ->assertOk()
             ->assertSee('crm-dashboard-region', false)
-            ->assertSee('Period Won/Lost Trend');
+            ->assertSee(__('Period Won/Lost Trend'));
     }
 
     public function test_dashboard_page_renders_demo_seed_with_meaningful_sections(): void
@@ -145,14 +145,14 @@ class CrmDashboardModuleTest extends TestCase
         $this->actingAs($user, 'admin')
             ->get(route('crm.dashboard'))
             ->assertOk()
-            ->assertSee('Sales Dashboard')
-            ->assertSee('Open Pipeline')
-            ->assertSee('Pipeline by Stage')
-            ->assertSee('Period Won/Lost Trend')
-            ->assertSee('Upcoming Tasks')
-            ->assertSee('Recent Activities')
-            ->assertSee('Highest Value Open Deals')
-            ->assertSee('Quote Status Distribution')
+            ->assertSee(__('Sales Dashboard'))
+            ->assertSee(__('Open Pipeline'))
+            ->assertSee(__('Pipeline by Stage'))
+            ->assertSee(__('Period Won/Lost Trend'))
+            ->assertSee(__('Upcoming Tasks'))
+            ->assertSee(__('Recent Activities'))
+            ->assertSee(__('Highest Value Open Deals'))
+            ->assertSee(__('Quote Status Distribution'))
             ->assertSee('data-crm-dashboard-expand', false)
             ->assertSee('data-crm-paginate', false)
             ->assertSee('crm-dashboard-panel', false);

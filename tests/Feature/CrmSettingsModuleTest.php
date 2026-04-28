@@ -40,7 +40,7 @@ class CrmSettingsModuleTest extends TestCase
         $this->actingAs($this->owner, 'admin')
             ->get(route('crm.settings.index'))
             ->assertOk()
-            ->assertSee('CRM Settings');
+            ->assertSee(__('CRM Settings'));
 
         $this->actingAs($sales, 'admin')
             ->get(route('crm.settings.index'))

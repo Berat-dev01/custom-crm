@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', 'Activities')
-@section('page-title', 'Activities')
+@section('title', __('Activities'))
+@section('page-title', __('Activities'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -13,13 +13,13 @@
             ->filter(fn ($value) => $value !== null && $value !== '')
             ->count();
         $tableHeaders = [
-            ['label' => new \Illuminate\Support\HtmlString('<input type="checkbox" data-admin-bulk-toggle-all class="form-check-input" aria-label="Select all activities">'), 'width' => '36px'],
-            ['label' => 'Activity'],
-            ['label' => 'Type'],
-            ['label' => 'Related'],
-            ['label' => 'User'],
-            ['label' => 'Occurred'],
-            ['label' => 'Actions', 'width' => '180px'],
+            ['label' => new \Illuminate\Support\HtmlString('<input type="checkbox" data-admin-bulk-toggle-all class="form-check-input" aria-label="'.e(__('Select all activities')).'">'), 'width' => '36px'],
+            ['label' => __('Activity')],
+            ['label' => __('Type')],
+            ['label' => __('Related')],
+            ['label' => __('User')],
+            ['label' => __('Occurred')],
+            ['label' => __('Actions'), 'width' => '180px'],
         ];
     @endphp
 
@@ -28,12 +28,12 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM</p>
-                <h1>Activities</h1>
+                <p class="crm-admin-eyebrow">{{ __('CRM') }}</p>
+                <h1>{{ __('Activities') }}</h1>
             </div>
 
             @can('crm.activities.create')
-                <x-admin-panel::button :href="route('crm.activities.create')" icon="plus">New Activity</x-admin-panel::button>
+                <x-admin-panel::button :href="route('crm.activities.create')" icon="plus">{{ __('New Activity') }}</x-admin-panel::button>
             @endcan
         </header>
 
@@ -68,17 +68,15 @@
                             variant="danger"
                             icon="trash-2"
                             form="crm-activity-bulk"
-                            data-crm-confirm="Delete selected activities?"
+                            data-crm-confirm="{{ __('Delete selected activities?') }}"
                         >
-                            Delete Selected
+                            {{ __('Delete Selected') }}
                         </x-admin-panel::button>
                     @endcan
                 </x-admin-panel::bulk-actions>
 
                 <x-admin-panel::card>
-                    <x-slot:header>
-                        Timeline
-                    </x-slot:header>
+                    <x-slot:header>{{ __('Timeline') }}</x-slot:header>
 
                     <x-admin-panel::table :headers="$tableHeaders">
                     @forelse($activities as $activity)
@@ -103,11 +101,11 @@
                         </td>
                         <td>
                             <strong>{{ $activity->subject }}</strong>
-                            <div class="crm-muted">{{ $activity->body ? str($activity->body)->limit(80) : 'No body' }}</div>
+                            <div class="crm-muted">{{ $activity->body ? str($activity->body)->limit(80) : __('No body') }}</div>
                         </td>
                         <td>{{ $crmFormat->status($activity->type) }}</td>
                         <td>{{ $relatedLabel }}</td>
-                        <td>{{ $activity->user?->name ?: 'System' }}</td>
+                        <td>{{ $activity->user?->name ?: __('System') }}</td>
                         <td>{{ $crmFormat->datetime($activity->occurred_at) }}</td>
                         <td>
                             <div class="crm-row-actions">
@@ -116,7 +114,7 @@
                                     <x-admin-panel::button :href="route('crm.activities.edit', $activity)" size="sm" variant="ghost" icon="pencil" />
                                 @endcan
                                 @can('delete', $activity)
-                                    <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" form="crm-activity-delete-{{ $activity->id }}" data-crm-confirm="Delete this activity?" />
+                                    <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" form="crm-activity-delete-{{ $activity->id }}" data-crm-confirm="{{ __('Delete this activity?') }}" />
                                 @endcan
                             </div>
                         </td>
@@ -125,10 +123,10 @@
                     <tr>
                         <td colspan="7">
                             @include('crm::admin.partials.empty-state', [
-                                'title' => 'No activities found.',
-                                'body' => 'Log calls, meetings and notes to keep the customer timeline useful.',
+                                'title' => __('No activities found.'),
+                                'body' => __('Log calls, meetings and notes to keep the customer timeline useful.'),
                                 'actionUrl' => route('crm.activities.create'),
-                                'actionLabel' => 'New Activity',
+                                'actionLabel' => __('New Activity'),
                                 'actionPermission' => 'crm.activities.create',
                             ])
                         </td>

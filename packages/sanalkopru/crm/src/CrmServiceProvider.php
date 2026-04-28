@@ -73,6 +73,8 @@ class CrmServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->loadJsonTranslationsFrom(__DIR__.'/../resources/lang');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'crm');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'crm');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
@@ -171,6 +173,10 @@ class CrmServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/crm'),
         ], 'crm-views');
+
+        $this->publishes([
+            __DIR__.'/../resources/lang' => lang_path('vendor/crm'),
+        ], 'crm-lang');
 
         $this->publishes([
             __DIR__.'/../database/migrations' => database_path('migrations'),

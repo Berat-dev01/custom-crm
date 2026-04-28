@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', $task->exists ? 'Edit Task' : 'New Task')
-@section('page-title', $task->exists ? 'Edit Task' : 'New Task')
+@section('title', $task->exists ? __('Edit Task') : __('New Task'))
+@section('page-title', $task->exists ? __('Edit Task') : __('New Task'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -13,10 +13,10 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / Tasks</p>
-                <h1>{{ $task->exists ? 'Edit Task' : 'New Task' }}</h1>
+                <p class="crm-admin-eyebrow">{{ __('CRM / Tasks') }}</p>
+                <h1>{{ $task->exists ? __('Edit Task') : __('New Task') }}</h1>
             </div>
-            <x-admin-panel::button :href="route('crm.tasks.index')" variant="ghost" icon="arrow-left">Back</x-admin-panel::button>
+            <x-admin-panel::button :href="route('crm.tasks.index')" variant="ghost" icon="arrow-left">{{ __('Back') }}</x-admin-panel::button>
         </header>
 
         <x-admin-panel::card>
@@ -40,18 +40,18 @@
                 <x-admin-panel::input name="taskable_id" label="Related Record ID" type="number" :value="$task->taskable_id" />
 
                 <div class="crm-span-2 crm-highlight-box">
-                    <strong>Available related records</strong>
+                    <strong>{{ __('Available related records') }}</strong>
                     <p class="crm-muted">
-                        Contacts: {{ $taskableOptions['contact']->pluck('full_name', 'id')->map(fn($name, $id) => "#{$id} {$name}")->implode(', ') ?: '-' }}
+                        {{ __('Contacts') }}: {{ $taskableOptions['contact']->pluck('full_name', 'id')->map(fn($name, $id) => "#{$id} {$name}")->implode(', ') ?: '-' }}
                     </p>
                     <p class="crm-muted">
-                        Companies: {{ $taskableOptions['company']->pluck('name', 'id')->map(fn($name, $id) => "#{$id} {$name}")->implode(', ') ?: '-' }}
+                        {{ __('Companies') }}: {{ $taskableOptions['company']->pluck('name', 'id')->map(fn($name, $id) => "#{$id} {$name}")->implode(', ') ?: '-' }}
                     </p>
                     <p class="crm-muted">
-                        Deals: {{ $taskableOptions['deal']->pluck('title', 'id')->map(fn($name, $id) => "#{$id} {$name}")->implode(', ') ?: '-' }}
+                        {{ __('Deals') }}: {{ $taskableOptions['deal']->pluck('title', 'id')->map(fn($name, $id) => "#{$id} {$name}")->implode(', ') ?: '-' }}
                     </p>
                     <p class="crm-muted">
-                        Quotes: {{ $taskableOptions['quote']->pluck('quote_number', 'id')->map(fn($name, $id) => "#{$id} {$name}")->implode(', ') ?: '-' }}
+                        {{ __('Quotes') }}: {{ $taskableOptions['quote']->pluck('quote_number', 'id')->map(fn($name, $id) => "#{$id} {$name}")->implode(', ') ?: '-' }}
                     </p>
                 </div>
 
@@ -59,9 +59,9 @@
 
                 <div class="crm-form-actions crm-span-2">
                     <x-admin-panel::button type="submit" icon="save">
-                        {{ $task->exists ? 'Save Task' : 'Create Task' }}
+                        {{ $task->exists ? __('Save Task') : __('Create Task') }}
                     </x-admin-panel::button>
-                    <x-admin-panel::button :href="route('crm.tasks.index')" variant="ghost">Cancel</x-admin-panel::button>
+                    <x-admin-panel::button :href="route('crm.tasks.index')" variant="ghost">{{ __('Cancel') }}</x-admin-panel::button>
                 </div>
             </form>
         </x-admin-panel::card>

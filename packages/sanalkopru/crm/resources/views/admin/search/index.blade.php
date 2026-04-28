@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', 'Search CRM')
-@section('page-title', 'Search CRM')
+@section('title', __('Search CRM'))
+@section('page-title', __('Search CRM'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -13,8 +13,8 @@
 
         <header class="crm-admin-header">
             <p class="crm-admin-eyebrow">CRM</p>
-            <h1>Search CRM</h1>
-            <p class="crm-muted">{{ $term ? 'Results for "'.$term.'"' : 'Type at least two characters to search across CRM records.' }}</p>
+            <h1>{{ __('Search CRM') }}</h1>
+            <p class="crm-muted">{{ $term ? __('Results for ":term"', ['term' => $term]) : __('Type at least two characters to search across CRM records.') }}</p>
         </header>
 
         @php($totalResults = collect($groups)->sum('total'))

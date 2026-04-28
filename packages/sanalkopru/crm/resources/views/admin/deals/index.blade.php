@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', 'Deals')
-@section('page-title', 'Deals')
+@section('title', __('Deals'))
+@section('page-title', __('Deals'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -14,13 +14,13 @@
             ->filter(fn ($value) => $value !== null && $value !== '')
             ->count();
         $tableHeaders = [
-            ['label' => new \Illuminate\Support\HtmlString('<input type="checkbox" data-admin-bulk-toggle-all class="form-check-input" aria-label="Select all deals">'), 'width' => '36px'],
-            ['label' => 'Deal'],
-            ['label' => 'Stage'],
-            ['label' => 'Value'],
-            ['label' => 'Expected Close'],
-            ['label' => 'Owner'],
-            ['label' => 'Actions', 'width' => '220px'],
+            ['label' => new \Illuminate\Support\HtmlString('<input type="checkbox" data-admin-bulk-toggle-all class="form-check-input" aria-label="'.e(__('Select all deals')).'">'), 'width' => '36px'],
+            ['label' => __('Deal')],
+            ['label' => __('Stage')],
+            ['label' => __('Value')],
+            ['label' => __('Expected Close')],
+            ['label' => __('Owner')],
+            ['label' => __('Actions'), 'width' => '220px'],
         ];
     @endphp
 
@@ -29,25 +29,25 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM</p>
-                <h1>Deals Pipeline</h1>
+                <p class="crm-admin-eyebrow">{{ __('CRM') }}</p>
+                <h1>{{ __('Deals Pipeline') }}</h1>
             </div>
 
             <div class="crm-admin-actions">
                 <div class="crm-view-switch">
                     <x-admin-panel::button :href="route('crm.deals.index', array_merge(request()->except('view', 'page'), ['view' => 'kanban']))" variant="{{ $filters['view'] === 'list' ? 'ghost' : 'outline' }}" icon="columns-3" data-admin-ajax-link data-admin-ajax-target="crm-deals-list">
-                        Kanban
+                        {{ __('Kanban') }}
                     </x-admin-panel::button>
                     <x-admin-panel::button :href="route('crm.deals.index', array_merge(request()->except('view', 'page'), ['view' => 'list']))" variant="{{ $filters['view'] === 'list' ? 'outline' : 'ghost' }}" icon="list" data-admin-ajax-link data-admin-ajax-target="crm-deals-list">
-                        List
+                        {{ __('List') }}
                     </x-admin-panel::button>
                 </div>
                 @can('crm.deals.import')
                     <x-admin-panel::button :href="route('crm.deals.template')" variant="ghost" icon="download">
-                        Template
+                        {{ __('Template') }}
                     </x-admin-panel::button>
                     <x-admin-panel::button :href="route('crm.deals.import')" variant="outline" icon="upload">
-                        Import
+                        {{ __('Import') }}
                     </x-admin-panel::button>
                 @endcan
                 @can('crm.deals.export')
@@ -60,7 +60,7 @@
                 @endcan
                 @can('crm.deals.create')
                     <x-admin-panel::button :href="route('crm.deals.create')" icon="plus">
-                        New Deal
+                        {{ __('New Deal') }}
                     </x-admin-panel::button>
                 @endcan
             </div>
@@ -101,17 +101,15 @@
                                 variant="danger"
                                 icon="trash-2"
                                 form="crm-deal-bulk"
-                                data-crm-confirm="Delete selected deals?"
+                            data-crm-confirm="{{ __('Delete selected deals?') }}"
                             >
-                                Delete Selected
+                                {{ __('Delete Selected') }}
                             </x-admin-panel::button>
                         @endcan
                     </x-admin-panel::bulk-actions>
 
                     <x-admin-panel::card>
-                        <x-slot:header>
-                            Deals
-                        </x-slot:header>
+                        <x-slot:header>{{ __('Deals') }}</x-slot:header>
 
                         <x-admin-panel::table :headers="$tableHeaders">
                         @forelse($deals as $deal)
@@ -126,7 +124,7 @@
                                 </td>
                                 <td>
                                     <strong>{{ $deal->title }}</strong>
-                                    <div class="crm-muted">{{ $deal->company?->name ?: $deal->contact?->full_name ?: 'No account linked' }}</div>
+                                    <div class="crm-muted">{{ $deal->company?->name ?: $deal->contact?->full_name ?: __('No account linked') }}</div>
                                 </td>
                                 <td>{{ $deal->stage?->name ?: '-' }}</td>
                                 <td>{{ $crmFormat->money($deal->value, $deal->currency) }}</td>
@@ -139,7 +137,7 @@
                                             <x-admin-panel::button :href="route('crm.deals.edit', $deal)" size="sm" variant="ghost" icon="pencil" />
                                         @endcan
                                         @can('delete', $deal)
-                                            <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" form="crm-deal-delete-{{ $deal->id }}" data-crm-confirm="Delete this deal?" />
+                                            <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" form="crm-deal-delete-{{ $deal->id }}" data-crm-confirm="{{ __('Delete this deal?') }}" />
                                         @endcan
                                     </div>
                                 </td>
@@ -148,10 +146,10 @@
                             <tr>
                                 <td colspan="7">
                                     @include('crm::admin.partials.empty-state', [
-                                        'title' => 'No deals found.',
-                                        'body' => 'Start a new opportunity or relax the current filters.',
+                                        'title' => __('No deals found.'),
+                                        'body' => __('Start a new opportunity or relax the current filters.'),
                                         'actionUrl' => route('crm.deals.create'),
-                                        'actionLabel' => 'New Deal',
+                                        'actionLabel' => __('New Deal'),
                                         'actionPermission' => 'crm.deals.create',
                                     ])
                                 </td>
@@ -174,13 +172,13 @@
                                         {{ $stage->name }}
                                     </h2>
                                     @if($stage->is_won)
-                                        <span class="crm-stage-kind crm-stage-kind-won">Won</span>
+                                        <span class="crm-stage-kind crm-stage-kind-won">{{ __('Won') }}</span>
                                     @elseif($stage->is_lost)
-                                        <span class="crm-stage-kind crm-stage-kind-lost">Lost</span>
+                                        <span class="crm-stage-kind crm-stage-kind-lost">{{ __('Lost') }}</span>
                                     @endif
                                 </div>
                                 <div class="crm-kanban-column-meta">
-                                    <span data-crm-stage-count>{{ $stage->deals_count }} deals</span>
+                                    <span data-crm-stage-count>{{ __(':count deals', ['count' => $stage->deals_count]) }}</span>
                                     <span data-crm-stage-value>{{ $crmFormat->money($stage->pipeline_value) }}</span>
                                 </div>
                             </header>
@@ -201,17 +199,17 @@
                                             {{ $deal->title }}
                                         </a>
                                         <div class="crm-kanban-card-meta">
-                                            <span>{{ $deal->company?->name ?: $deal->contact?->full_name ?: 'No account' }}</span>
+                                            <span>{{ $deal->company?->name ?: $deal->contact?->full_name ?: __('No account') }}</span>
                                             <span class="crm-kanban-card-meta-value">{{ $crmFormat->money($deal->value, $deal->currency) }}</span>
                                         </div>
                                         <div class="crm-kanban-card-footer">
-                                            <span>{{ $deal->expected_close_date ? $crmFormat->date($deal->expected_close_date) : 'No close date' }}</span>
-                                            <span>{{ $deal->owner?->name ?: 'No owner' }}</span>
+                                            <span>{{ $deal->expected_close_date ? $crmFormat->date($deal->expected_close_date) : __('No close date') }}</span>
+                                            <span>{{ $deal->owner?->name ?: __('No owner') }}</span>
                                             @if($deal->open_tasks_count > 0)
-                                                <span class="crm-kanban-badge">{{ $deal->open_tasks_count }} tasks</span>
+                                                <span class="crm-kanban-badge">{{ __(':count tasks', ['count' => $deal->open_tasks_count]) }}</span>
                                             @endif
                                             @can('delete', $deal)
-                                                <form method="POST" action="{{ route('crm.deals.destroy', $deal) }}" class="crm-inline-form" data-crm-confirm="Delete this deal?">
+                                                <form method="POST" action="{{ route('crm.deals.destroy', $deal) }}" class="crm-inline-form" data-crm-confirm="{{ __('Delete this deal?') }}">
                                                     @csrf
                                                     @method('DELETE')
                                                     <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" />
@@ -221,13 +219,13 @@
                                     </article>
                                 @empty
                                     @include('crm::admin.partials.empty-state', [
-                                        'title' => 'No deals.',
-                                        'body' => 'Drag deals here as the pipeline develops.',
+                                        'title' => __('No deals.'),
+                                        'body' => __('Drag deals here as the pipeline develops.'),
                                     ])
                                 @endforelse
                                 @if($stage->has_more_deals)
                                     <div class="crm-kanban-more">
-                                        Showing {{ $stage->deals->count() }} of {{ $stage->deals_count }} deals. Use filters or list view for the full stage.
+                                        {{ __('Showing :shown of :total deals. Use filters or list view for the full stage.', ['shown' => $stage->deals->count(), 'total' => $stage->deals_count]) }}
                                     </div>
                                 @endif
                             </div>
@@ -238,17 +236,17 @@
 
                 <dialog class="crm-dialog" data-crm-lost-dialog>
                     <form method="dialog" class="crm-dialog-body">
-                        <h2>Lost Reason</h2>
+                        <h2>{{ __('Lost Reason') }}</h2>
                         <div class="form-group">
-                            <label class="form-label" for="crm-lost-reason">Reason</label>
+                            <label class="form-label" for="crm-lost-reason">{{ __('Reason') }}</label>
                             <textarea id="crm-lost-reason" name="lost_reason" class="form-control" rows="4"></textarea>
                         </div>
                         <div class="crm-dialog-actions">
                             <x-admin-panel::button type="button" variant="ghost" onclick="this.closest('dialog').close('cancel')">
-                                Cancel
+                                {{ __('Cancel') }}
                             </x-admin-panel::button>
                             <x-admin-panel::button type="submit" icon="save">
-                                Save
+                                {{ __('Save') }}
                             </x-admin-panel::button>
                         </div>
                     </form>

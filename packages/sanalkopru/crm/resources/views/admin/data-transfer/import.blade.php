@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', 'Import '.Str::headline($module))
-@section('page-title', 'Import '.Str::headline($module))
+@section('title', __('Import').' '.__((string) Str::headline($module)))
+@section('page-title', __('Import').' '.__((string) Str::headline($module)))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -13,21 +13,21 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / {{ Str::headline($module) }}</p>
-                <h1>Import {{ Str::headline($module) }}</h1>
+                <p class="crm-admin-eyebrow">CRM / {{ __((string) Str::headline($module)) }}</p>
+                <h1>{{ __('Import') }} {{ __((string) Str::headline($module)) }}</h1>
             </div>
             <div class="crm-admin-actions">
                 <x-admin-panel::button :href="route('crm.'.$module.'.template')" variant="outline" icon="download">
-                    Template
+                    {{ __('Template') }}
                 </x-admin-panel::button>
                 <x-admin-panel::button :href="route('crm.'.$module.'.index')" variant="ghost" icon="arrow-left">
-                    Back
+                    {{ __('Back') }}
                 </x-admin-panel::button>
             </div>
         </header>
 
         <x-admin-panel::card>
-            <x-slot:header>Column Standard</x-slot:header>
+            <x-slot:header>{{ __('Column Standard') }}</x-slot:header>
             <p class="crm-muted">{{ implode(', ', $headers) }}</p>
         </x-admin-panel::card>
 
@@ -36,9 +36,9 @@
                 @csrf
                 <x-admin-panel::input name="file" label="CSV or XLSX File" type="file" required />
                 <div class="crm-row-actions">
-                    <x-admin-panel::button type="submit" icon="eye" data-crm-preview-btn>Preview</x-admin-panel::button>
+                    <x-admin-panel::button type="submit" icon="eye" data-crm-preview-btn>{{ __('Preview') }}</x-admin-panel::button>
                     <x-admin-panel::button type="submit" formaction="{{ route('crm.'.$module.'.import.store') }}" icon="upload">
-                        Import
+                        {{ __('Import') }}
                     </x-admin-panel::button>
                 </div>
             </form>
@@ -52,16 +52,16 @@
 
         @if(session('crm_import_result'))
             <x-admin-panel::card>
-                <x-slot:header>Import Report</x-slot:header>
+                <x-slot:header>{{ __('Import Report') }}</x-slot:header>
                 @php($result = session('crm_import_result'))
-                <p>{{ $result['created'] }} created, {{ $result['failed'] }} failed.</p>
+                <p>{{ __(':created created, :failed failed.', ['created' => $result['created'], 'failed' => $result['failed']]) }}</p>
                 @if(!empty($result['error_report_url']))
                     <x-admin-panel::button :href="$result['error_report_url']" variant="outline" icon="download">
-                        Download Error Report
+                        {{ __('Download Error Report') }}
                     </x-admin-panel::button>
                 @endif
                 @if(!empty($result['errors']))
-                    <x-admin-panel::table :headers="['Row', 'Error']">
+                    <x-admin-panel::table :headers="[__('Row'), __('Error')]">
                         @foreach($result['errors'] as $error)
                             <tr>
                                 <td>{{ $error['row'] }}</td>

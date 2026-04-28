@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', $tag->exists ? 'Edit Tag' : 'New Tag')
-@section('page-title', $tag->exists ? 'Edit Tag' : 'New Tag')
+@section('title', $tag->exists ? __('Edit Tag') : __('New Tag'))
+@section('page-title', $tag->exists ? __('Edit Tag') : __('New Tag'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -13,10 +13,10 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / Tags</p>
-                <h1>{{ $tag->exists ? 'Edit Tag' : 'New Tag' }}</h1>
+                <p class="crm-admin-eyebrow">{{ __('CRM / Tags') }}</p>
+                <h1>{{ $tag->exists ? __('Edit Tag') : __('New Tag') }}</h1>
             </div>
-            <x-admin-panel::button :href="route('crm.tags.index')" variant="ghost" icon="arrow-left">Back</x-admin-panel::button>
+            <x-admin-panel::button :href="route('crm.tags.index')" variant="ghost" icon="arrow-left">{{ __('Back') }}</x-admin-panel::button>
         </header>
 
         <x-admin-panel::card>
@@ -36,9 +36,9 @@
 
                 <div class="crm-form-actions crm-span-2">
                     <x-admin-panel::button type="submit" icon="save">
-                        {{ $tag->exists ? 'Save Tag' : 'Create Tag' }}
+                        {{ $tag->exists ? __('Save Tag') : __('Create Tag') }}
                     </x-admin-panel::button>
-                    <x-admin-panel::button :href="route('crm.tags.index')" variant="ghost">Cancel</x-admin-panel::button>
+                    <x-admin-panel::button :href="route('crm.tags.index')" variant="ghost">{{ __('Cancel') }}</x-admin-panel::button>
                 </div>
             </form>
         </x-admin-panel::card>

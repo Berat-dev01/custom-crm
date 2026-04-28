@@ -54,8 +54,8 @@ class CrmDealStagesModuleTest extends TestCase
         $this->actingAs($this->admin, 'admin')
             ->get(route('crm.deal-stages.index'))
             ->assertOk()
-            ->assertSee('Deal Stages')
-            ->assertSee('New');
+            ->assertSee(__('Deal Stages'))
+            ->assertSee(__('New Stage'));
     }
 
     public function test_stage_can_be_created_updated_and_reordered(): void

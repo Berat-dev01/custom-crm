@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', 'Tasks')
-@section('page-title', 'Tasks')
+@section('title', __('Tasks'))
+@section('page-title', __('Tasks'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -13,15 +13,21 @@
             ->except(['scope'])
             ->filter(fn ($value) => $value !== null && $value !== '')
             ->count();
+        $scopeLabels = [
+            'all' => __('All'),
+            'my' => __('My'),
+            'today' => __('Today'),
+            'overdue' => __('Overdue'),
+        ];
         $tableHeaders = [
-            ['label' => new \Illuminate\Support\HtmlString('<input type="checkbox" data-admin-bulk-toggle-all class="form-check-input" aria-label="Select all tasks">'), 'width' => '36px'],
-            ['label' => 'Task'],
-            ['label' => 'Related'],
-            ['label' => 'Assignee'],
-            ['label' => 'Due'],
-            ['label' => 'Priority'],
-            ['label' => 'Status'],
-            ['label' => 'Actions', 'width' => '240px'],
+            ['label' => new \Illuminate\Support\HtmlString('<input type="checkbox" data-admin-bulk-toggle-all class="form-check-input" aria-label="'.e(__('Select all tasks')).'">'), 'width' => '36px'],
+            ['label' => __('Task')],
+            ['label' => __('Related')],
+            ['label' => __('Assignee')],
+            ['label' => __('Due')],
+            ['label' => __('Priority')],
+            ['label' => __('Status')],
+            ['label' => __('Actions'), 'width' => '240px'],
         ];
     @endphp
 
@@ -30,17 +36,17 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM</p>
-                <h1>Tasks</h1>
+                <p class="crm-admin-eyebrow">{{ __('CRM') }}</p>
+                <h1>{{ __('Tasks') }}</h1>
             </div>
 
             <div class="crm-admin-actions">
-                <x-admin-panel::button :href="route('crm.tasks.index')" variant="{{ $filters['scope'] === 'all' ? 'outline' : 'ghost' }}" icon="list" data-admin-ajax-link data-admin-ajax-target="crm-tasks-list">All</x-admin-panel::button>
-                <x-admin-panel::button :href="route('crm.tasks.my')" variant="{{ $filters['scope'] === 'my' ? 'outline' : 'ghost' }}" icon="user" data-admin-ajax-link data-admin-ajax-target="crm-tasks-list">My</x-admin-panel::button>
-                <x-admin-panel::button :href="route('crm.tasks.today')" variant="{{ $filters['scope'] === 'today' ? 'outline' : 'ghost' }}" icon="calendar" data-admin-ajax-link data-admin-ajax-target="crm-tasks-list">Today</x-admin-panel::button>
-                <x-admin-panel::button :href="route('crm.tasks.overdue')" variant="{{ $filters['scope'] === 'overdue' ? 'outline' : 'ghost' }}" icon="alert-circle" data-admin-ajax-link data-admin-ajax-target="crm-tasks-list">Overdue</x-admin-panel::button>
+                <x-admin-panel::button :href="route('crm.tasks.index')" variant="{{ $filters['scope'] === 'all' ? 'outline' : 'ghost' }}" icon="list" data-admin-ajax-link data-admin-ajax-target="crm-tasks-list">{{ __('All') }}</x-admin-panel::button>
+                <x-admin-panel::button :href="route('crm.tasks.my')" variant="{{ $filters['scope'] === 'my' ? 'outline' : 'ghost' }}" icon="user" data-admin-ajax-link data-admin-ajax-target="crm-tasks-list">{{ __('My') }}</x-admin-panel::button>
+                <x-admin-panel::button :href="route('crm.tasks.today')" variant="{{ $filters['scope'] === 'today' ? 'outline' : 'ghost' }}" icon="calendar" data-admin-ajax-link data-admin-ajax-target="crm-tasks-list">{{ __('Today') }}</x-admin-panel::button>
+                <x-admin-panel::button :href="route('crm.tasks.overdue')" variant="{{ $filters['scope'] === 'overdue' ? 'outline' : 'ghost' }}" icon="alert-circle" data-admin-ajax-link data-admin-ajax-target="crm-tasks-list">{{ __('Overdue') }}</x-admin-panel::button>
                 @can('crm.tasks.create')
-                    <x-admin-panel::button :href="route('crm.tasks.create')" icon="plus">New Task</x-admin-panel::button>
+                    <x-admin-panel::button :href="route('crm.tasks.create')" icon="plus">{{ __('New Task') }}</x-admin-panel::button>
                 @endcan
             </div>
         </header>
@@ -76,17 +82,15 @@
                             variant="danger"
                             icon="trash-2"
                             form="crm-task-bulk"
-                            data-crm-confirm="Delete selected tasks?"
+                            data-crm-confirm="{{ __('Delete selected tasks?') }}"
                         >
-                            Delete Selected
+                            {{ __('Delete Selected') }}
                         </x-admin-panel::button>
                     @endcan
                 </x-admin-panel::bulk-actions>
 
                 <x-admin-panel::card>
-                    <x-slot:header>
-                        {{ ucfirst($filters['scope']) }} Tasks
-                    </x-slot:header>
+                    <x-slot:header>{{ __(':scope Tasks', ['scope' => $scopeLabels[$filters['scope']] ?? ucfirst((string) $filters['scope'])]) }}</x-slot:header>
 
                     <x-admin-panel::table :headers="$tableHeaders">
                     @forelse($tasks as $task)
@@ -111,7 +115,7 @@
                         </td>
                         <td>
                             <strong>{{ $task->title }}</strong>
-                            <div class="crm-muted">{{ $task->description ? str($task->description)->limit(80) : 'No description' }}</div>
+                            <div class="crm-muted">{{ $task->description ? str($task->description)->limit(80) : __('No description') }}</div>
                         </td>
                         <td>{{ $relatedLabel }}</td>
                         <td>{{ $task->assignee?->name ?: '-' }}</td>
@@ -130,7 +134,7 @@
                                     @endif
                                 @endcan
                                 @can('delete', $task)
-                                    <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" form="crm-task-delete-{{ $task->id }}" data-crm-confirm="Delete this task?" />
+                                    <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" form="crm-task-delete-{{ $task->id }}" data-crm-confirm="{{ __('Delete this task?') }}" />
                                 @endcan
                             </div>
                         </td>
@@ -139,10 +143,10 @@
                     <tr>
                         <td colspan="8">
                             @include('crm::admin.partials.empty-state', [
-                                'title' => 'No tasks found.',
-                                'body' => 'Create a follow-up so the next sales action is visible.',
+                                'title' => __('No tasks found.'),
+                                'body' => __('Create a follow-up so the next sales action is visible.'),
                                 'actionUrl' => route('crm.tasks.create'),
-                                'actionLabel' => 'New Task',
+                                'actionLabel' => __('New Task'),
                                 'actionPermission' => 'crm.tasks.create',
                             ])
                         </td>

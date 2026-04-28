@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', $title)
-@section('page-title', $title)
+@section('title', __($title))
+@section('page-title', __($title))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -10,19 +10,19 @@
 @section('content')
     <section class="crm-admin-page" data-crm-module="{{ $module }}" data-crm-screen="{{ $screen }}">
         <header class="crm-admin-header">
-            <p class="crm-admin-eyebrow">CRM / {{ ucfirst($screen) }}</p>
-            <h1>{{ $title }}</h1>
+            <p class="crm-admin-eyebrow">CRM / {{ __(ucfirst($screen)) }}</p>
+            <h1>{{ __($title) }}</h1>
         </header>
 
         <x-admin-panel::card>
             <div class="crm-admin-card-body">
                 <x-admin-panel::badge variant="primary">
-                    Registered admin screen
+                    {{ __('Registered admin screen') }}
                 </x-admin-panel::badge>
 
-                <strong>{{ $title }} {{ $screen }}</strong>
+                <strong>{{ __($title) }} {{ __(ucfirst($screen)) }}</strong>
                 @if ($record)
-                    <p>Record reference: {{ $record }}</p>
+                    <p>{{ __('Record reference: :record', ['record' => $record]) }}</p>
                 @endif
             </div>
         </x-admin-panel::card>

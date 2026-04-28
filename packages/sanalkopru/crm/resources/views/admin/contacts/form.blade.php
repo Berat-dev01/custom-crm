@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', $contact->exists ? 'Edit Contact' : 'New Contact')
-@section('page-title', $contact->exists ? 'Edit Contact' : 'New Contact')
+@section('title', $contact->exists ? __('Edit Contact') : __('New Contact'))
+@section('page-title', $contact->exists ? __('Edit Contact') : __('New Contact'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -13,11 +13,11 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / Contacts</p>
-                <h1>{{ $contact->exists ? 'Edit Contact' : 'New Contact' }}</h1>
+                <p class="crm-admin-eyebrow">{{ __('CRM / Contacts') }}</p>
+                <h1>{{ $contact->exists ? __('Edit Contact') : __('New Contact') }}</h1>
             </div>
             <x-admin-panel::button :href="route('crm.contacts.index')" variant="ghost" icon="arrow-left">
-                Back
+                {{ __('Back') }}
             </x-admin-panel::button>
         </header>
 
@@ -65,10 +65,10 @@
 
                 <div class="crm-form-actions crm-span-2">
                     <x-admin-panel::button type="submit" icon="save">
-                        {{ $contact->exists ? 'Save Contact' : 'Create Contact' }}
+                        {{ $contact->exists ? __('Save Contact') : __('Create Contact') }}
                     </x-admin-panel::button>
                     <x-admin-panel::button :href="route('crm.contacts.index')" variant="ghost">
-                        Cancel
+                        {{ __('Cancel') }}
                     </x-admin-panel::button>
                 </div>
             </form>

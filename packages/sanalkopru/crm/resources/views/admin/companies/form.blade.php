@@ -1,7 +1,7 @@
 @extends('admin-panel::layouts.app')
 
-@section('title', $company->exists ? 'Edit Company' : 'New Company')
-@section('page-title', $company->exists ? 'Edit Company' : 'New Company')
+@section('title', $company->exists ? __('Edit Company') : __('New Company'))
+@section('page-title', $company->exists ? __('Edit Company') : __('New Company'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/crm/css/crm.css') }}">
@@ -13,11 +13,11 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / Companies</p>
-                <h1>{{ $company->exists ? 'Edit Company' : 'New Company' }}</h1>
+                <p class="crm-admin-eyebrow">{{ __('CRM / Companies') }}</p>
+                <h1>{{ $company->exists ? __('Edit Company') : __('New Company') }}</h1>
             </div>
             <x-admin-panel::button :href="route('crm.companies.index')" variant="ghost" icon="arrow-left">
-                Back
+                {{ __('Back') }}
             </x-admin-panel::button>
         </header>
 
@@ -68,10 +68,10 @@
 
                 <div class="crm-form-actions crm-span-2">
                     <x-admin-panel::button type="submit" icon="save">
-                        {{ $company->exists ? 'Save Company' : 'Create Company' }}
+                        {{ $company->exists ? __('Save Company') : __('Create Company') }}
                     </x-admin-panel::button>
                     <x-admin-panel::button :href="route('crm.companies.index')" variant="ghost">
-                        Cancel
+                        {{ __('Cancel') }}
                     </x-admin-panel::button>
                 </div>
             </form>

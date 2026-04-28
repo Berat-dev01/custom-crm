@@ -28,7 +28,7 @@ class AdminCrmBootstrapTest extends TestCase
         $this->actingAs($user, 'admin')
             ->get('/admin/crm')
             ->assertOk()
-            ->assertSee('Sales Dashboard');
+            ->assertSee(__('Sales Dashboard'));
     }
 
     public function test_crm_api_health_route_is_available(): void

@@ -92,9 +92,9 @@ class CrmNotificationsModuleTest extends TestCase
         $this->actingAs($this->admin, 'admin')
             ->get(route('crm.notifications.page'))
             ->assertOk()
-            ->assertSee('Notifications')
+            ->assertSee(__('Notifications'))
             ->assertSee('Page reminder')
-            ->assertSee('Mark all as read');
+            ->assertSee(__('Mark all as read'));
     }
 
     public function test_duplicate_unread_notifications_are_suppressed(): void
