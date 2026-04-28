@@ -153,7 +153,7 @@ class CrmDataTransferModuleTest extends TestCase
         $this->assertSame($stage->id, $deal->stage_id);
 
         $response = $this->actingAs($this->admin, 'admin')
-            ->get(route('crm.deals.export', ['status' => 'open']))
+            ->post(route('crm.deals.export'), ['status' => 'open'])
             ->assertOk()
             ->assertHeader('content-type', 'text/csv; charset=UTF-8');
 
@@ -173,13 +173,13 @@ class CrmDataTransferModuleTest extends TestCase
         $viewer = User::factory()->create()->assignRole('crm_viewer');
 
         $response = $this->actingAs($this->admin, 'admin')
-            ->get(route('crm.quotes.export'))
+            ->post(route('crm.quotes.export'))
             ->assertOk();
 
         $this->assertStringContainsString($quote->quote_number, $response->streamedContent());
 
         $this->actingAs($viewer, 'admin')
-            ->get(route('crm.quotes.export'))
+            ->post(route('crm.quotes.export'))
             ->assertForbidden();
     }
 

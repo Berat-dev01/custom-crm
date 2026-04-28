@@ -18,6 +18,7 @@ use Sanalkopru\Crm\Models\Contact;
 use Sanalkopru\Crm\Models\SavedFilter;
 use Sanalkopru\Crm\Models\Tag;
 use Sanalkopru\Crm\Services\Companies\CompanyQuery;
+use Sanalkopru\Crm\Support\CrmExportSchema;
 
 class CompaniesController extends Controller
 {
@@ -39,6 +40,8 @@ class CompaniesController extends Controller
                 ->orderBy('sector')
                 ->pluck('sector', 'sector')
                 ->all(),
+            'exportColumns' => CrmExportSchema::columns('companies'),
+            'exportFormats' => CrmExportSchema::formats('companies'),
         ]);
     }
 

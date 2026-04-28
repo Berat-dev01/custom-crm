@@ -66,6 +66,14 @@ class DataTransferController extends Controller
     {
         Gate::authorize("crm.{$module}.export");
 
+        $request->validate([
+            'format' => 'nullable|in:csv,excel',
+            'columns' => 'nullable|array',
+            'columns.*' => 'string',
+            'ids' => 'nullable|array',
+            'ids.*' => 'integer',
+        ]);
+
         return $transfer->streamExport($module, $request, $request->user());
     }
 

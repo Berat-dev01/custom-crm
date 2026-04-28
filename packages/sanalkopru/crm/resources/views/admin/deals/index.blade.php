@@ -51,9 +51,12 @@
                     </x-admin-panel::button>
                 @endcan
                 @can('crm.deals.export')
-                    <x-admin-panel::button :href="route('crm.deals.export', request()->query())" variant="outline" icon="download">
-                        Export CSV
-                    </x-admin-panel::button>
+                    <x-admin-panel::export-button
+                        :url="route('crm.deals.export')"
+                        :columns="$exportColumns"
+                        :formats="$exportFormats"
+                        module="deals"
+                    />
                 @endcan
                 @can('crm.deals.create')
                     <x-admin-panel::button :href="route('crm.deals.create')" icon="plus">

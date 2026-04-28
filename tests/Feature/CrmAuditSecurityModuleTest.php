@@ -141,7 +141,7 @@ class CrmAuditSecurityModuleTest extends TestCase
         Company::factory()->create(['name' => 'Audit Export Co']);
 
         $this->actingAs($this->owner, 'admin')
-            ->get(route('crm.companies.export'))
+            ->post(route('crm.companies.export'))
             ->assertOk();
 
         foreach (['crm.settings.changed', 'crm.import.started', 'crm.export.started'] as $event) {

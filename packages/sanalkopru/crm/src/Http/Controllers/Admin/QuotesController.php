@@ -29,6 +29,7 @@ use Sanalkopru\Crm\Services\Ai\AiDriverManager;
 use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 use Sanalkopru\Crm\Services\Quotes\QuotePdfRenderer;
 use Sanalkopru\Crm\Services\Quotes\QuoteQuery;
+use Sanalkopru\Crm\Support\CrmExportSchema;
 use Symfony\Component\HttpFoundation\Response;
 
 class QuotesController extends Controller
@@ -47,6 +48,8 @@ class QuotesController extends Controller
             'tags' => Tag::query()->orderBy('name')->get(['id', 'name', 'color']),
             'statuses' => $this->statuses(),
             'savedFilters' => SavedFilter::query()->forModule('quotes')->visibleTo($request->user())->orderBy('name')->get(),
+            'exportColumns' => CrmExportSchema::columns('quotes'),
+            'exportFormats' => CrmExportSchema::formats('quotes'),
         ]);
     }
 

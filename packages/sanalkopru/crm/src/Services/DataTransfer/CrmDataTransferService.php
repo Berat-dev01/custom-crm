@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\CSV\Writer as CsvWriter;
+use OpenSpout\Writer\XLSX\Writer as XlsxWriter;
 use Sanalkopru\Crm\Actions\Companies\UpsertCompany;
 use Sanalkopru\Crm\Actions\Contacts\UpsertContact;
 use Sanalkopru\Crm\Actions\Deals\UpsertDeal;
@@ -27,6 +28,7 @@ use Sanalkopru\Crm\Models\Quote;
 use Sanalkopru\Crm\Services\Audit\CrmAuditLogger;
 use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 use Sanalkopru\Crm\Services\Notifications\CrmBusinessNotifier;
+use Sanalkopru\Crm\Support\CrmExportSchema;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CrmDataTransferService
@@ -241,27 +243,55 @@ class CrmDataTransferService
     {
         $this->ensureExportModule($module);
 
-        $rows = $this->exportRows($module, $request);
-        $headers = $this->exportHeaders($module);
+        $format = $request->input('format', 'csv');
+        $requestedColumns = array_filter((array) $request->input('columns', []));
+        $ids = array_filter(array_map('intval', (array) $request->input('ids', [])));
+
+        $allColumns = CrmExportSchema::columns($module);
+
+        if ($requestedColumns) {
+            $keyIndex = array_flip(array_values($requestedColumns));
+            $columns = array_filter($allColumns, fn ($col) => isset($keyIndex[$col['key']]));
+            usort($columns, fn ($a, $b) => $keyIndex[$a['key']] <=> $keyIndex[$b['key']]);
+            $columns = array_values($columns);
+        } else {
+            $columns = array_values(array_filter($allColumns, fn ($col) => $col['default']));
+        }
+
+        $columnKeys = array_column($columns, 'key');
+        $headers = array_column($columns, 'label');
+
+        $rows = $this->exportRows($module, $request, $ids)
+            ->map(fn (array $row): array => array_map(fn (string $key): mixed => $row[$key] ?? '', $columnKeys))
+            ->all();
+
+        $ext = $format === 'excel' ? '.xlsx' : '.csv';
+        $filename = 'crm-'.$module.'-'.now()->format('Y-m-d-His').$ext;
 
         $export = CrmExport::query()->create([
             'module' => $module,
-            'filename' => 'crm-'.$module.'-'.now()->format('Y-m-d-His').'.csv',
+            'filename' => $filename,
             'status' => 'completed',
-            'total_rows' => $rows->count(),
+            'total_rows' => count($rows),
             'filters' => $request->query(),
             'started_at' => now(),
             'finished_at' => now(),
             'created_by' => $user?->getAuthIdentifier(),
         ]);
+
         $this->audit->record('crm.export.started', $export, $user, null, [
             'module' => $module,
-            'total_rows' => $rows->count(),
+            'total_rows' => count($rows),
+            'format' => $format,
         ], [
             'filters' => $request->query(),
         ]);
 
-        return $this->streamCsv('crm-'.$module.'-'.now()->format('Y-m-d-His').'.csv', $headers, $rows->all());
+        if ($format === 'excel') {
+            return $this->streamXlsx($filename, $headers, $rows);
+        }
+
+        return $this->streamCsv($filename, $headers, $rows);
     }
 
     public function downloadErrorReport(CrmImport $import): StreamedResponse
@@ -303,20 +333,6 @@ class CrmDataTransferService
     }
 
     /**
-     * @return list<string>
-     */
-    private function exportHeaders(string $module): array
-    {
-        return match ($module) {
-            'contacts' => ['full_name', 'first_name', 'last_name', 'email', 'phone', 'title', 'company', 'lifecycle_stage', 'source', 'owner', 'tags', 'last_contacted_at'],
-            'companies' => ['name', 'email', 'phone', 'website', 'tax_number', 'tax_office', 'sector', 'city', 'country', 'owner', 'tags', 'contacts_count', 'deals_count', 'quotes_count'],
-            'deals' => ['title', 'company', 'contact', 'stage', 'status', 'value', 'currency', 'probability', 'expected_close_date', 'owner', 'tags', 'lost_reason'],
-            'quotes' => ['quote_number', 'company', 'contact', 'deal', 'status', 'currency', 'subtotal', 'discount_total', 'tax_total', 'grand_total', 'valid_until', 'owner', 'tags'],
-            default => [],
-        };
-    }
-
-    /**
      * @param  list<string>  $headers
      * @param  list<array<int|string, mixed>>  $rows
      */
@@ -334,6 +350,27 @@ class CrmDataTransferService
             $writer->close();
         }, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    /**
+     * @param  list<string>  $headers
+     * @param  list<array<int|string, mixed>>  $rows
+     */
+    private function streamXlsx(string $filename, array $headers, array $rows): StreamedResponse
+    {
+        return response()->streamDownload(function () use ($headers, $rows): void {
+            $writer = new XlsxWriter;
+            $writer->openToFile('php://output');
+            $writer->addRow(Row::fromValues($headers));
+
+            foreach ($rows as $row) {
+                $writer->addRow(Row::fromValues(array_values($row)));
+            }
+
+            $writer->close();
+        }, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ]);
     }
 
@@ -564,101 +601,114 @@ class CrmDataTransferService
     }
 
     /**
-     * @return Collection<int, mixed>
+     * @param  list<int>  $ids  when non-empty, load these specific IDs instead of applying filters
+     * @return Collection<int, array<string, mixed>>
      */
-    private function exportRows(string $module, Request $request): Collection
+    private function exportRows(string $module, Request $request, array $ids = []): Collection
     {
         return match ($module) {
             'contacts' => Contact::query()
                 ->with(['company', 'owner', 'tags'])
-                ->search($request->string('search')->toString())
-                ->when($request->filled('owner_id'), fn ($query) => $query->where('owner_id', $request->integer('owner_id')))
-                ->when($request->filled('tag_id'), fn ($query) => $query->whereHas('tags', fn ($tagQuery) => $tagQuery->whereKey($request->integer('tag_id'))))
+                ->when($ids, fn ($q) => $q->whereKey($ids))
+                ->when(! $ids, fn ($q) => $q
+                    ->search($request->string('search')->toString())
+                    ->when($request->filled('owner_id'), fn ($q2) => $q2->where('owner_id', $request->integer('owner_id')))
+                    ->when($request->filled('tag_id'), fn ($q2) => $q2->whereHas('tags', fn ($tq) => $tq->whereKey($request->integer('tag_id'))))
+                )
                 ->orderBy('full_name')
                 ->get()
-                ->map(fn (Contact $contact): array => [
-                    $contact->full_name,
-                    $contact->first_name,
-                    $contact->last_name,
-                    $contact->email,
-                    $contact->phone,
-                    $contact->title,
-                    $contact->company?->name,
-                    $contact->lifecycle_stage,
-                    $contact->source,
-                    $contact->owner?->name,
-                    $contact->tags->pluck('name')->implode('|'),
-                    $contact->last_contacted_at?->toDateTimeString(),
+                ->map(fn (Contact $c): array => [
+                    'full_name' => $c->full_name,
+                    'first_name' => $c->first_name,
+                    'last_name' => $c->last_name,
+                    'email' => $c->email,
+                    'phone' => $c->phone,
+                    'title' => $c->title,
+                    'company' => $c->company?->name,
+                    'lifecycle_stage' => $c->lifecycle_stage,
+                    'source' => $c->source,
+                    'owner' => $c->owner?->name,
+                    'tags' => $c->tags->pluck('name')->implode('|'),
+                    'last_contacted_at' => $c->last_contacted_at?->toDateTimeString(),
                 ]),
             'companies' => Company::query()
                 ->with(['owner', 'tags'])
                 ->withCount(['contacts', 'deals', 'quotes'])
-                ->search($request->string('search')->toString())
-                ->when($request->filled('sector'), fn ($query) => $query->where('sector', $request->string('sector')->toString()))
-                ->when($request->filled('owner_id'), fn ($query) => $query->where('owner_id', $request->integer('owner_id')))
-                ->when($request->filled('tag_id'), fn ($query) => $query->whereHas('tags', fn ($tagQuery) => $tagQuery->whereKey($request->integer('tag_id'))))
+                ->when($ids, fn ($q) => $q->whereKey($ids))
+                ->when(! $ids, fn ($q) => $q
+                    ->search($request->string('search')->toString())
+                    ->when($request->filled('sector'), fn ($q2) => $q2->where('sector', $request->string('sector')->toString()))
+                    ->when($request->filled('owner_id'), fn ($q2) => $q2->where('owner_id', $request->integer('owner_id')))
+                    ->when($request->filled('tag_id'), fn ($q2) => $q2->whereHas('tags', fn ($tq) => $tq->whereKey($request->integer('tag_id'))))
+                )
                 ->orderBy('name')
                 ->get()
-                ->map(fn (Company $company): array => [
-                    $company->name,
-                    $company->email,
-                    $company->phone,
-                    $company->website,
-                    $company->tax_number,
-                    $company->tax_office,
-                    $company->sector,
-                    $company->city,
-                    $company->country,
-                    $company->owner?->name,
-                    $company->tags->pluck('name')->implode('|'),
-                    $company->contacts_count,
-                    $company->deals_count,
-                    $company->quotes_count,
+                ->map(fn (Company $c): array => [
+                    'name' => $c->name,
+                    'email' => $c->email,
+                    'phone' => $c->phone,
+                    'website' => $c->website,
+                    'tax_number' => $c->tax_number,
+                    'tax_office' => $c->tax_office,
+                    'sector' => $c->sector,
+                    'city' => $c->city,
+                    'country' => $c->country,
+                    'owner' => $c->owner?->name,
+                    'tags' => $c->tags->pluck('name')->implode('|'),
+                    'contacts_count' => $c->contacts_count,
+                    'deals_count' => $c->deals_count,
+                    'quotes_count' => $c->quotes_count,
                 ]),
             'deals' => Deal::query()
                 ->with(['company', 'contact', 'stage', 'owner', 'tags'])
-                ->when($request->filled('search'), fn ($query) => $query->where('title', 'like', '%'.$request->string('search')->toString().'%'))
-                ->when($request->filled('status'), fn ($query) => $query->where('status', $request->string('status')->toString()))
-                ->when($request->filled('owner_id'), fn ($query) => $query->where('owner_id', $request->integer('owner_id')))
-                ->when($request->filled('tag_id'), fn ($query) => $query->whereHas('tags', fn ($tagQuery) => $tagQuery->whereKey($request->integer('tag_id'))))
+                ->when($ids, fn ($q) => $q->whereKey($ids))
+                ->when(! $ids, fn ($q) => $q
+                    ->when($request->filled('search'), fn ($q2) => $q2->where('title', 'like', '%'.$request->string('search')->toString().'%'))
+                    ->when($request->filled('status'), fn ($q2) => $q2->where('status', $request->string('status')->toString()))
+                    ->when($request->filled('owner_id'), fn ($q2) => $q2->where('owner_id', $request->integer('owner_id')))
+                    ->when($request->filled('tag_id'), fn ($q2) => $q2->whereHas('tags', fn ($tq) => $tq->whereKey($request->integer('tag_id'))))
+                )
                 ->orderByDesc('updated_at')
                 ->get()
-                ->map(fn (Deal $deal): array => [
-                    $deal->title,
-                    $deal->company?->name,
-                    $deal->contact?->full_name,
-                    $deal->stage?->name,
-                    $deal->status,
-                    $deal->value,
-                    $deal->currency,
-                    $deal->probability,
-                    $deal->expected_close_date?->toDateString(),
-                    $deal->owner?->name,
-                    $deal->tags->pluck('name')->implode('|'),
-                    $deal->lost_reason,
+                ->map(fn (Deal $d): array => [
+                    'title' => $d->title,
+                    'company' => $d->company?->name,
+                    'contact' => $d->contact?->full_name,
+                    'stage' => $d->stage?->name,
+                    'status' => $d->status,
+                    'value' => $d->value,
+                    'currency' => $d->currency,
+                    'probability' => $d->probability,
+                    'expected_close_date' => $d->expected_close_date?->toDateString(),
+                    'owner' => $d->owner?->name,
+                    'tags' => $d->tags->pluck('name')->implode('|'),
+                    'lost_reason' => $d->lost_reason,
                 ]),
             'quotes' => Quote::query()
                 ->with(['company', 'contact', 'deal', 'owner', 'tags'])
-                ->when($request->filled('search'), fn ($query) => $query->where('quote_number', 'like', '%'.$request->string('search')->toString().'%'))
-                ->when($request->filled('status'), fn ($query) => $query->where('status', $request->string('status')->toString()))
-                ->when($request->filled('owner_id'), fn ($query) => $query->where('owner_id', $request->integer('owner_id')))
-                ->when($request->filled('tag_id'), fn ($query) => $query->whereHas('tags', fn ($tagQuery) => $tagQuery->whereKey($request->integer('tag_id'))))
+                ->when($ids, fn ($q) => $q->whereKey($ids))
+                ->when(! $ids, fn ($q) => $q
+                    ->when($request->filled('search'), fn ($q2) => $q2->where('quote_number', 'like', '%'.$request->string('search')->toString().'%'))
+                    ->when($request->filled('status'), fn ($q2) => $q2->where('status', $request->string('status')->toString()))
+                    ->when($request->filled('owner_id'), fn ($q2) => $q2->where('owner_id', $request->integer('owner_id')))
+                    ->when($request->filled('tag_id'), fn ($q2) => $q2->whereHas('tags', fn ($tq) => $tq->whereKey($request->integer('tag_id'))))
+                )
                 ->orderByDesc('updated_at')
                 ->get()
-                ->map(fn (Quote $quote): array => [
-                    $quote->quote_number,
-                    $quote->company?->name,
-                    $quote->contact?->full_name,
-                    $quote->deal?->title,
-                    $quote->status,
-                    $quote->currency,
-                    $quote->subtotal,
-                    $quote->discount_total,
-                    $quote->tax_total,
-                    $quote->grand_total,
-                    $quote->valid_until?->toDateString(),
-                    $quote->owner?->name,
-                    $quote->tags->pluck('name')->implode('|'),
+                ->map(fn (Quote $q): array => [
+                    'quote_number' => $q->quote_number,
+                    'company' => $q->company?->name,
+                    'contact' => $q->contact?->full_name,
+                    'deal' => $q->deal?->title,
+                    'status' => $q->status,
+                    'currency' => $q->currency,
+                    'subtotal' => $q->subtotal,
+                    'discount_total' => $q->discount_total,
+                    'tax_total' => $q->tax_total,
+                    'grand_total' => $q->grand_total,
+                    'valid_until' => $q->valid_until?->toDateString(),
+                    'owner' => $q->owner?->name,
+                    'tags' => $q->tags->pluck('name')->implode('|'),
                 ]),
             default => collect(),
         };

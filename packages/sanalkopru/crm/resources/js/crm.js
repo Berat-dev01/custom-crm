@@ -132,6 +132,12 @@
         }
 
         document.querySelectorAll('[data-crm-kanban-list]').forEach((list) => {
+            if (list.dataset.crmKanbanReady === '1') {
+                return;
+            }
+
+            list.dataset.crmKanbanReady = '1';
+
             window.Sortable.create(list, {
                 group: 'crm-deals',
                 animation: 150,
@@ -745,6 +751,7 @@
             initializeDashboardCardPagination();
             animateDashboardBars();
             animateDashboardNumbers();
+            initializeDealKanban();
         };
 
         window.AdminPanel._crmDashboardPatched = true;

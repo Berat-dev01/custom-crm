@@ -24,6 +24,7 @@ use Sanalkopru\Crm\Services\Audit\CrmAuditLogger;
 use Sanalkopru\Crm\Services\Contacts\ContactCsvExporter;
 use Sanalkopru\Crm\Services\Contacts\ContactImportService;
 use Sanalkopru\Crm\Services\Contacts\ContactQuery;
+use Sanalkopru\Crm\Support\CrmExportSchema;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ContactsController extends Controller
@@ -45,6 +46,8 @@ class ContactsController extends Controller
             'tags' => Tag::query()->orderBy('name')->get(['id', 'name', 'color']),
             'savedFilters' => SavedFilter::query()->forModule('contacts')->visibleTo($request->user())->orderBy('name')->get(),
             'lifecycleStages' => $this->lifecycleStages(),
+            'exportColumns' => CrmExportSchema::columns('contacts'),
+            'exportFormats' => CrmExportSchema::formats('contacts'),
         ]);
     }
 

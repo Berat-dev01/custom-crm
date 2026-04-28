@@ -281,6 +281,18 @@
 - Dogrulama: Full test suite Docker icinde basarili: `162 passed (1194 assertions)`.
 - Dogrulama: `git diff --check` temiz.
 
+## Pagination Per-Page Select Fix, Bildirim Dropdown ve Quick Actions Onarim
+
+- Baslangic: Listeleme sayfalarinda sayfa basi kayit sayisi (per-page) select'i degistirilince calismiyordu. Bildirim dropdown'i acildiginda her seferinde loader flash gozlemlendi, bildirimler gorunmuyordu. Quick actions (bulk action bar) ve headerdaki "select all" checkbox bozuldu.
+- Tespit 1: HTML spec, ic ice `<form>` yasaklar; tarayici pagination `<form>`'u bulk `<form>`'un disina tasir, AJAX region `querySelectorAll('[data-admin-ajax-pagination-form]')` pagination formu bulamaz.
+- Tespit 2: `setNotificationState('list')` fonksiyonu `list.hidden = false` setlemiyordu; bildirimler daima gizli kaliyordu.
+- Tespit 3: Bell toggle click her zaman `silent: false` gonderiyordu; onceden yuklu item olsa bile loader flash gostererek kapaniyordu.
+- Uygulama: `pagination.blade.php` icindeki `<form>` → `<div data-admin-ajax-pagination-form data-action="...">` olarak degistirildi; nested form sorunu kokten cozuldu, bulk form yapisi bozulmadi.
+- Uygulama: `admin.js` - `submitPagination()` fonksiyonu eklendi; div ya da form olmasindan bagimsiz `data-action` ve `querySelectorAll('input[name], select[name]')` ile calisir.
+- Uygulama: `admin.js` - `setNotificationState` icinde `list.hidden = state !== 'list'` simetrik hale getirildi.
+- Uygulama: `admin.js` - Bell toggle click; `list.children.length > 0` ise `silent: true` gecirilir, loader flash engellendi.
+- Dogrulama: Butun 6 listeleme sayfasi (contacts, companies, deals, tasks, quotes, activities) orijinal bulk form yapisina geri donuruldu; quick actions ve select-all checkbox calisir durumda.
+
 ## Notification Hidden State Fix ve Dashboard Yukseklik Dengelemesi
 
 - Baslangic: Kullanici yeni screenshot ile dropdown API cevabi dogru olmasina ragmen loading/error/empty state'lerin ayni anda gorunur kaldigini bildirdi; bu sira dashboard kartlarinda desktop gorunumde gereksiz dikey uzama ve bosluk problemi tekrar teyit edildi.
@@ -293,3 +305,16 @@
 - Dogrulama: Browser oturumunda seeded kullanici ile login yapilarak bell dropdown canli olarak kontrol edildi; `Loading` ve `Notifications could not be loaded` state'leri gorunmez, `All caught up` ve empty state tutarli.
 - Dogrulama: Hedefli testler basarili: `CrmDashboardModuleTest`, `CrmNotificationsModuleTest` => `12 passed (59 assertions)`.
 - Dogrulama: `git diff --check` temiz.
+
+
+## Export Modulu - Mimari Karar ve Plan (Adim 29)
+
+- Baslangic: Mevcut export sistemi sadece CSV, sabit kolonlar, direkt GET request ile indirme. Kullanici: format secimi, kolon secimi (drag-to-reorder), bulk selection persistence ve export modal istedi.
+- Karar: `admin-panel` paketi generic UI altyapisini (export-button component, modal JS/CSS, selectedIds state, drag-to-reorder) alir. `crm` paketi modul bazli kolon tanimlari, allowed_formats, Excel writer ve backend logic'i alir.
+- Karar: "Hangi veri export edilecek?" icin hybrid yaklasim: secili row varsa onlar (IDs POST), yoksa aktif filtreyle tum kayitlar. "Select all N results" butonu ile tarayici-bellek siniri asiliyor.
+- Karar: Excel formati icin openspout/openspout kullaniyor; zaten yuklu, XLSX writer destekliyor.
+- Karar: Drag-to-reorder icin vanilla HTML5 Drag API; dis kutuphane eklenmeyecek.
+- Plan Adim 1: `selectedIds` JS state — AJAX pagination boyunca checkbox persist, reload'da restore.
+- Plan Adim 2: Export modal UI (admin-panel) — format picker, column picker + drag-to-reorder, scope satiri.
+- Plan Adim 3: Backend upgrade (crm) — exportColumns(), allowed_formats, XLSX writer, POST route.
+- Plan Adim 4: Contacts, Companies, Deals, Quotes listeleme sayfalarinda entegrasyon.

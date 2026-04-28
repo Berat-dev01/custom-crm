@@ -180,7 +180,7 @@ class CrmContactsModuleTest extends TestCase
         $this->assertTrue($contact->refresh()->tags->contains($tag));
 
         $response = $this->actingAs($this->admin, 'admin')
-            ->get(route('crm.contacts.export'))
+            ->post(route('crm.contacts.export'))
             ->assertOk()
             ->assertHeader('content-type', 'text/csv; charset=UTF-8');
 

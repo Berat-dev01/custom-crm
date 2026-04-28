@@ -30,6 +30,7 @@ use Sanalkopru\Crm\Models\Tag;
 use Sanalkopru\Crm\Services\Ai\AiDriverManager;
 use Sanalkopru\Crm\Services\Configuration\MoneySettings;
 use Sanalkopru\Crm\Services\Deals\DealQuery;
+use Sanalkopru\Crm\Support\CrmExportSchema;
 use Sanalkopru\Crm\Support\CrmFormatter;
 
 class DealsController extends Controller
@@ -60,6 +61,8 @@ class DealsController extends Controller
             'tags' => Tag::query()->orderBy('name')->get(['id', 'name', 'color']),
             'savedFilters' => SavedFilter::query()->forModule('deals')->visibleTo($request->user())->orderBy('name')->get(),
             'statuses' => $this->statuses(),
+            'exportColumns' => CrmExportSchema::columns('deals'),
+            'exportFormats' => CrmExportSchema::formats('deals'),
         ]);
     }
 

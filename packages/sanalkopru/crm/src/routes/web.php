@@ -36,7 +36,7 @@ Route::middleware(config('crm.routes.middleware', ['web']))
 
                 Route::get('imports/{import:public_id}/errors', [DataTransferController::class, 'errors'])->name('imports.errors');
 
-                Route::get('contacts/export', [DataTransferController::class, 'export'])->defaults('module', 'contacts')->name('contacts.export');
+                Route::post('contacts/export', [DataTransferController::class, 'export'])->defaults('module', 'contacts')->name('contacts.export');
                 Route::get('contacts/import', [DataTransferController::class, 'importForm'])->defaults('module', 'contacts')->name('contacts.import');
                 Route::get('contacts/import/template', [DataTransferController::class, 'template'])->defaults('module', 'contacts')->name('contacts.template');
                 Route::post('contacts/import/preview', [DataTransferController::class, 'preview'])->defaults('module', 'contacts')->name('contacts.import.preview');
@@ -45,7 +45,7 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::post('contacts/bulk-tags', [ContactsController::class, 'bulkTags'])->name('contacts.bulk-tags');
                 Route::post('contacts/{contact}/notes', [ContactsController::class, 'storeNote'])->name('contacts.notes.store');
                 Route::resource('contacts', ContactsController::class);
-                Route::get('companies/export', [DataTransferController::class, 'export'])->defaults('module', 'companies')->name('companies.export');
+                Route::post('companies/export', [DataTransferController::class, 'export'])->defaults('module', 'companies')->name('companies.export');
                 Route::get('companies/import', [DataTransferController::class, 'importForm'])->defaults('module', 'companies')->name('companies.import');
                 Route::get('companies/import/template', [DataTransferController::class, 'template'])->defaults('module', 'companies')->name('companies.template');
                 Route::post('companies/import/preview', [DataTransferController::class, 'preview'])->defaults('module', 'companies')->name('companies.import.preview');
@@ -62,7 +62,7 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::patch('deals/{deal}/close-won', [DealsController::class, 'closeWon'])->name('deals.close-won');
                 Route::patch('deals/{deal}/close-lost', [DealsController::class, 'closeLost'])->name('deals.close-lost');
                 Route::patch('deals/{deal}/move', [DealsController::class, 'move'])->name('deals.move');
-                Route::get('deals/export', [DataTransferController::class, 'export'])->defaults('module', 'deals')->name('deals.export');
+                Route::post('deals/export', [DataTransferController::class, 'export'])->defaults('module', 'deals')->name('deals.export');
                 Route::get('deals/import', [DataTransferController::class, 'importForm'])->defaults('module', 'deals')->name('deals.import');
                 Route::get('deals/import/template', [DataTransferController::class, 'template'])->defaults('module', 'deals')->name('deals.template');
                 Route::post('deals/import/preview', [DataTransferController::class, 'preview'])->defaults('module', 'deals')->name('deals.import.preview');
@@ -83,7 +83,7 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::get('quotes/{quote}/preview', [QuotesController::class, 'preview'])->name('quotes.preview');
                 Route::get('quotes/{quote}/download', [QuotesController::class, 'download'])->name('quotes.download');
                 Route::delete('quotes/bulk-delete', [QuotesController::class, 'bulkDelete'])->name('quotes.bulk-delete');
-                Route::get('quotes/export', [DataTransferController::class, 'export'])->defaults('module', 'quotes')->name('quotes.export');
+                Route::post('quotes/export', [DataTransferController::class, 'export'])->defaults('module', 'quotes')->name('quotes.export');
                 Route::resource('quotes', QuotesController::class);
                 Route::delete('activities/bulk-delete', [ActivitiesController::class, 'bulkDelete'])->name('activities.bulk-delete');
                 Route::resource('activities', ActivitiesController::class);

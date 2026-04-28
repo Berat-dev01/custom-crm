@@ -43,9 +43,12 @@
                     </x-admin-panel::button>
                 @endcan
                 @can('crm.contacts.export')
-                    <x-admin-panel::button :href="route('crm.contacts.export', request()->query())" variant="outline" icon="download">
-                        Export CSV
-                    </x-admin-panel::button>
+                    <x-admin-panel::export-button
+                        :url="route('crm.contacts.export')"
+                        :columns="$exportColumns"
+                        :formats="$exportFormats"
+                        module="contacts"
+                    />
                 @endcan
                 @can('crm.contacts.create')
                     <x-admin-panel::button :href="route('crm.contacts.create')" icon="plus">
