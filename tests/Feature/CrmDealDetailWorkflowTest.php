@@ -32,21 +32,21 @@ class CrmDealDetailWorkflowTest extends TestCase
         $stage = DealStage::factory()->create(['name' => 'Proposal', 'slug' => 'proposal', 'is_won' => false, 'is_lost' => false]);
         $deal = Deal::factory()->create(['stage_id' => $stage->id, 'owner_id' => $this->admin->id, 'title' => 'Workspace Deal']);
         CrmTask::factory()->create([
-            'taskable_type' => $deal::class,
+            'taskable_type' => $deal->getMorphClass(),
             'taskable_id' => $deal->id,
             'title' => 'Next follow up',
             'due_at' => now()->addDay(),
             'completed_at' => null,
         ]);
         Activity::factory()->create([
-            'activityable_type' => $deal::class,
+            'activityable_type' => $deal->getMorphClass(),
             'activityable_id' => $deal->id,
             'type' => 'note',
             'subject' => 'Important note',
             'occurred_at' => now(),
         ]);
         Activity::factory()->create([
-            'activityable_type' => $deal::class,
+            'activityable_type' => $deal->getMorphClass(),
             'activityable_id' => $deal->id,
             'type' => 'call',
             'subject' => 'Discovery call',
@@ -88,7 +88,7 @@ class CrmDealDetailWorkflowTest extends TestCase
             ->assertRedirect(route('crm.deals.show', $deal));
 
         $this->assertDatabaseHas('tasks', [
-            'taskable_type' => $deal::class,
+            'taskable_type' => $deal->getMorphClass(),
             'taskable_id' => $deal->id,
             'title' => 'Prepare ROI note',
             'priority' => 'high',
@@ -120,7 +120,7 @@ class CrmDealDetailWorkflowTest extends TestCase
             ->assertRedirect(route('crm.deals.show', $deal));
 
         $this->assertDatabaseHas('activities', [
-            'activityable_type' => $deal::class,
+            'activityable_type' => $deal->getMorphClass(),
             'activityable_id' => $deal->id,
             'type' => 'meeting',
             'subject' => 'Pricing meeting',

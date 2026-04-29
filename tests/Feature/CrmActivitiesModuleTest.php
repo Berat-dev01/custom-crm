@@ -33,7 +33,7 @@ class CrmActivitiesModuleTest extends TestCase
     {
         $company = Company::factory()->create(['name' => 'Filtered Company']);
         Activity::factory()->create([
-            'activityable_type' => $company::class,
+            'activityable_type' => $company->getMorphClass(),
             'activityable_id' => $company->id,
             'type' => 'call',
             'subject' => 'Procurement call',
@@ -41,7 +41,7 @@ class CrmActivitiesModuleTest extends TestCase
             'occurred_at' => '2026-05-10 10:00:00',
         ]);
         Activity::factory()->create([
-            'activityable_type' => Contact::factory()->create()::class,
+            'activityable_type' => (new \App\Crm\Models\Contact)->getMorphClass(),
             'activityable_id' => Contact::factory()->create()->id,
             'type' => 'email',
             'subject' => 'Unrelated email',
@@ -124,7 +124,7 @@ class CrmActivitiesModuleTest extends TestCase
 
         $contact = Contact::query()->where('full_name', 'Event Contact')->firstOrFail();
         $this->assertDatabaseHas('activities', [
-            'activityable_type' => $contact::class,
+            'activityable_type' => $contact->getMorphClass(),
             'activityable_id' => $contact->id,
             'type' => 'system',
             'subject' => 'Contact created',
@@ -139,14 +139,14 @@ class CrmActivitiesModuleTest extends TestCase
             ->assertOk();
 
         $this->assertDatabaseHas('activities', [
-            'activityable_type' => $deal::class,
+            'activityable_type' => $deal->getMorphClass(),
             'activityable_id' => $deal->id,
             'type' => 'deal_moved',
             'subject' => 'Deal moved',
         ]);
 
         $task = CrmTask::factory()->create([
-            'taskable_type' => $deal::class,
+            'taskable_type' => $deal->getMorphClass(),
             'taskable_id' => $deal->id,
             'status' => 'open',
             'completed_at' => null,
@@ -156,7 +156,7 @@ class CrmActivitiesModuleTest extends TestCase
             ->assertRedirect();
 
         $this->assertDatabaseHas('activities', [
-            'activityable_type' => $deal::class,
+            'activityable_type' => $deal->getMorphClass(),
             'activityable_id' => $deal->id,
             'type' => 'task_completed',
             'subject' => 'Task completed',
@@ -166,7 +166,7 @@ class CrmActivitiesModuleTest extends TestCase
         event(new QuoteSent($quote->load('deal'), $this->admin));
 
         $this->assertDatabaseHas('activities', [
-            'activityable_type' => $deal::class,
+            'activityable_type' => $deal->getMorphClass(),
             'activityable_id' => $deal->id,
             'type' => 'quote_sent',
             'subject' => 'Quote sent',
@@ -178,7 +178,7 @@ class CrmActivitiesModuleTest extends TestCase
         $viewer = User::factory()->create()->assignRole('crm_viewer');
         $deal = Deal::factory()->create(['stage_id' => DealStage::factory()->create(['is_won' => false, 'is_lost' => false])->id]);
         $activity = Activity::factory()->create([
-            'activityable_type' => $deal::class,
+            'activityable_type' => $deal->getMorphClass(),
             'activityable_id' => $deal->id,
         ]);
 
@@ -206,7 +206,7 @@ class CrmActivitiesModuleTest extends TestCase
         Activity::factory()
             ->count(30)
             ->sequence(fn ($sequence) => [
-                'activityable_type' => $contact::class,
+                'activityable_type' => $contact->getMorphClass(),
                 'activityable_id' => $contact->id,
                 'user_id' => $this->admin->id,
                 'subject' => 'Paged Activity #'.str_pad((string) ($sequence->index + 1), 3, '0', STR_PAD_LEFT),

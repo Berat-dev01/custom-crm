@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Crm\Console\SeedCrmDemoCommand;
 use App\Crm\Console\SeedCrmPerformanceCommand;
 use App\Crm\Console\SendTaskRemindersCommand;
@@ -73,6 +74,17 @@ class CrmServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Relation::morphMap([
+            'contact'    => \App\Crm\Models\Contact::class,
+            'company'    => \App\Crm\Models\Company::class,
+            'deal'       => \App\Crm\Models\Deal::class,
+            'quote'      => \App\Crm\Models\Quote::class,
+            'task'       => \App\Crm\Models\Task::class,
+            'activity'   => \App\Crm\Models\Activity::class,
+            'tag'        => \App\Crm\Models\Tag::class,
+            'crm_export' => \App\Crm\Models\CrmExport::class,
+        ]);
+
         $this->loadTranslationsFrom(lang_path('crm'), 'crm');
         $this->loadViewsFrom(resource_path('views/crm'), 'crm');
 

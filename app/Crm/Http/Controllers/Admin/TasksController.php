@@ -182,12 +182,6 @@ class TasksController extends Controller
 
     private function selectedTaskableType(Task $task): ?string
     {
-        return match ($task->taskable_type) {
-            Contact::class => 'contact',
-            Company::class => 'company',
-            Deal::class => 'deal',
-            Quote::class => 'quote',
-            default => null,
-        };
+        return $task->taskable_type;
     }
 }

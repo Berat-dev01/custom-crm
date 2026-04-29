@@ -118,7 +118,7 @@ class CrmContactsModuleTest extends TestCase
         Deal::factory()->create(['contact_id' => $contact->id, 'value' => 12500, 'status' => 'open']);
         Quote::factory()->create(['contact_id' => $contact->id, 'quote_number' => 'CRM-999001']);
         CrmTask::factory()->create([
-            'taskable_type' => $contact::class,
+            'taskable_type' => $contact->getMorphClass(),
             'taskable_id' => $contact->id,
             'title' => 'Call customer',
             'completed_at' => null,
@@ -137,7 +137,7 @@ class CrmContactsModuleTest extends TestCase
             ->assertRedirect(route('crm.contacts.show', $contact));
 
         $this->assertDatabaseHas('activities', [
-            'activityable_type' => $contact::class,
+            'activityable_type' => $contact->getMorphClass(),
             'activityable_id' => $contact->id,
             'body' => 'Customer prefers Friday calls.',
         ]);

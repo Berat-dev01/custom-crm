@@ -50,7 +50,7 @@ class ActivityLogger
     {
         $payload['subject'] = $this->sanitize($payload['subject'] ?? 'Activity');
         $payload['body'] = isset($payload['body']) ? $this->sanitize($payload['body']) : null;
-        $payload['activityable_type'] = $activityable::class;
+        $payload['activityable_type'] = $activityable->getMorphClass();
         $payload['activityable_id'] = $activityable->getKey();
 
         return Activity::query()->create($payload);

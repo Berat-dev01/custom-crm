@@ -152,12 +152,6 @@ class ActivitiesController extends Controller
 
     private function selectedActivityableType(Activity $activity): ?string
     {
-        return match ($activity->activityable_type) {
-            Contact::class => 'contact',
-            Company::class => 'company',
-            Deal::class => 'deal',
-            Quote::class => 'quote',
-            default => null,
-        };
+        return $activity->activityable_type;
     }
 }

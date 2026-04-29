@@ -42,12 +42,12 @@ class CrmModelLayerTest extends TestCase
         ]);
         $item = QuoteItem::factory()->create(['quote_id' => $quote->id]);
         $task = CrmTask::factory()->create([
-            'taskable_type' => $deal::class,
+            'taskable_type' => $deal->getMorphClass(),
             'taskable_id' => $deal->id,
             'assigned_to' => $owner->id,
         ]);
         $activity = Activity::factory()->create([
-            'activityable_type' => $contact::class,
+            'activityable_type' => $contact->getMorphClass(),
             'activityable_id' => $contact->id,
             'user_id' => $owner->id,
         ]);

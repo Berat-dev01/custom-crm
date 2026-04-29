@@ -18,7 +18,7 @@ trait BuildsTaskPayload
         $taskableType = $validated['taskable_type'] ?? null;
         $taskableId = $validated['taskable_id'] ?? null;
 
-        $validated['taskable_type'] = $taskableType ? $this->taskableClass($taskableType) : null;
+        $validated['taskable_type'] = $taskableType ?: null;
         $validated['taskable_id'] = $taskableType ? $taskableId : null;
 
         return $validated;

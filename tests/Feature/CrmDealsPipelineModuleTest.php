@@ -87,14 +87,14 @@ class CrmDealsPipelineModuleTest extends TestCase
             'probability' => 50,
         ]);
         CrmTask::factory()->create([
-            'taskable_type' => $deal::class,
+            'taskable_type' => $deal->getMorphClass(),
             'taskable_id' => $deal->id,
             'title' => 'Send proposal',
             'completed_at' => null,
         ]);
         Quote::factory()->create(['deal_id' => $deal->id, 'quote_number' => 'CRM-DEAL-1']);
         Activity::factory()->create([
-            'activityable_type' => $deal::class,
+            'activityable_type' => $deal->getMorphClass(),
             'activityable_id' => $deal->id,
             'subject' => 'Discovery call',
         ]);

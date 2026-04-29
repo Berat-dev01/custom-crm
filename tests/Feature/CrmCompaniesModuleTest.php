@@ -121,13 +121,13 @@ class CrmCompaniesModuleTest extends TestCase
         Deal::factory()->create(['company_id' => $company->id, 'contact_id' => $attached->id, 'value' => 45000, 'status' => 'open']);
         Quote::factory()->create(['company_id' => $company->id, 'contact_id' => $attached->id, 'quote_number' => 'CRM-COMP-1']);
         CrmTask::factory()->create([
-            'taskable_type' => $company::class,
+            'taskable_type' => $company->getMorphClass(),
             'taskable_id' => $company->id,
             'title' => 'Review account',
             'completed_at' => null,
         ]);
         Activity::factory()->create([
-            'activityable_type' => $company::class,
+            'activityable_type' => $company->getMorphClass(),
             'activityable_id' => $company->id,
             'subject' => 'Account updated',
         ]);

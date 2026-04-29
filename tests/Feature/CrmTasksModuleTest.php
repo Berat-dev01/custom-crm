@@ -103,7 +103,7 @@ class CrmTasksModuleTest extends TestCase
 
         $response->assertRedirect(route('crm.tasks.show', $task));
         $this->assertSame($company->id, $task->taskable_id);
-        $this->assertSame($company::class, $task->taskable_type);
+        $this->assertSame($company->getMorphClass(), $task->taskable_type);
 
         $this->actingAs($this->admin, 'admin')
             ->put(route('crm.tasks.update', $task), [
@@ -143,7 +143,7 @@ class CrmTasksModuleTest extends TestCase
         $deal = Deal::factory()->create(['title' => 'Related Deal', 'stage_id' => $stage->id]);
         $task = CrmTask::factory()->create([
             'title' => 'Deal follow up',
-            'taskable_type' => $deal::class,
+            'taskable_type' => $deal->getMorphClass(),
             'taskable_id' => $deal->id,
             'assigned_to' => $this->admin->id,
         ]);

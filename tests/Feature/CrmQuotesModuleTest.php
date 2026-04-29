@@ -176,7 +176,7 @@ class CrmQuotesModuleTest extends TestCase
             fn (QuoteStatusChangedNotification $notification): bool => $notification->quote->is($quote) && $notification->status === 'sent'
         );
         $this->assertDatabaseHas('activities', [
-            'activityable_type' => $deal::class,
+            'activityable_type' => $deal->getMorphClass(),
             'activityable_id' => $deal->id,
             'type' => 'quote_sent',
         ]);

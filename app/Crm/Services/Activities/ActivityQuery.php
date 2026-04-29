@@ -50,7 +50,7 @@ class ActivityQuery
                 });
             })
             ->when($request->filled('type'), fn (Builder $query) => $query->where('type', $request->string('type')->toString()))
-            ->when($request->filled('activityable_type'), fn (Builder $query) => $query->where('activityable_type', $this->activityableClass($request->string('activityable_type')->toString())))
+            ->when($request->filled('activityable_type'), fn (Builder $query) => $query->where('activityable_type', $request->string('activityable_type')->toString()))
             ->when($request->filled('user_id'), fn (Builder $query) => $query->where('user_id', $request->integer('user_id')))
             ->when($request->filled('occurred_from'), fn (Builder $query) => $query->whereDate('occurred_at', '>=', $request->date('occurred_from')->toDateString()))
             ->when($request->filled('occurred_to'), fn (Builder $query) => $query->whereDate('occurred_at', '<=', $request->date('occurred_to')->toDateString()));
