@@ -1,22 +1,22 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Sanalkopru\Crm\Http\Controllers\Admin\ActivitiesController;
-use Sanalkopru\Crm\Http\Controllers\Admin\AiController;
-use Sanalkopru\Crm\Http\Controllers\Admin\CompaniesController;
-use Sanalkopru\Crm\Http\Controllers\Admin\ContactsController;
-use Sanalkopru\Crm\Http\Controllers\Admin\DataTransferController;
-use Sanalkopru\Crm\Http\Controllers\Admin\DealsController;
-use Sanalkopru\Crm\Http\Controllers\Admin\DealStagesController;
-use Sanalkopru\Crm\Http\Controllers\Admin\NotificationsController;
-use Sanalkopru\Crm\Http\Controllers\Admin\QuotesController;
-use Sanalkopru\Crm\Http\Controllers\Admin\SavedFiltersController;
-use Sanalkopru\Crm\Http\Controllers\Admin\SearchController;
-use Sanalkopru\Crm\Http\Controllers\Admin\SettingsController;
-use Sanalkopru\Crm\Http\Controllers\Admin\TagsController;
-use Sanalkopru\Crm\Http\Controllers\Admin\TasksController;
-use Sanalkopru\Crm\Http\Controllers\Admin\UsersController;
-use Sanalkopru\Crm\Http\Controllers\DashboardController;
+use App\Crm\Http\Controllers\Admin\ActivitiesController;
+use App\Crm\Http\Controllers\Admin\AiController;
+use App\Crm\Http\Controllers\Admin\CompaniesController;
+use App\Crm\Http\Controllers\Admin\ContactsController;
+use App\Crm\Http\Controllers\Admin\DataTransferController;
+use App\Crm\Http\Controllers\Admin\DealsController;
+use App\Crm\Http\Controllers\Admin\DealStagesController;
+use App\Crm\Http\Controllers\Admin\NotificationsController;
+use App\Crm\Http\Controllers\Admin\QuotesController;
+use App\Crm\Http\Controllers\Admin\SavedFiltersController;
+use App\Crm\Http\Controllers\Admin\SearchController;
+use App\Crm\Http\Controllers\Admin\SettingsController;
+use App\Crm\Http\Controllers\Admin\TagsController;
+use App\Crm\Http\Controllers\Admin\TasksController;
+use App\Crm\Http\Controllers\Admin\UsersController;
+use App\Crm\Http\Controllers\DashboardController;
 
 Route::middleware(config('crm.routes.middleware', ['web']))
     ->group(function () {

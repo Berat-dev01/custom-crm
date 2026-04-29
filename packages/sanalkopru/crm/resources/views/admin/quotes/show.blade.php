@@ -138,7 +138,7 @@
                                 <x-admin-panel::button type="submit" variant="ghost" icon="clock">Expire</x-admin-panel::button>
                             </form>
                         @endcan
-                        @can('create', \Sanalkopru\Crm\Models\Quote::class)
+                        @can('create', \App\Crm\Models\Quote::class)
                             <form method="POST" action="{{ route('crm.quotes.duplicate', $quote) }}">
                                 @csrf
                                 <x-admin-panel::button type="submit" variant="ghost" icon="copy">Duplicate</x-admin-panel::button>

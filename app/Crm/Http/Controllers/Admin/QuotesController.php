@@ -1,0 +1,293 @@
+<?php
+
+namespace App\Crm\Http\Controllers\Admin;
+
+use App\Models\User;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
+use App\Crm\Actions\Quotes\AcceptQuote;
+use App\Crm\Actions\Quotes\DuplicateQuote;
+use App\Crm\Actions\Quotes\ExpireQuote;
+use App\Crm\Actions\Quotes\RejectQuote;
+use App\Crm\Actions\Quotes\SendQuote;
+use App\Crm\Actions\Quotes\UpsertQuote;
+use App\Crm\Http\Requests\Quotes\AcceptQuoteRequest;
+use App\Crm\Http\Requests\Quotes\StoreQuoteRequest;
+use App\Crm\Http\Requests\Quotes\UpdateQuoteRequest;
+use App\Crm\Models\Company;
+use App\Crm\Models\Contact;
+use App\Crm\Models\Deal;
+use App\Crm\Models\Quote;
+use App\Crm\Models\SavedFilter;
+use App\Crm\Models\Tag;
+use App\Crm\Services\Ai\AiDriverManager;
+use App\Crm\Services\Configuration\MoneySettings;
+use App\Crm\Services\Quotes\QuotePdfRenderer;
+use App\Crm\Services\Quotes\QuoteQuery;
+use App\Crm\Support\CrmExportSchema;
+use App\Crm\Support\CrmLabelCatalog;
+use Symfony\Component\HttpFoundation\Response;
+
+class QuotesController extends Controller
+{
+    public function __construct(
+        private readonly QuoteQuery $quotes,
+        private readonly CrmLabelCatalog $labels
+    ) {}
+
+    public function index(Request $request): View
+    {
+        Gate::authorize('viewAny', Quote::class);
+        $this->validateIndex($request);
+
+        return view('crm::admin.quotes.index', [
+            'quotes' => $this->quotes->paginate($request),
+            'filters' => $this->quotes->filters($request),
+            'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
+            'tags' => Tag::query()->orderBy('name')->get(['id', 'name', 'color']),
+            'statuses' => $this->labels->quoteStatuses(),
+            'savedFilters' => SavedFilter::query()->forModule('quotes')->visibleTo($request->user())->orderBy('name')->get(),
+            'exportColumns' => CrmExportSchema::columns('quotes'),
+            'exportFormats' => CrmExportSchema::formats('quotes'),
+        ]);
+    }
+
+    public function create(): View
+    {
+        Gate::authorize('create', Quote::class);
+
+        return view('crm::admin.quotes.form', $this->formData(new Quote));
+    }
+
+    public function store(StoreQuoteRequest $request, UpsertQuote $upsert): RedirectResponse
+    {
+        $quote = $upsert->handle(new Quote, $request->payload(), $request->user());
+
+        return redirect()
+            ->route('crm.quotes.show', $quote)
+            ->with('crm_status', trans('crm::messages.quotes.created'));
+    }
+
+    public function show(Quote $quote): View
+    {
+        Gate::authorize('view', $quote);
+
+        return view('crm::admin.quotes.show', [
+            'quote' => $this->loadQuote($quote),
+            'aiAvailable' => app(AiDriverManager::class)->available(),
+        ]);
+    }
+
+    public function edit(Quote $quote): View
+    {
+        Gate::authorize('update', $quote);
+
+        return view('crm::admin.quotes.form', $this->formData($this->loadQuote($quote)));
+    }
+
+    public function update(UpdateQuoteRequest $request, Quote $quote, UpsertQuote $upsert): RedirectResponse
+    {
+        $quote = $upsert->handle($quote, $request->payload(), $request->user());
+
+        return redirect()
+            ->route('crm.quotes.show', $quote)
+            ->with('crm_status', trans('crm::messages.quotes.updated'));
+    }
+
+    public function destroy(Quote $quote): RedirectResponse
+    {
+        Gate::authorize('delete', $quote);
+
+        $quote->delete();
+
+        return redirect()
+            ->route('crm.quotes.index')
+            ->with('crm_status', trans('crm::messages.quotes.deleted'));
+    }
+
+    public function bulkDelete(Request $request): RedirectResponse
+    {
+        Gate::authorize('crm.quotes.delete');
+
+        $validated = $request->validate([
+            'record_ids' => ['required', 'array', 'min:1'],
+            'record_ids.*' => ['integer', 'exists:quotes,id'],
+        ]);
+
+        Quote::query()
+            ->whereKey($validated['record_ids'])
+            ->get()
+            ->each(function (Quote $quote): void {
+                Gate::authorize('delete', $quote);
+                $quote->delete();
+            });
+
+        return back()->with('crm_status', trans('crm::messages.quotes.bulk_deleted'));
+    }
+
+    public function send(Quote $quote, SendQuote $send): JsonResponse|RedirectResponse
+    {
+        Gate::authorize('send', $quote);
+        $send->handle($quote, request()->user());
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'message' => trans('crm::messages.quotes.marked_sent'),
+                'redirect' => route('crm.quotes.show', $quote),
+            ]);
+        }
+
+        return redirect()
+            ->route('crm.quotes.show', $quote)
+            ->with('crm_status', trans('crm::messages.quotes.marked_sent'));
+    }
+
+    public function accept(AcceptQuoteRequest $request, Quote $quote, AcceptQuote $accept): JsonResponse|RedirectResponse
+    {
+        $accept->handle($quote, $request->boolean('mark_deal_won'), $request->user());
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => trans('crm::messages.quotes.accepted'),
+                'redirect' => route('crm.quotes.show', $quote),
+            ]);
+        }
+
+        return redirect()
+            ->route('crm.quotes.show', $quote)
+            ->with('crm_status', trans('crm::messages.quotes.accepted'));
+    }
+
+    public function reject(Quote $quote, RejectQuote $reject): JsonResponse|RedirectResponse
+    {
+        Gate::authorize('reject', $quote);
+        $reject->handle($quote, request()->user());
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'message' => trans('crm::messages.quotes.rejected'),
+                'redirect' => route('crm.quotes.show', $quote),
+            ]);
+        }
+
+        return redirect()
+            ->route('crm.quotes.show', $quote)
+            ->with('crm_status', trans('crm::messages.quotes.rejected'));
+    }
+
+    public function expire(Quote $quote, ExpireQuote $expire): JsonResponse|RedirectResponse
+    {
+        Gate::authorize('update', $quote);
+        $expire->handle($quote, request()->user());
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'message' => trans('crm::messages.quotes.expired'),
+                'redirect' => route('crm.quotes.show', $quote),
+            ]);
+        }
+
+        return redirect()
+            ->route('crm.quotes.show', $quote)
+            ->with('crm_status', trans('crm::messages.quotes.expired'));
+    }
+
+    public function duplicate(Quote $quote, DuplicateQuote $duplicate): RedirectResponse
+    {
+        Gate::authorize('create', Quote::class);
+        Gate::authorize('view', $quote);
+
+        $newQuote = $duplicate->handle($this->loadQuote($quote), request()->user());
+
+        return redirect()
+            ->route('crm.quotes.edit', $newQuote)
+            ->with('crm_status', trans('crm::messages.quotes.duplicated_as_draft'));
+    }
+
+    public function preview(Quote $quote): View
+    {
+        Gate::authorize('export', $quote);
+        $renderer = app(QuotePdfRenderer::class);
+
+        return view('crm::admin.quotes.pdf', [
+            'quote' => $this->loadQuote($quote),
+            'company' => $renderer->companyProfile(),
+            'logoPath' => $renderer->logoPath(),
+        ]);
+    }
+
+    public function download(Quote $quote, QuotePdfRenderer $renderer): Response
+    {
+        Gate::authorize('export', $quote);
+        $quote = $this->loadQuote($quote);
+
+        return response($renderer->render($quote), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="'.$renderer->filename($quote).'"',
+        ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function formData(Quote $quote): array
+    {
+        return [
+            'quote' => $quote,
+            'contacts' => Contact::query()
+                ->orderBy('full_name')
+                ->limit(250)
+                ->pluck('full_name', 'id')
+                ->all(),
+            'companies' => Company::query()->orderBy('name')->limit(250)->get(['id', 'name']),
+            'deals' => Deal::query()
+                ->orderByDesc('updated_at')
+                ->limit(250)
+                ->pluck('title', 'id')
+                ->all(),
+            'owners' => User::query()->orderBy('name')->limit(250)->get(['id', 'name']),
+            'tags' => Tag::query()->orderBy('name')->get(['id', 'name', 'color']),
+            'selectedTags' => $quote->exists ? $quote->tags()->pluck('tags.id')->all() : [],
+            'statuses' => $this->labels->quoteStatuses(),
+            'discountTypes' => $this->labels->discountTypes(),
+            'currencies' => array_combine(
+                config('crm.money.supported_currencies', ['TRY', 'USD', 'EUR']),
+                config('crm.money.supported_currencies', ['TRY', 'USD', 'EUR'])
+            ),
+            'defaultCurrency' => app(MoneySettings::class)->defaultCurrency(),
+            'defaultTaxRate' => app(MoneySettings::class)->defaultTaxRate(),
+            'defaultTerms' => app(MoneySettings::class)->quoteTerms(),
+        ];
+    }
+
+    private function loadQuote(Quote $quote): Quote
+    {
+        return $quote->load([
+            'contact',
+            'company',
+            'deal',
+            'owner',
+            'tags',
+            'items' => fn ($query) => $query->orderBy('position')->orderBy('id'),
+            'activities.user',
+            'tasks.assignee',
+        ]);
+    }
+
+    private function validateIndex(Request $request): void
+    {
+        $request->validate([
+            'search' => ['nullable', 'string', 'max:120'],
+            'status' => ['nullable', 'string', Rule::in(array_keys($this->labels->quoteStatuses()))],
+            'owner_id' => ['nullable', 'integer', 'exists:users,id'],
+            'tag_id' => ['nullable', 'integer', 'exists:tags,id'],
+            'valid_from' => ['nullable', 'date'],
+            'valid_to' => ['nullable', 'date'],
+        ]);
+    }
+}

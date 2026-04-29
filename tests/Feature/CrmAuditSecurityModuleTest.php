@@ -7,14 +7,14 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
-use Sanalkopru\Crm\Database\Seeders\CrmDealStageSeeder;
-use Sanalkopru\Crm\Database\Seeders\CrmPermissionSeeder;
-use Sanalkopru\Crm\Models\Company;
-use Sanalkopru\Crm\Models\Contact;
-use Sanalkopru\Crm\Models\CrmAuditLog;
-use Sanalkopru\Crm\Models\Deal;
-use Sanalkopru\Crm\Models\DealStage;
-use Sanalkopru\Crm\Models\Quote;
+use App\Crm\Database\Seeders\CrmDealStageSeeder;
+use App\Crm\Database\Seeders\CrmPermissionSeeder;
+use App\Crm\Models\Company;
+use App\Crm\Models\Contact;
+use App\Crm\Models\CrmAuditLog;
+use App\Crm\Models\Deal;
+use App\Crm\Models\DealStage;
+use App\Crm\Models\Quote;
 use Tests\TestCase;
 
 class CrmAuditSecurityModuleTest extends TestCase

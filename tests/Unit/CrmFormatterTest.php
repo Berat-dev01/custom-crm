@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use Illuminate\Support\Carbon;
-use Sanalkopru\Crm\Support\CrmFormatter;
+use App\Crm\Support\CrmFormatter;
 use Tests\TestCase;
 
 class CrmFormatterTest extends TestCase

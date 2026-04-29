@@ -4,13 +4,13 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Sanalkopru\Crm\Database\Seeders\CrmPermissionSeeder;
-use Sanalkopru\Crm\Models\Company;
-use Sanalkopru\Crm\Models\Contact;
-use Sanalkopru\Crm\Models\Deal;
-use Sanalkopru\Crm\Models\DealStage;
-use Sanalkopru\Crm\Models\SavedFilter;
-use Sanalkopru\Crm\Models\Tag;
+use App\Crm\Database\Seeders\CrmPermissionSeeder;
+use App\Crm\Models\Company;
+use App\Crm\Models\Contact;
+use App\Crm\Models\Deal;
+use App\Crm\Models\DealStage;
+use App\Crm\Models\SavedFilter;
+use App\Crm\Models\Tag;
 use Tests\TestCase;
 
 class CrmTagsSavedFiltersModuleTest extends TestCase

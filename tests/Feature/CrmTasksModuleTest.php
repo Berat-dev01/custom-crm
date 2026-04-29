@@ -6,13 +6,13 @@ use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
-use Sanalkopru\Crm\Database\Seeders\CrmPermissionSeeder;
-use Sanalkopru\Crm\Models\Company;
-use Sanalkopru\Crm\Models\Deal;
-use Sanalkopru\Crm\Models\DealStage;
-use Sanalkopru\Crm\Models\Task as CrmTask;
-use Sanalkopru\Crm\Notifications\TaskAssignmentNotification;
-use Sanalkopru\Crm\Notifications\TaskReminderNotification;
+use App\Crm\Database\Seeders\CrmPermissionSeeder;
+use App\Crm\Models\Company;
+use App\Crm\Models\Deal;
+use App\Crm\Models\DealStage;
+use App\Crm\Models\Task as CrmTask;
+use App\Crm\Notifications\TaskAssignmentNotification;
+use App\Crm\Notifications\TaskReminderNotification;
 use Tests\TestCase;
 
 class CrmTasksModuleTest extends TestCase

@@ -4,15 +4,15 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Sanalkopru\Crm\Database\Seeders\CrmPermissionSeeder;
-use Sanalkopru\Crm\Events\QuoteSent;
-use Sanalkopru\Crm\Models\Activity;
-use Sanalkopru\Crm\Models\Company;
-use Sanalkopru\Crm\Models\Contact;
-use Sanalkopru\Crm\Models\Deal;
-use Sanalkopru\Crm\Models\DealStage;
-use Sanalkopru\Crm\Models\Quote;
-use Sanalkopru\Crm\Models\Task as CrmTask;
+use App\Crm\Database\Seeders\CrmPermissionSeeder;
+use App\Crm\Events\QuoteSent;
+use App\Crm\Models\Activity;
+use App\Crm\Models\Company;
+use App\Crm\Models\Contact;
+use App\Crm\Models\Deal;
+use App\Crm\Models\DealStage;
+use App\Crm\Models\Quote;
+use App\Crm\Models\Task as CrmTask;
 use Tests\TestCase;
 
 class CrmActivitiesModuleTest extends TestCase

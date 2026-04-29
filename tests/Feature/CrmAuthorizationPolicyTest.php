@@ -4,10 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Sanalkopru\Crm\Database\Seeders\CrmPermissionSeeder;
-use Sanalkopru\Crm\Models\Contact;
-use Sanalkopru\Crm\Models\Deal;
-use Sanalkopru\Crm\Services\Authorization\CrmAuthorization;
+use App\Crm\Database\Seeders\CrmPermissionSeeder;
+use App\Crm\Models\Contact;
+use App\Crm\Models\Deal;
+use App\Crm\Services\Authorization\CrmAuthorization;
 use Tests\TestCase;
 
 class CrmAuthorizationPolicyTest extends TestCase

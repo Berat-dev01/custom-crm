@@ -47,8 +47,7 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/",
-            "Sanalkopru\\Crm\\": "packages/sanalkopru/crm/src/"
+            "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
             "app/Support/admin_helpers.php"

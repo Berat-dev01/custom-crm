@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Crm\Http\Requests\Tasks;
+
+use Illuminate\Support\Facades\Gate;
+use App\Crm\Http\Requests\Tasks\Concerns\BuildsTaskPayload;
+
+class UpdateTaskRequest extends StoreTaskRequest
+{
+    use BuildsTaskPayload;
+
+    public function authorize(): bool
+    {
+        return Gate::allows('crm.tasks.update');
+    }
+}

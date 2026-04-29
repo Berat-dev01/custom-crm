@@ -1,7 +1,7 @@
 <?php
 
 use App\Providers\AppServiceProvider;
-use Sanalkopru\Crm\CrmServiceProvider;
+use App\Providers\CrmServiceProvider;
 
 return [
     AppServiceProvider::class,

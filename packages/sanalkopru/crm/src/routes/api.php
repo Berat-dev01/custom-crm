@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Sanalkopru\Crm\Http\Controllers\Api\CompaniesController;
-use Sanalkopru\Crm\Http\Controllers\Api\ContactsController;
-use Sanalkopru\Crm\Http\Controllers\Api\DealsController;
-use Sanalkopru\Crm\Http\Controllers\Api\HealthController;
-use Sanalkopru\Crm\Http\Controllers\Api\QuotesController;
-use Sanalkopru\Crm\Http\Controllers\Api\TasksController;
+use App\Crm\Http\Controllers\Api\CompaniesController;
+use App\Crm\Http\Controllers\Api\ContactsController;
+use App\Crm\Http\Controllers\Api\DealsController;
+use App\Crm\Http\Controllers\Api\HealthController;
+use App\Crm\Http\Controllers\Api\QuotesController;
+use App\Crm\Http\Controllers\Api\TasksController;
 
 Route::prefix('crm')
     ->name('crm.api.')

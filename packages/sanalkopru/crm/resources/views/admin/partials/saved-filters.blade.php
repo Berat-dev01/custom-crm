@@ -30,7 +30,7 @@
                 name="visibility"
                 label="Visibility"
                 selected="private"
-                :options="app(\Sanalkopru\Crm\Support\CrmLabelCatalog::class)->savedFilterVisibilities()"
+                :options="app(\App\Crm\Support\CrmLabelCatalog::class)->savedFilterVisibilities()"
                 required
             />
             <div class="crm-filter-actions">

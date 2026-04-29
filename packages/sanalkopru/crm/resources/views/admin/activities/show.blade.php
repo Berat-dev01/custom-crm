@@ -11,17 +11,17 @@
     @php
         $related = $activity->activityable;
         $relatedRoute = match(true) {
-            $related instanceof \Sanalkopru\Crm\Models\Contact => route('crm.contacts.show', $related),
-            $related instanceof \Sanalkopru\Crm\Models\Company => route('crm.companies.show', $related),
-            $related instanceof \Sanalkopru\Crm\Models\Deal   => route('crm.deals.show', $related),
-            $related instanceof \Sanalkopru\Crm\Models\Quote  => route('crm.quotes.show', $related),
+            $related instanceof \App\Crm\Models\Contact => route('crm.contacts.show', $related),
+            $related instanceof \App\Crm\Models\Company => route('crm.companies.show', $related),
+            $related instanceof \App\Crm\Models\Deal   => route('crm.deals.show', $related),
+            $related instanceof \App\Crm\Models\Quote  => route('crm.quotes.show', $related),
             default => null,
         };
         $relatedLabel = match(true) {
-            $related instanceof \Sanalkopru\Crm\Models\Contact => $related->full_name,
-            $related instanceof \Sanalkopru\Crm\Models\Company => $related->name,
-            $related instanceof \Sanalkopru\Crm\Models\Deal   => $related->title,
-            $related instanceof \Sanalkopru\Crm\Models\Quote  => $related->quote_number,
+            $related instanceof \App\Crm\Models\Contact => $related->full_name,
+            $related instanceof \App\Crm\Models\Company => $related->name,
+            $related instanceof \App\Crm\Models\Deal   => $related->title,
+            $related instanceof \App\Crm\Models\Quote  => $related->quote_number,
             default => '-',
         };
         $typeVariant = match($activity->type) {

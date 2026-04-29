@@ -5,12 +5,12 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
-use Sanalkopru\Crm\Database\Seeders\CrmPermissionSeeder;
-use Sanalkopru\Crm\Models\Quote;
-use Sanalkopru\Crm\Models\Task;
-use Sanalkopru\Crm\Notifications\TaskReminderNotification;
-use Sanalkopru\Crm\Services\Notifications\CrmBusinessNotifier;
-use Sanalkopru\Crm\Support\CrmLabelCatalog;
+use App\Crm\Database\Seeders\CrmPermissionSeeder;
+use App\Crm\Models\Quote;
+use App\Crm\Models\Task;
+use App\Crm\Notifications\TaskReminderNotification;
+use App\Crm\Services\Notifications\CrmBusinessNotifier;
+use App\Crm\Support\CrmLabelCatalog;
 use Tests\TestCase;
 
 class CrmNotificationsModuleTest extends TestCase

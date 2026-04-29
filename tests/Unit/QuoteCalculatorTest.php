@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Sanalkopru\Crm\Services\Quotes\QuoteCalculator;
+use App\Crm\Services\Quotes\QuoteCalculator;
 
 class QuoteCalculatorTest extends TestCase
 {

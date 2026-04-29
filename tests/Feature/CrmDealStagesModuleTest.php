@@ -4,10 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Sanalkopru\Crm\Database\Seeders\CrmDealStageSeeder;
-use Sanalkopru\Crm\Database\Seeders\CrmPermissionSeeder;
-use Sanalkopru\Crm\Models\Deal;
-use Sanalkopru\Crm\Models\DealStage;
+use App\Crm\Database\Seeders\CrmDealStageSeeder;
+use App\Crm\Database\Seeders\CrmPermissionSeeder;
+use App\Crm\Models\Deal;
+use App\Crm\Models\DealStage;
 use Tests\TestCase;
 
 class CrmDealStagesModuleTest extends TestCase

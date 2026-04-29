@@ -4,15 +4,15 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Sanalkopru\Crm\Models\Activity;
-use Sanalkopru\Crm\Models\Company;
-use Sanalkopru\Crm\Models\Contact;
-use Sanalkopru\Crm\Models\Deal;
-use Sanalkopru\Crm\Models\DealStage;
-use Sanalkopru\Crm\Models\Quote;
-use Sanalkopru\Crm\Models\QuoteItem;
-use Sanalkopru\Crm\Models\Tag;
-use Sanalkopru\Crm\Models\Task as CrmTask;
+use App\Crm\Models\Activity;
+use App\Crm\Models\Company;
+use App\Crm\Models\Contact;
+use App\Crm\Models\Deal;
+use App\Crm\Models\DealStage;
+use App\Crm\Models\Quote;
+use App\Crm\Models\QuoteItem;
+use App\Crm\Models\Tag;
+use App\Crm\Models\Task as CrmTask;
 use Tests\TestCase;
 
 class CrmModelLayerTest extends TestCase

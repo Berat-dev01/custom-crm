@@ -3,13 +3,13 @@
 namespace Tests\Unit;
 
 use InvalidArgumentException;
-use Sanalkopru\Crm\Contracts\AiProviderContract;
-use Sanalkopru\Crm\Services\Ai\AiDriverManager;
-use Sanalkopru\Crm\Services\Ai\Providers\ClaudeProvider;
-use Sanalkopru\Crm\Services\Ai\Providers\GeminiProvider;
-use Sanalkopru\Crm\Services\Ai\Providers\NullAiProvider;
-use Sanalkopru\Crm\Services\Ai\Providers\OpenAiProvider;
-use Sanalkopru\Crm\Support\Ai\AiDriver;
+use App\Crm\Contracts\AiProviderContract;
+use App\Crm\Services\Ai\AiDriverManager;
+use App\Crm\Services\Ai\Providers\ClaudeProvider;
+use App\Crm\Services\Ai\Providers\GeminiProvider;
+use App\Crm\Services\Ai\Providers\NullAiProvider;
+use App\Crm\Services\Ai\Providers\OpenAiProvider;
+use App\Crm\Support\Ai\AiDriver;
 use Tests\TestCase;
 
 class AiDriverManagerTest extends TestCase

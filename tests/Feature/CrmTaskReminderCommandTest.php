@@ -5,8 +5,8 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
-use Sanalkopru\Crm\Models\Task;
-use Sanalkopru\Crm\Notifications\TaskReminderNotification;
+use App\Crm\Models\Task;
+use App\Crm\Notifications\TaskReminderNotification;
 use Tests\TestCase;
 
 class CrmTaskReminderCommandTest extends TestCase

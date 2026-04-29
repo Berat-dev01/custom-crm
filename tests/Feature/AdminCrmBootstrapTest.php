@@ -5,8 +5,8 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\ServiceProvider;
-use Sanalkopru\Crm\CrmServiceProvider;
-use Sanalkopru\Crm\Database\Seeders\CrmPermissionSeeder;
+use App\Providers\CrmServiceProvider;
+use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use Tests\TestCase;
 
 class AdminCrmBootstrapTest extends TestCase

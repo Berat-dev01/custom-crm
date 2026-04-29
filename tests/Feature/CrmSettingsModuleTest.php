@@ -6,17 +6,17 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Sanalkopru\Crm\Database\Seeders\CrmPermissionSeeder;
-use Sanalkopru\Crm\Models\Company;
-use Sanalkopru\Crm\Models\Contact;
-use Sanalkopru\Crm\Models\CrmSetting;
-use Sanalkopru\Crm\Models\Quote;
-use Sanalkopru\Crm\Services\Ai\AiDriverManager;
-use Sanalkopru\Crm\Services\Configuration\MoneySettings;
-use Sanalkopru\Crm\Services\Quotes\QuoteNumberGenerator;
-use Sanalkopru\Crm\Services\Quotes\QuotePdfRenderer;
-use Sanalkopru\Crm\Services\Settings\CrmSettingsManager;
-use Sanalkopru\Crm\Support\Ai\AiDriver;
+use App\Crm\Database\Seeders\CrmPermissionSeeder;
+use App\Crm\Models\Company;
+use App\Crm\Models\Contact;
+use App\Crm\Models\CrmSetting;
+use App\Crm\Models\Quote;
+use App\Crm\Services\Ai\AiDriverManager;
+use App\Crm\Services\Configuration\MoneySettings;
+use App\Crm\Services\Quotes\QuoteNumberGenerator;
+use App\Crm\Services\Quotes\QuotePdfRenderer;
+use App\Crm\Services\Settings\CrmSettingsManager;
+use App\Crm\Support\Ai\AiDriver;
 use Tests\TestCase;
 
 class CrmSettingsModuleTest extends TestCase

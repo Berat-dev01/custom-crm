@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use Sanalkopru\Crm\Services\Configuration\FeatureManager;
-use Sanalkopru\Crm\Services\Configuration\MoneySettings;
-use Sanalkopru\Crm\Services\Configuration\UiSettings;
+use App\Crm\Services\Configuration\FeatureManager;
+use App\Crm\Services\Configuration\MoneySettings;
+use App\Crm\Services\Configuration\UiSettings;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\TestCase;
 

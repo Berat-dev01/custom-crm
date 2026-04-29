@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Crm\Http\Requests\Tasks\Concerns;
+
+use App\Crm\Models\Company;
+use App\Crm\Models\Contact;
+use App\Crm\Models\Deal;
+use App\Crm\Models\Quote;
+
+trait BuildsTaskPayload
+{
+    /**
+     * @return array<string, mixed>
+     */
+    public function payload(): array
+    {
+        $validated = $this->validated();
+        $taskableType = $validated['taskable_type'] ?? null;
+        $taskableId = $validated['taskable_id'] ?? null;
+
+        $validated['taskable_type'] = $taskableType ? $this->taskableClass($taskableType) : null;
+        $validated['taskable_id'] = $taskableType ? $taskableId : null;
+
+        return $validated;
+    }
+
+    private function taskableClass(string $type): string
+    {
+        return match ($type) {
+            'contact' => Contact::class,
+            'company' => Company::class,
+            'deal' => Deal::class,
+            'quote' => Quote::class,
+        };
+    }
+}

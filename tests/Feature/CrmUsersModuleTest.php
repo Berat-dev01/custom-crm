@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Sanalkopru\Crm\Database\Seeders\CrmPermissionSeeder;
+use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 

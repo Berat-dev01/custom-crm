@@ -83,10 +83,10 @@
                     @php
                         $related = $activity->activityable;
                         $relatedLabel = match(true) {
-                            $related instanceof \Sanalkopru\Crm\Models\Contact => $related->full_name,
-                            $related instanceof \Sanalkopru\Crm\Models\Company => $related->name,
-                            $related instanceof \Sanalkopru\Crm\Models\Deal => $related->title,
-                            $related instanceof \Sanalkopru\Crm\Models\Quote => $related->quote_number,
+                            $related instanceof \App\Crm\Models\Contact => $related->full_name,
+                            $related instanceof \App\Crm\Models\Company => $related->name,
+                            $related instanceof \App\Crm\Models\Deal => $related->title,
+                            $related instanceof \App\Crm\Models\Quote => $related->quote_number,
                             default => '-',
                         };
                     @endphp
