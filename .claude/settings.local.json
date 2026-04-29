@@ -19,7 +19,11 @@
       "Bash(DOCKER_HOST=unix:///Users/zyix/.docker/run/docker.sock docker compose *)",
       "Bash(xargs cat *)",
       "Bash(xargs ls *)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(grep -v \"^--$\")",
+      "Bash(cp -r /Users/zyix/Desktop/repo/crm/packages/sanalkopru/crm/resources/lang/en/. /Users/zyix/Desktop/repo/crm/lang/crm/en/)",
+      "Bash(cp -r /Users/zyix/Desktop/repo/crm/packages/sanalkopru/crm/resources/lang/tr/. /Users/zyix/Desktop/repo/crm/lang/crm/tr/)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(k\\) for k in d.keys\\(\\)]\")"
     ]
   }
 }

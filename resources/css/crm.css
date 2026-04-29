@@ -241,6 +241,7 @@
         margin: 0;
         position: fixed;
         z-index: 1200;
+        width: calc(100% - 40px) !important;
     }
 
     .crm-dashboard-card.is-expanded > div:last-child {
@@ -492,6 +493,7 @@
 
         .crm-dashboard-card.is-expanded {
             inset: 8px;
+            width: calc(100% - 16px);
         }
     }
 
