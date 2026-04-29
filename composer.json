@@ -8,13 +8,6 @@
     "repositories": [
         {
             "type": "path",
-            "url": "packages/sanalkopru/crm",
-            "options": {
-                "symlink": true
-            }
-        },
-        {
-            "type": "path",
             "url": "packages/sanalkopru/admin-panel",
             "options": {
                 "symlink": true

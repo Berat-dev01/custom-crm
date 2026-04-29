@@ -4,8 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\ServiceProvider;
-use App\Providers\CrmServiceProvider;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use Tests\TestCase;
 
@@ -59,11 +57,5 @@ class AdminCrmBootstrapTest extends TestCase
         $this->assertSame('crm_owner', config('crm.permissions.roles.owner.name'));
     }
 
-    public function test_crm_package_publish_tags_are_registered(): void
-    {
-        $this->assertNotEmpty(ServiceProvider::pathsToPublish(CrmServiceProvider::class, 'crm-config'));
-        $this->assertNotEmpty(ServiceProvider::pathsToPublish(CrmServiceProvider::class, 'crm-views'));
-        $this->assertNotEmpty(ServiceProvider::pathsToPublish(CrmServiceProvider::class, 'crm-migrations'));
-        $this->assertNotEmpty(ServiceProvider::pathsToPublish(CrmServiceProvider::class, 'crm-assets'));
-    }
+
 }

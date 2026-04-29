@@ -57,8 +57,6 @@ class CrmServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(base_path('packages/sanalkopru/crm/config/crm.php'), 'crm');
-
         $this->app->singleton(AiDriverManager::class);
         $this->app->bind(AiProviderContract::class, fn ($app) => $app->make(AiDriverManager::class)->provider());
         $this->app->singleton(CrmAuthorization::class);
@@ -75,10 +73,8 @@ class CrmServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadJsonTranslationsFrom(base_path('packages/sanalkopru/crm/resources/lang'));
-        $this->loadTranslationsFrom(base_path('packages/sanalkopru/crm/resources/lang'), 'crm');
-        $this->loadViewsFrom(base_path('packages/sanalkopru/crm/resources/views'), 'crm');
-        $this->loadMigrationsFrom(base_path('packages/sanalkopru/crm/database/migrations'));
+        $this->loadTranslationsFrom(lang_path('crm'), 'crm');
+        $this->loadViewsFrom(resource_path('views/crm'), 'crm');
 
         $this->registerAuthorization();
         $this->registerEvents();
@@ -87,7 +83,6 @@ class CrmServiceProvider extends ServiceProvider
         $this->loadApiRoutes();
 
         if ($this->app->runningInConsole()) {
-            $this->registerPublishables();
             $this->commands([
                 SeedCrmDemoCommand::class,
                 SeedCrmPerformanceCommand::class,
@@ -171,40 +166,14 @@ class CrmServiceProvider extends ServiceProvider
 
     private function loadWebRoutes(): void
     {
-        Route::group([], base_path('packages/sanalkopru/crm/src/routes/web.php'));
+        Route::group([], base_path('routes/crm-web.php'));
     }
 
     private function loadApiRoutes(): void
     {
         Route::middleware('api')
             ->prefix('api')
-            ->group(base_path('packages/sanalkopru/crm/src/routes/api.php'));
-    }
-
-    private function registerPublishables(): void
-    {
-        $pkg = base_path('packages/sanalkopru/crm');
-
-        $this->publishes([
-            "$pkg/config/crm.php" => config_path('crm.php'),
-        ], 'crm-config');
-
-        $this->publishes([
-            "$pkg/resources/views" => resource_path('views/vendor/crm'),
-        ], 'crm-views');
-
-        $this->publishes([
-            "$pkg/resources/lang" => lang_path('vendor/crm'),
-        ], 'crm-lang');
-
-        $this->publishes([
-            "$pkg/database/migrations" => database_path('migrations'),
-        ], 'crm-migrations');
-
-        $this->publishes([
-            "$pkg/resources/js" => public_path('vendor/crm/js'),
-            "$pkg/resources/css" => public_path('vendor/crm/css'),
-        ], 'crm-assets');
+            ->group(base_path('routes/crm-api.php'));
     }
 
     private function scheduleCommands(): void

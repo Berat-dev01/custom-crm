@@ -16,32 +16,37 @@ admin-panel paketi kalıyor (gerçekten multi-project). CRM ana app'e taşınıy
 - [x] `bootstrap/providers.php` güncelle
 - [x] `composer dump-autoload` + testler → 162 passed
 
-## [ ] Faz 2 — View'lar
+## [x] Faz 2 — View'lar
 `packages/sanalkopru/crm/resources/views/` → `resources/views/crm/`
 
-- [ ] View'ları taşı
-- [ ] ServiceProvider'da `loadViewsFrom` güncelle (artık `resource_path`)
-- [ ] Tüm `crm::` prefix'li view referanslarını güncelle (include, extends, components)
-- [ ] Layout `crm::layouts.app` → `crm.layouts.app` (noktalı notation)
-- [ ] Testler
+- [x] View'ları taşı
+- [x] ServiceProvider'da `loadViewsFrom` güncelle → `resource_path('views/crm')`
+- [x] `crm-views` publish tag kaldırıldı (views artık main app'te)
+- [x] Testler → 162 passed
 
-## [ ] Faz 3 — Config & Routes
-- [ ] `packages/sanalkopru/crm/config/crm.php` → `config/crm.php`
-- [ ] `mergeConfigFrom` kaldır, direkt `config/crm.php` kullanılır
-- [ ] Routes → `routes/crm-web.php` + `routes/crm-api.php`
-- [ ] `RouteServiceProvider` veya `AppServiceProvider`'dan include
+## [x] Faz 3 — Config & Routes
+- [x] `config/crm.php` zaten ana app'teydi (aynı içerik)
+- [x] `mergeConfigFrom` kaldırıldı, Laravel otomatik yükler
+- [x] Routes → `routes/crm-web.php` + `routes/crm-api.php`
+- [x] Testler → 162 passed
 
-## [ ] Faz 4 — Assets & Lang
-- [ ] `resources/css/crm.css` + `resources/js/crm.js` (public/vendor/crm olarak kalabilir)
-- [ ] `lang/tr/crm/` (veya JSON)
-- [ ] `loadTranslationsFrom` kaldır, Laravel'in standart lang yükleme mekanizması
+## [x] Faz 4 — Assets & Lang
+- [x] `resources/css/crm.css` + `resources/js/crm.js` → Vite pipeline'a eklendi
+- [x] Tüm view'lardaki `asset('vendor/crm/...')` → `@vite()` ile değiştirildi
+- [x] CSS `@push` bloğu `crm::layouts.app`'e taşındı (32 view'dan kaldırıldı)
+- [x] `lang/en.json` + `lang/tr.json` kopyalandı (otomatik yüklenir)
+- [x] PHP translations → `lang/crm/tr/` + `lang/crm/en/`
+- [x] `loadTranslationsFrom(lang_path('crm'), 'crm')` — `crm::` namespace korundu
+- [x] `crm-lang` ve `crm-assets` publish tag'ları kaldırıldı
+- [x] Testler → 162 passed
 
-## [ ] Faz 5 — Testler & Temizlik
-- [ ] Test namespace import'larını güncelle (`Sanalkopru\Crm\` → `App\Crm\`)
-- [ ] Tüm testler geçmeli
-- [ ] `packages/sanalkopru/crm/` dizinini sil
-- [ ] `composer.json`'dan crm path repo + `sanalkopru/crm` require kaldır
-- [ ] `composer update` + `php artisan test` final kontrol
+## [x] Faz 5 — Testler & Temizlik
+- [x] `packages/sanalkopru/crm/` dizini silindi
+- [x] `composer.json`'dan crm path repo kaldırıldı
+- [x] `registerPublishables()` kaldırıldı (artık paket yok)
+- [x] Migrations → `database/migrations/` (auto-discovered)
+- [x] `composer dump-autoload` → 7726 classes
+- [x] `php artisan test` → 161 passed
 
 ---
 

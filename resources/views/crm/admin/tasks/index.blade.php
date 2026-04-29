@@ -1,0 +1,176 @@
+@extends('crm::layouts.app')
+
+@section('title', __('Tasks'))
+@section('page-title', __('Tasks'))
+
+
+@section('content')
+    @php
+        $activeFilterCount = collect($filters)
+            ->except(['scope'])
+            ->filter(fn ($value) => $value !== null && $value !== '')
+            ->count();
+        $scopeLabels = [
+            'all' => __('All'),
+            'my' => __('My'),
+            'today' => __('Today'),
+            'overdue' => __('Overdue'),
+        ];
+        $tableHeaders = [
+            ['label' => new \Illuminate\Support\HtmlString('<input type="checkbox" data-admin-bulk-toggle-all class="form-check-input" aria-label="'.e(__('Select all tasks')).'">'), 'width' => '36px'],
+            ['label' => __('Task')],
+            ['label' => __('Related')],
+            ['label' => __('Assignee')],
+            ['label' => __('Due')],
+            ['label' => __('Priority')],
+            ['label' => __('Status')],
+            ['label' => __('Actions'), 'width' => '240px'],
+        ];
+    @endphp
+
+    <section class="crm-admin-page" data-crm-module="tasks">
+        @include('crm::admin.partials.status')
+
+        <header class="crm-admin-header crm-admin-header-row">
+            <div>
+                <p class="crm-admin-eyebrow">{{ __('CRM') }}</p>
+                <h1>{{ __('Tasks') }}</h1>
+            </div>
+
+            <div class="crm-admin-actions">
+                <x-admin-panel::button :href="route('crm.tasks.index')" variant="{{ $filters['scope'] === 'all' ? 'outline' : 'ghost' }}" icon="list" data-admin-ajax-link data-admin-ajax-target="crm-tasks-list">{{ __('All') }}</x-admin-panel::button>
+                <x-admin-panel::button :href="route('crm.tasks.my')" variant="{{ $filters['scope'] === 'my' ? 'outline' : 'ghost' }}" icon="user" data-admin-ajax-link data-admin-ajax-target="crm-tasks-list">{{ __('My') }}</x-admin-panel::button>
+                <x-admin-panel::button :href="route('crm.tasks.today')" variant="{{ $filters['scope'] === 'today' ? 'outline' : 'ghost' }}" icon="calendar" data-admin-ajax-link data-admin-ajax-target="crm-tasks-list">{{ __('Today') }}</x-admin-panel::button>
+                <x-admin-panel::button :href="route('crm.tasks.overdue')" variant="{{ $filters['scope'] === 'overdue' ? 'outline' : 'ghost' }}" icon="alert-circle" data-admin-ajax-link data-admin-ajax-target="crm-tasks-list">{{ __('Overdue') }}</x-admin-panel::button>
+                @can('crm.tasks.create')
+                    <x-admin-panel::button :href="route('crm.tasks.create')" icon="plus">{{ __('New Task') }}</x-admin-panel::button>
+                @endcan
+            </div>
+        </header>
+
+        <div id="crm-tasks-list" class="admin-ajax-region" data-admin-ajax-list>
+            <x-admin-panel::filter-shell :action="request()->url()" :reset-url="request()->url()" :active-count="$activeFilterCount">
+                <x-slot:compact>
+                    <x-admin-panel::input name="search" label="Search" :value="$filters['search']" placeholder="Title or description" />
+                    <x-admin-panel::select name="assigned_to" label="Assignee" :options="$owners" :selected="$filters['assigned_to']" placeholder="All assignees" />
+                    <x-admin-panel::select name="status" label="Status" :options="$statuses" :selected="$filters['status']" placeholder="All statuses" />
+                </x-slot:compact>
+
+                <x-slot:advanced>
+                    <x-admin-panel::select name="priority" label="Priority" :options="$priorities" :selected="$filters['priority']" placeholder="All priorities" />
+                    <x-admin-panel::input name="due_from" label="Due From" type="date" :value="$filters['due_from']" />
+                    <x-admin-panel::input name="due_to" label="Due To" type="date" :value="$filters['due_to']" />
+                </x-slot:advanced>
+
+                <x-slot:saved>
+                    @include('crm::admin.partials.saved-filters', ['module' => 'tasks', 'savedFilters' => $savedFilters, 'filters' => $filters])
+                </x-slot:saved>
+            </x-admin-panel::filter-shell>
+
+            <form id="crm-task-bulk" method="POST" action="{{ route('crm.tasks.bulk-delete') }}">
+                @csrf
+                @method('DELETE')
+
+                <x-admin-panel::bulk-actions form="crm-task-bulk" checkbox-selector=".crm-task-selector" label="tasks">
+                    @can('crm.tasks.delete')
+                        <x-admin-panel::button
+                            type="submit"
+                            size="sm"
+                            variant="danger"
+                            icon="trash-2"
+                            form="crm-task-bulk"
+                            data-crm-confirm="{{ __('Delete selected tasks?') }}"
+                        >
+                            {{ __('Delete Selected') }}
+                        </x-admin-panel::button>
+                    @endcan
+                </x-admin-panel::bulk-actions>
+
+                <x-admin-panel::card>
+                    <x-slot:header>{{ __(':scope Tasks', ['scope' => $scopeLabels[$filters['scope']] ?? ucfirst((string) $filters['scope'])]) }}</x-slot:header>
+
+                    <x-admin-panel::table :headers="$tableHeaders">
+                    @forelse($tasks as $task)
+                    @php
+                        $related = $task->taskable;
+                        $relatedLabel = match(true) {
+                            $related instanceof \App\Crm\Models\Contact => $related->full_name,
+                            $related instanceof \App\Crm\Models\Company => $related->name,
+                            $related instanceof \App\Crm\Models\Deal => $related->title,
+                            $related instanceof \App\Crm\Models\Quote => $related->quote_number,
+                            default => '-',
+                        };
+                    @endphp
+                    <tr>
+                        <td>
+                            <input
+                                type="checkbox"
+                                name="record_ids[]"
+                                value="{{ $task->id }}"
+                                class="form-check-input crm-task-selector"
+                            >
+                        </td>
+                        <td>
+                            <strong>{{ $task->title }}</strong>
+                            <div class="crm-muted">{{ $task->description ? str($task->description)->limit(80) : __('No description') }}</div>
+                        </td>
+                        <td>{{ $relatedLabel }}</td>
+                        <td>{{ $task->assignee?->name ?: '-' }}</td>
+                        <td>{{ $crmFormat->datetime($task->due_at) }}</td>
+                        <td>{{ $crmFormat->status($task->priority) }}</td>
+                        <td>{{ $crmFormat->status($task->status) }}</td>
+                        <td>
+                            <div class="crm-row-actions">
+                                <x-admin-panel::button :href="route('crm.tasks.show', $task)" size="sm" variant="ghost" icon="eye" />
+                                @can('update', $task)
+                                    <x-admin-panel::button :href="route('crm.tasks.edit', $task)" size="sm" variant="ghost" icon="pencil" />
+                                @endcan
+                                @can('complete', $task)
+                                    @if($task->status !== 'completed')
+                                        <x-admin-panel::button type="submit" size="sm" variant="ghost" icon="check" form="crm-task-complete-{{ $task->id }}" />
+                                    @endif
+                                @endcan
+                                @can('delete', $task)
+                                    <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash-2" form="crm-task-delete-{{ $task->id }}" data-crm-confirm="{{ __('Delete this task?') }}" />
+                                @endcan
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8">
+                            @include('crm::admin.partials.empty-state', [
+                                'title' => __('No tasks found.'),
+                                'body' => __('Create a follow-up so the next sales action is visible.'),
+                                'actionUrl' => route('crm.tasks.create'),
+                                'actionLabel' => __('New Task'),
+                                'actionPermission' => 'crm.tasks.create',
+                            ])
+                        </td>
+                    </tr>
+                    @endforelse
+                    </x-admin-panel::table>
+
+                    <x-admin-panel::pagination :paginator="$tasks" class="crm-pagination" />
+                </x-admin-panel::card>
+            </form>
+        </div>
+
+        @foreach($tasks as $task)
+            @can('complete', $task)
+                @if($task->status !== 'completed')
+                    <form id="crm-task-complete-{{ $task->id }}" method="POST" action="{{ route('crm.tasks.complete', $task) }}" class="crm-hidden-form">
+                        @csrf
+                        @method('PATCH')
+                    </form>
+                @endif
+            @endcan
+            @can('delete', $task)
+                <form id="crm-task-delete-{{ $task->id }}" method="POST" action="{{ route('crm.tasks.destroy', $task) }}" class="crm-hidden-form">
+                    @csrf
+                    @method('DELETE')
+                </form>
+            @endcan
+        @endforeach
+    </section>
+@endsection
