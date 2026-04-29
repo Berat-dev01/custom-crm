@@ -1,4 +1,4 @@
-@extends('admin-panel::layouts.app')
+@extends('crm::layouts.app')
 
 @section('title', __('Tags'))
 @section('page-title', __('Tags'))

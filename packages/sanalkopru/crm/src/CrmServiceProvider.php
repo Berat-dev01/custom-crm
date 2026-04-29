@@ -127,6 +127,21 @@ class CrmServiceProvider extends ServiceProvider
             $view->with('crmNavigationGroups', $navigation->groups(request()));
             $view->with('crmFormat', $this->app->make(CrmFormatter::class));
         });
+
+        View::composer('admin-panel::layouts.app', function ($view): void {
+            $navigation = $this->app->make(CrmNavigation::class);
+
+            $commandItems = collect($navigation->items(request()))
+                ->filter(fn ($item) => isset($item['permission']) ? Gate::allows($item['permission']) : true)
+                ->map(fn ($item) => [
+                    'label' => $item['label'],
+                    'url'   => route($item['route']),
+                    'group' => 'CRM',
+                ])
+                ->values();
+
+            $view->with('adminCommandItems', $commandItems);
+        });
     }
 
     private function registerEvents(): void

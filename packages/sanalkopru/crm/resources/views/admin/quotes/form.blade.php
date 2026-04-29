@@ -1,4 +1,4 @@
-@extends('admin-panel::layouts.app')
+@extends('crm::layouts.app')
 
 @section('title', $quote->exists ? __('Edit Quote') : __('New Quote'))
 @section('page-title', $quote->exists ? __('Edit Quote') : __('New Quote'))

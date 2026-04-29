@@ -108,7 +108,7 @@ class CrmDealsPipelineModuleTest extends TestCase
         $this->actingAs($this->admin, 'admin')
             ->get(route('crm.deals.show', $deal))
             ->assertOk()
-            ->assertSee('Weighted Value')
+            ->assertSee(__('Weighted Value'))
             ->assertSee('Ada Sales')
             ->assertSee('Send proposal')
             ->assertSee('CRM-DEAL-1')

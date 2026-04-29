@@ -33,7 +33,7 @@ class QuotePdfRenderer
     {
         $safeNumber = preg_replace('/[^A-Za-z0-9._-]+/', '-', $quote->quote_number) ?: (string) $quote->id;
 
-        return 'teklif-'.$safeNumber.'.pdf';
+        return 'quote-'.$safeNumber.'.pdf';
     }
 
     /**

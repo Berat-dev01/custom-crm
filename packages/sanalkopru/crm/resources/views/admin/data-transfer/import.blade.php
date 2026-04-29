@@ -1,4 +1,4 @@
-@extends('admin-panel::layouts.app')
+@extends('crm::layouts.app')
 
 @php($moduleLabel = $crmFormat->module($module))
 
@@ -15,7 +15,7 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / {{ $moduleLabel }}</p>
+                <p class="crm-admin-eyebrow">{{ __('CRM / :module', ['module' => $moduleLabel]) }}</p>
                 <h1>{{ __('Import') }} {{ $moduleLabel }}</h1>
             </div>
             <div class="crm-admin-actions">

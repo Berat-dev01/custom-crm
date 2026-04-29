@@ -1,4 +1,4 @@
-@extends('admin-panel::layouts.app')
+@extends('crm::layouts.app')
 
 @section('title', $task->title)
 @section('page-title', $task->title)
@@ -33,7 +33,7 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / Tasks</p>
+                <p class="crm-admin-eyebrow">{{ __('CRM / Tasks') }}</p>
                 <h1>{{ $task->title }}</h1>
                 <p class="crm-muted" style="display:flex;gap:8px;align-items:center;margin-top:4px;">
                     <x-admin-panel::badge :variant="$statusVariant">{{ $crmFormat->status($task->status) }}</x-admin-panel::badge>
@@ -76,7 +76,7 @@
             />
             <x-admin-panel::stat-card
                 label="Reminder"
-                :value="$task->reminder_at?->format('d M Y H:i') ?: 'None'"
+                :value="$task->reminder_at?->format('d M Y H:i') ?: __('None')"
                 icon="bell"
                 variant="info"
             />
@@ -86,7 +86,7 @@
             <x-slot:header>Task Detail</x-slot:header>
 
             <dl class="crm-detail-list">
-                <dt>Related</dt>
+                <dt>{{ __('Related') }}</dt>
                 <dd>
                     @if($relatedRoute)
                         <a href="{{ $relatedRoute }}" style="color:#0369a1;">{{ $relatedLabel }}</a>
@@ -94,14 +94,14 @@
                         {{ $relatedLabel }}
                     @endif
                 </dd>
-                <dt>Description</dt>
+                <dt>{{ __('Description') }}</dt>
                 <dd>{{ $task->description ?: '-' }}</dd>
                 @if($task->completed_at)
-                    <dt>Completed</dt>
+                    <dt>{{ __('Completed') }}</dt>
                     <dd>{{ $task->completed_at->format('d M Y H:i') }}</dd>
                 @endif
                 @if($task->reminder_notified_at)
-                    <dt>Reminder sent</dt>
+                    <dt>{{ __('Reminder sent') }}</dt>
                     <dd>{{ $task->reminder_notified_at->format('d M Y H:i') }}</dd>
                 @endif
             </dl>

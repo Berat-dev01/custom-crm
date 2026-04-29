@@ -1,4 +1,4 @@
-@extends('admin-panel::layouts.app')
+@extends('crm::layouts.app')
 
 @section('title', $tag->name)
 @section('page-title', $tag->name)
@@ -13,7 +13,7 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / Tags</p>
+                <p class="crm-admin-eyebrow">{{ __('CRM / Tags') }}</p>
                 <h1>
                     <span class="crm-color-swatch" style="background: {{ $tag->color }}"></span>
                     {{ $tag->name }}
@@ -29,19 +29,19 @@
 
         <div class="crm-admin-grid">
             <div class="crm-admin-card">
-                <span class="crm-admin-card-label">Contacts</span>
+                <span class="crm-admin-card-label">{{ __('Contacts') }}</span>
                 <strong>{{ $tag->contacts_count }}</strong>
             </div>
             <div class="crm-admin-card">
-                <span class="crm-admin-card-label">Companies</span>
+                <span class="crm-admin-card-label">{{ __('Companies') }}</span>
                 <strong>{{ $tag->companies_count }}</strong>
             </div>
             <div class="crm-admin-card">
-                <span class="crm-admin-card-label">Deals</span>
+                <span class="crm-admin-card-label">{{ __('Deals') }}</span>
                 <strong>{{ $tag->deals_count }}</strong>
             </div>
             <div class="crm-admin-card">
-                <span class="crm-admin-card-label">Quotes</span>
+                <span class="crm-admin-card-label">{{ __('Quotes') }}</span>
                 <strong>{{ $tag->quotes_count }}</strong>
             </div>
         </div>
@@ -52,9 +52,9 @@
             </x-slot:header>
 
             <dl class="crm-detail-list">
-                <dt>Slug</dt>
+                <dt>{{ __('Slug') }}</dt>
                 <dd>{{ $tag->slug }}</dd>
-                <dt>Color</dt>
+                <dt>{{ __('Color') }}</dt>
                 <dd>{{ $tag->color }}</dd>
             </dl>
         </x-admin-panel::card>

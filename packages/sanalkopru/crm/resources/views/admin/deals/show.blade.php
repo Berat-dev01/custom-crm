@@ -1,4 +1,4 @@
-@extends('admin-panel::layouts.app')
+@extends('crm::layouts.app')
 
 @section('title', $deal->title)
 @section('page-title', $deal->title)
@@ -13,7 +13,7 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / Deals</p>
+                <p class="crm-admin-eyebrow">{{ __('CRM / Deals') }}</p>
                 <h1>{{ $deal->title }}</h1>
             </div>
 
@@ -40,22 +40,22 @@
 
         <div class="crm-admin-grid">
             <div class="crm-admin-card">
-                <span class="crm-admin-card-label">Value</span>
+                <span class="crm-admin-card-label">{{ __('Value') }}</span>
                 <strong>{{ $deal->currency }} {{ number_format((float) $deal->value, 2) }}</strong>
-                <p>{{ $deal->probability }}% probability</p>
+                <p>{{ __(':value% probability', ['value' => $deal->probability]) }}</p>
             </div>
             <div class="crm-admin-card">
-                <span class="crm-admin-card-label">Weighted Value</span>
+                <span class="crm-admin-card-label">{{ __('Weighted Value') }}</span>
                 <strong>{{ $deal->currency }} {{ number_format($weightedValue, 2) }}</strong>
                 <p>{{ $crmFormat->status($deal->status) }}</p>
             </div>
             <div class="crm-admin-card">
-                <span class="crm-admin-card-label">Stage</span>
+                <span class="crm-admin-card-label">{{ __('Stage') }}</span>
                 <strong>{{ $deal->stage?->name ?: '-' }}</strong>
-                <p>{{ $deal->expected_close_date?->format('Y-m-d') ?: 'No expected close date' }}</p>
+                <p>{{ $deal->expected_close_date?->format('Y-m-d') ?: __('No expected close date') }}</p>
             </div>
             <div class="crm-admin-card">
-                <span class="crm-admin-card-label">Next Task</span>
+                <span class="crm-admin-card-label">{{ __('Next Task') }}</span>
                 <strong>{{ $nextTask?->title ?: __('No open task') }}</strong>
                 <p>{{ $nextTask?->due_at?->format('Y-m-d H:i') ?: __('Nothing scheduled') }}</p>
             </div>
@@ -87,17 +87,17 @@
                 </x-slot:header>
 
                 <dl class="crm-detail-list">
-                    <dt>Company</dt>
+                    <dt>{{ __('Company') }}</dt>
                     <dd>{{ $deal->company?->name ?: '-' }}</dd>
-                    <dt>Contact</dt>
+                    <dt>{{ __('Contact') }}</dt>
                     <dd>{{ $deal->contact?->full_name ?: '-' }}</dd>
-                    <dt>Owner</dt>
+                    <dt>{{ __('Owner') }}</dt>
                     <dd>{{ $deal->owner?->name ?: '-' }}</dd>
-                    <dt>Closed At</dt>
+                    <dt>{{ __('Closed At') }}</dt>
                     <dd>{{ $deal->closed_at?->format('Y-m-d H:i') ?: '-' }}</dd>
-                    <dt>Lost Reason</dt>
+                    <dt>{{ __('Lost Reason') }}</dt>
                     <dd>{{ $deal->lost_reason ?: '-' }}</dd>
-                    <dt>Tags</dt>
+                    <dt>{{ __('Tags') }}</dt>
                     <dd>{{ $deal->tags->pluck('name')->implode(', ') ?: '-' }}</dd>
                 </dl>
             </x-admin-panel::card>
@@ -120,7 +120,7 @@
 
                     @can('close', $deal)
                         <div class="crm-action-panel">
-                            <h3>Close Deal</h3>
+                            <h3>{{ __('Close Deal') }}</h3>
                             <div class="crm-row-actions">
                                 <form method="POST" action="{{ route('crm.deals.close-won', $deal) }}" data-crm-ajax-form>
                                     @csrf
@@ -146,7 +146,7 @@
                             @csrf
                             <input type="hidden" name="deal_id" value="{{ $deal->id }}">
                             <input type="hidden" name="deal_title" value="{{ $deal->title }}">
-                            <input type="hidden" name="brief" value="Draft a follow-up email for this deal.">
+                            <input type="hidden" name="brief" value="{{ __('Draft a follow-up email for this deal.') }}">
                             <x-admin-panel::button type="submit" variant="outline" icon="sparkles" :disabled="!$aiAvailable" :title="$aiAvailable ? __('Draft with AI') : trans('crm::messages.ai.not_configured')">
                                 {{ __('AI Email Draft') }}
                             </x-admin-panel::button>
@@ -224,9 +224,9 @@
                         <x-admin-panel::textarea name="notes" label="Notes" class="crm-span-2" rows="2" />
                         <x-admin-panel::textarea name="terms" label="Terms" class="crm-span-2" :value="$defaultTerms" rows="2" />
                         <div class="crm-form-actions crm-span-2">
-                            <x-admin-panel::button type="submit" icon="file-plus">Create Quote</x-admin-panel::button>
-                        </div>
-                    </form>
+                                <x-admin-panel::button type="submit" icon="file-plus">Create Quote</x-admin-panel::button>
+                            </div>
+                        </form>
                 @endcan
             </x-admin-panel::card>
 
@@ -242,7 +242,7 @@
                             <span>{{ $crmFormat->status($quote->status) }} / {{ $quote->currency }} {{ number_format((float) $quote->grand_total, 2) }}</span>
                         </div>
                     @empty
-                        <p class="crm-muted">No quotes yet.</p>
+                        <p class="crm-muted">{{ __('No quotes yet.') }}</p>
                     @endforelse
                 </div>
             </x-admin-panel::card>

@@ -2,16 +2,16 @@
 
 return [
     'task_reminder' => [
-        'mail_subject' => 'CRM Gorev Hatirlatmasi: :task',
-        'mail_intro' => 'Bir CRM gorevi icin hatirlatma zamani geldi.',
+        'mail_subject' => 'CRM Görev Hatırlatması: :task',
+        'mail_intro' => 'Bir CRM görevi için hatırlatma zamanı geldi.',
         'mail_due_at' => 'Vade: :value',
         'mail_no_due_date' => 'Vade tarihi yok',
-        'mail_action' => 'Gorevleri Ac',
-        'database_title' => 'Gorev hatirlatmasi',
+        'mail_action' => 'Görevleri Aç',
+        'database_title' => 'Görev hatırlatması',
     ],
     'task_assignment' => [
-        'assigned_title' => 'Gorev atandi',
-        'reassigned_title' => 'Gorev yeniden atandi',
+        'assigned_title' => 'Görev atandı',
+        'reassigned_title' => 'Görev yeniden atandı',
     ],
     'quote_status_changed' => [
         'title' => 'Teklif :status',
@@ -19,16 +19,16 @@ return [
         'body_without_company' => ':quote',
     ],
     'import_status' => [
-        'queued_title' => ':module ice aktarma siraya alindi',
-        'queued_body' => ':filename arka plan islemi icin siraya alindi.',
-        'completed_with_errors_title' => ':module ice aktarma hatalarla tamamlandi',
-        'completed_title' => ':module ice aktarma tamamlandi',
-        'completed_body' => ':created olusturuldu, :failed basarisiz oldu.',
+        'queued_title' => ':module içe aktarma sıraya alındı',
+        'queued_body' => ':filename arka plan işlemi için sıraya alındı.',
+        'completed_with_errors_title' => ':module içe aktarma hatalarla tamamlandı',
+        'completed_title' => ':module içe aktarma tamamlandı',
+        'completed_body' => ':created oluşturuldu, :failed başarısız oldu.',
     ],
     'center' => [
         'default_title' => 'Bildirim',
         'fallback_due_at' => 'Vade: :value',
-        'fallback_priority' => 'Oncelik: :value',
-        'fallback_open' => 'En son CRM guncellemesini incelemek icin acin.',
+        'fallback_priority' => 'Öncelik: :value',
+        'fallback_open' => 'En son CRM güncellemesini incelemek için açın.',
     ],
 ];

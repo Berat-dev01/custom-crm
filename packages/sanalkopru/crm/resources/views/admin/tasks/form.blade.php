@@ -1,4 +1,4 @@
-@extends('admin-panel::layouts.app')
+@extends('crm::layouts.app')
 
 @section('title', $task->exists ? __('Edit Task') : __('New Task'))
 @section('page-title', $task->exists ? __('Edit Task') : __('New Task'))

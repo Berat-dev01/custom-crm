@@ -1,4 +1,4 @@
-@extends('admin-panel::layouts.app')
+@extends('crm::layouts.app')
 
 @section('title', $contact->full_name)
 @section('page-title', $contact->full_name)
@@ -13,9 +13,9 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / Contacts</p>
+                <p class="crm-admin-eyebrow">{{ __('CRM / Contacts') }}</p>
                 <h1>{{ $contact->full_name }}</h1>
-                <p class="crm-muted">{{ $contact->title ?: 'No title' }}{{ $contact->company ? ' at '.$contact->company->name : '' }}</p>
+                <p class="crm-muted">{{ $contact->title ?: __('No title') }}{{ $contact->company ? ' '.__('at').' '.$contact->company->name : '' }}</p>
             </div>
 
             <div class="crm-admin-actions">
@@ -50,13 +50,13 @@
             <x-admin-panel::card>
                 <x-slot:header>Profile</x-slot:header>
                 <dl class="crm-detail-list">
-                    <dt>Email</dt><dd>{{ $contact->email ?: '-' }}</dd>
-                    <dt>Phone</dt><dd>{{ $contact->phone ?: '-' }}</dd>
-                    <dt>Lifecycle</dt><dd>{{ $crmFormat->status($contact->lifecycle_stage) }}</dd>
-                    <dt>Source</dt><dd>{{ $contact->source ? $crmFormat->status($contact->source) : '-' }}</dd>
-                    <dt>Owner</dt><dd>{{ $contact->owner?->name ?: '-' }}</dd>
-                    <dt>Last contacted</dt><dd>{{ $contact->last_contacted_at?->diffForHumans() ?: '-' }}</dd>
-                    <dt>Tags</dt>
+                    <dt>{{ __('Email') }}</dt><dd>{{ $contact->email ?: '-' }}</dd>
+                    <dt>{{ __('Phone') }}</dt><dd>{{ $contact->phone ?: '-' }}</dd>
+                    <dt>{{ __('Lifecycle') }}</dt><dd>{{ $crmFormat->status($contact->lifecycle_stage) }}</dd>
+                    <dt>{{ __('Source') }}</dt><dd>{{ $contact->source ? $crmFormat->status($contact->source) : '-' }}</dd>
+                    <dt>{{ __('Owner') }}</dt><dd>{{ $contact->owner?->name ?: '-' }}</dd>
+                    <dt>{{ __('Last contacted') }}</dt><dd>{{ $contact->last_contacted_at?->diffForHumans() ?: '-' }}</dd>
+                    <dt>{{ __('Tags') }}</dt>
                     <dd>
                         @forelse($contact->tags as $tag)
                             <x-admin-panel::badge variant="secondary">{{ $tag->name }}</x-admin-panel::badge>
@@ -96,7 +96,7 @@
                     </div>
                 @empty
                     <div class="crm-empty-state">
-                        <strong>No deals yet.</strong>
+                        <strong>{{ __('No deals yet.') }}</strong>
                     </div>
                 @endforelse
             </x-admin-panel::card>
@@ -111,7 +111,7 @@
                         <a href="{{ route('crm.tasks.show', $task) }}">{{ $task->title }}</a>
                         <span>
                             <x-admin-panel::badge :variant="$priorityVariant" size="sm">{{ $crmFormat->status($task->priority) }}</x-admin-panel::badge>
-                            {{ $task->due_at?->diffForHumans() ?: 'No due date' }}
+                            {{ $task->due_at?->diffForHumans() ?: __('No due date') }}
                         </span>
                     </div>
                 @empty
@@ -136,7 +136,7 @@
                     </div>
                 @empty
                     <div class="crm-empty-state">
-                        <strong>No quotes yet.</strong>
+                        <strong>{{ __('No quotes yet.') }}</strong>
                     </div>
                 @endforelse
             </x-admin-panel::card>

@@ -1,4 +1,4 @@
-@extends('admin-panel::layouts.app')
+@extends('crm::layouts.app')
 
 @section('title', $deal->exists ? __('Edit Deal') : __('New Deal'))
 @section('page-title', $deal->exists ? __('Edit Deal') : __('New Deal'))

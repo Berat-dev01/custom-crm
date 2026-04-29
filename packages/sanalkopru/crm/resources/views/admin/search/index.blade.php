@@ -1,4 +1,4 @@
-@extends('admin-panel::layouts.app')
+@extends('crm::layouts.app')
 
 @section('title', __('Search CRM'))
 @section('page-title', __('Search CRM'))
@@ -12,7 +12,7 @@
         @include('crm::admin.partials.status')
 
         <header class="crm-admin-header">
-            <p class="crm-admin-eyebrow">CRM</p>
+            <p class="crm-admin-eyebrow">{{ __('CRM') }}</p>
             <h1>{{ __('Search CRM') }}</h1>
             <p class="crm-muted">{{ $term ? __('Results for ":term"', ['term' => $term]) : __('Type at least two characters to search across CRM records.') }}</p>
         </header>
@@ -22,10 +22,10 @@
         @if($term && $totalResults === 0)
             <x-admin-panel::card>
                 @include('crm::admin.partials.empty-state', [
-                    'title' => 'No CRM records matched.',
-                    'body' => 'Try a company name, contact email, deal title or quote number.',
+                    'title' => __('No CRM records matched.'),
+                    'body' => __('Try a company name, contact email, deal title or quote number.'),
                     'actionUrl' => route('crm.contacts.create'),
-                    'actionLabel' => 'New Contact',
+                    'actionLabel' => __('New Contact'),
                 ])
             </x-admin-panel::card>
         @endif

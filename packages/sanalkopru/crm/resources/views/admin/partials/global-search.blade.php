@@ -10,6 +10,6 @@
             autocomplete="off"
             data-crm-global-search
         >
-        <x-admin-panel::button type="submit" icon="search">Search</x-admin-panel::button>
+        <x-admin-panel::button type="submit" icon="search">{{ __('Search') }}</x-admin-panel::button>
     </form>
 @endcan

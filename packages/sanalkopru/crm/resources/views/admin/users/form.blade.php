@@ -1,4 +1,4 @@
-@extends('admin-panel::layouts.app')
+@extends('crm::layouts.app')
 
 @section('title', $user->exists ? __('Edit User: :name', ['name' => $user->name]) : __('New User'))
 @section('page-title', $user->exists ? __('Edit User: :name', ['name' => $user->name]) : __('New User'))

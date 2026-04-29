@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="tr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
-    <title>Teklif {{ $quote->quote_number }}</title>
+    <title>{{ __('Quote') }} {{ $quote->quote_number }}</title>
     <style>
         @page {
             margin: 24mm 18mm 18mm;
@@ -226,7 +226,7 @@
     @php
         $customerName = $quote->company?->name ?: $quote->contact?->full_name ?: '-';
         $customerLines = array_filter([
-            $quote->contact?->full_name && $quote->company ? 'İlgili kişi: '.$quote->contact->full_name : null,
+            $quote->contact?->full_name && $quote->company ? __('Related Contact').': '.$quote->contact->full_name : null,
             $quote->contact?->email,
             $quote->contact?->phone,
             $quote->company?->address_line_1,
@@ -237,8 +237,8 @@
             $company['phone'] ?? null,
             $company['email'] ?? null,
             $company['website'] ?? null,
-            ($company['tax_office'] ?? null) ? 'Vergi Dairesi: '.$company['tax_office'] : null,
-            ($company['tax_number'] ?? null) ? 'Vergi No: '.$company['tax_number'] : null,
+            ($company['tax_office'] ?? null) ? __('Tax Office').': '.$company['tax_office'] : null,
+            ($company['tax_number'] ?? null) ? __('Tax Number').': '.$company['tax_number'] : null,
         ]);
     @endphp
 
@@ -255,7 +255,7 @@
                 @endforeach
             </div>
             <div class="header-right">
-                <div class="quote-title">Teklif</div>
+                <div class="quote-title">{{ __('Quote') }}</div>
                 <div class="quote-number">{{ $quote->quote_number }}</div>
                 <div class="badge">{{ $crmFormat->status($quote->status) }}</div>
             </div>
@@ -263,52 +263,52 @@
 
         <section class="section party-grid">
             <div class="party box">
-                <span class="label">Müşteri</span>
+                <span class="label">{{ __('Customer') }}</span>
                 <div class="value">{{ $customerName }}</div>
                 @foreach($customerLines as $line)
                     <div class="muted">{{ $line }}</div>
                 @endforeach
             </div>
             <div class="party box">
-                <span class="label">Teklif Bilgileri</span>
-                <div>Hazırlayan: <strong>{{ $quote->owner?->name ?: '-' }}</strong></div>
-                <div>Geçerlilik: <strong>{{ $quote->valid_until?->format('Y-m-d') ?: '-' }}</strong></div>
-                <div>Para Birimi: <strong>{{ $quote->currency }}</strong></div>
-                <div>Fırsat: <strong>{{ $quote->deal?->title ?: '-' }}</strong></div>
+                <span class="label">{{ __('Quote Details') }}</span>
+                <div>{{ __('Prepared By') }}: <strong>{{ $quote->owner?->name ?: '-' }}</strong></div>
+                <div>{{ __('Validity') }}: <strong>{{ $quote->valid_until?->format('Y-m-d') ?: '-' }}</strong></div>
+                <div>{{ __('Currency') }}: <strong>{{ $quote->currency }}</strong></div>
+                <div>{{ __('Opportunity') }}: <strong>{{ $quote->deal?->title ?: '-' }}</strong></div>
             </div>
         </section>
 
         <section class="section summary-grid">
             <div class="summary-cell box">
-                <span class="label">Ara Toplam</span>
+                <span class="label">{{ __('Subtotal') }}</span>
                 <div class="value">{{ $quote->currency }} {{ number_format((float) $quote->subtotal, 2) }}</div>
             </div>
             <div class="summary-cell box">
-                <span class="label">İskonto</span>
+                <span class="label">{{ __('Discount') }}</span>
                 <div class="value">{{ $quote->currency }} {{ number_format((float) $quote->discount_total, 2) }}</div>
             </div>
             <div class="summary-cell box">
-                <span class="label">KDV</span>
+                <span class="label">{{ __('Tax') }}</span>
                 <div class="value">{{ $quote->currency }} {{ number_format((float) $quote->tax_total, 2) }}</div>
             </div>
             <div class="summary-cell box">
-                <span class="label">Genel Toplam</span>
+                <span class="label">{{ __('Grand Total') }}</span>
                 <div class="value">{{ $quote->currency }} {{ number_format((float) $quote->grand_total, 2) }}</div>
             </div>
         </section>
 
         <section class="section">
-            <span class="label">Kalemler</span>
+            <span class="label">{{ __('Items') }}</span>
             <table>
                 <thead>
                     <tr>
                         <th style="width: 30px;">#</th>
-                        <th>Ürün / Hizmet</th>
-                        <th class="number" style="width: 58px;">Miktar</th>
-                        <th class="number" style="width: 82px;">Birim</th>
-                        <th class="number" style="width: 76px;">İskonto</th>
-                        <th class="number" style="width: 54px;">KDV</th>
-                        <th class="number" style="width: 92px;">Tutar</th>
+                        <th>{{ __('Product / Service') }}</th>
+                        <th class="number" style="width: 58px;">{{ __('Quantity') }}</th>
+                        <th class="number" style="width: 82px;">{{ __('Unit') }}</th>
+                        <th class="number" style="width: 76px;">{{ __('Discount') }}</th>
+                        <th class="number" style="width: 54px;">{{ __('Tax') }}</th>
+                        <th class="number" style="width: 92px;">{{ __('Amount') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -339,19 +339,19 @@
 
             <section class="totals">
                 <div class="total-line">
-                    <div class="total-label">Ara Toplam</div>
+                    <div class="total-label">{{ __('Subtotal') }}</div>
                     <div class="total-value">{{ $quote->currency }} {{ number_format((float) $quote->subtotal, 2) }}</div>
                 </div>
                 <div class="total-line">
-                    <div class="total-label">İskonto</div>
+                    <div class="total-label">{{ __('Discount') }}</div>
                     <div class="total-value">{{ $quote->currency }} {{ number_format((float) $quote->discount_total, 2) }}</div>
                 </div>
                 <div class="total-line">
-                    <div class="total-label">KDV</div>
+                    <div class="total-label">{{ __('Tax') }}</div>
                     <div class="total-value">{{ $quote->currency }} {{ number_format((float) $quote->tax_total, 2) }}</div>
                 </div>
                 <div class="total-line grand">
-                    <div class="total-label">Genel Toplam</div>
+                    <div class="total-label">{{ __('Grand Total') }}</div>
                     <div class="total-value">{{ $quote->currency }} {{ number_format((float) $quote->grand_total, 2) }}</div>
                 </div>
             </section>
@@ -359,17 +359,17 @@
 
         <section class="section notes-grid">
             <div class="note-box">
-                <span class="label">Notlar</span>
+                <span class="label">{{ __('Notes') }}</span>
                 <div class="text-box">{{ $quote->notes ?: '-' }}</div>
             </div>
             <div class="note-box">
-                <span class="label">Şartlar</span>
+                <span class="label">{{ __('Terms') }}</span>
                 <div class="text-box">{{ $quote->terms ?: '-' }}</div>
             </div>
         </section>
 
         <section class="footer">
-            <div class="footer-cell">Bu teklif {{ $company['name'] }} tarafından hazırlanmıştır.</div>
+            <div class="footer-cell">{{ __('This quote was prepared by :company.', ['company' => $company['name']]) }}</div>
             <div class="footer-cell">{{ $quote->quote_number }}</div>
         </section>
     </main>

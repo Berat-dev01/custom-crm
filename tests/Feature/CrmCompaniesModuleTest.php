@@ -136,7 +136,7 @@ class CrmCompaniesModuleTest extends TestCase
             ->get(route('crm.companies.show', $company))
             ->assertOk()
             ->assertSee($company->name)
-            ->assertSee('Open Deal Value')
+            ->assertSee(__('Open Deal Value'))
             ->assertSee('Attached Contact')
             ->assertSee('CRM-COMP-1')
             ->assertSee('Review account')

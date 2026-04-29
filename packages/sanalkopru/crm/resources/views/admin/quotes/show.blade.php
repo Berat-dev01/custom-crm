@@ -1,4 +1,4 @@
-@extends('admin-panel::layouts.app')
+@extends('crm::layouts.app')
 
 @section('title', $quote->quote_number)
 @section('page-title', $quote->quote_number)
@@ -25,7 +25,7 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / Quotes</p>
+                <p class="crm-admin-eyebrow">{{ __('CRM / Quotes') }}</p>
                 <h1>{{ $quote->quote_number }}</h1>
             </div>
 
@@ -60,30 +60,30 @@
 
         <div class="crm-admin-grid">
             <div class="crm-admin-card">
-                <span class="crm-admin-card-label">Grand Total</span>
+                <span class="crm-admin-card-label">{{ __('Grand Total') }}</span>
                 <strong>{{ $quote->currency }} {{ number_format((float) $quote->grand_total, 2) }}</strong>
                 <p>{{ $crmFormat->status($quote->status) }}</p>
             </div>
             <div class="crm-admin-card">
-                <span class="crm-admin-card-label">Subtotal</span>
+                <span class="crm-admin-card-label">{{ __('Subtotal') }}</span>
                 <strong>{{ $quote->currency }} {{ number_format((float) $quote->subtotal, 2) }}</strong>
-                <p>Discount {{ $quote->currency }} {{ number_format((float) $quote->discount_total, 2) }}</p>
+                <p>{{ __('Discount') }} {{ $quote->currency }} {{ number_format((float) $quote->discount_total, 2) }}</p>
             </div>
             <div class="crm-admin-card">
-                <span class="crm-admin-card-label">Tax</span>
+                <span class="crm-admin-card-label">{{ __('Tax') }}</span>
                 <strong>{{ $quote->currency }} {{ number_format((float) $quote->tax_total, 2) }}</strong>
-                <p>{{ number_format((float) $quote->tax_rate, 2) }}% reference rate</p>
+                <p>{{ __(':value% reference rate', ['value' => number_format((float) $quote->tax_rate, 2)]) }}</p>
             </div>
             <div class="crm-admin-card">
-                <span class="crm-admin-card-label">Valid Until</span>
+                <span class="crm-admin-card-label">{{ __('Valid Until') }}</span>
                 <strong>{{ $quote->valid_until?->format('Y-m-d') ?: '-' }}</strong>
-                <p>{{ $quote->owner?->name ?: 'No owner' }}</p>
+                <p>{{ $quote->owner?->name ?: __('No owner') }}</p>
             </div>
         </div>
 
         <div class="crm-context-help">
-            <strong>Status actions do not edit line items.</strong>
-            <span>Use Duplicate for revisions, Send for customer delivery tracking, and Accept when the customer approves the offer.</span>
+            <strong>{{ __('Status actions do not edit line items.') }}</strong>
+            <span>{{ __('Use Duplicate for revisions, Send for customer delivery tracking, and Accept when the customer approves the offer.') }}</span>
         </div>
 
         <div class="crm-two-column">
@@ -93,19 +93,19 @@
                 </x-slot:header>
 
                 <dl class="crm-detail-list">
-                    <dt>Company</dt>
+                    <dt>{{ __('Company') }}</dt>
                     <dd>{{ $quote->company?->name ?: '-' }}</dd>
-                    <dt>Contact</dt>
+                    <dt>{{ __('Contact') }}</dt>
                     <dd>{{ $quote->contact?->full_name ?: '-' }}</dd>
-                    <dt>Deal</dt>
+                    <dt>{{ __('Deal') }}</dt>
                     <dd>{{ $quote->deal?->title ?: '-' }}</dd>
-                    <dt>Sent At</dt>
+                    <dt>{{ __('Sent At') }}</dt>
                     <dd>{{ $quote->sent_at?->format('Y-m-d H:i') ?: '-' }}</dd>
-                    <dt>Accepted At</dt>
+                    <dt>{{ __('Accepted At') }}</dt>
                     <dd>{{ $quote->accepted_at?->format('Y-m-d H:i') ?: '-' }}</dd>
-                    <dt>Rejected At</dt>
+                    <dt>{{ __('Rejected At') }}</dt>
                     <dd>{{ $quote->rejected_at?->format('Y-m-d H:i') ?: '-' }}</dd>
-                    <dt>Tags</dt>
+                    <dt>{{ __('Tags') }}</dt>
                     <dd>{{ $quote->tags->pluck('name')->implode(', ') ?: '-' }}</dd>
                 </dl>
             </x-admin-panel::card>
@@ -148,7 +148,7 @@
                             <form method="POST" action="{{ route('crm.ai.follow-up') }}" data-crm-ajax-form data-crm-ai-label="{{ __('AI Follow-up Draft') }}">
                                 @csrf
                                 <input type="hidden" name="quote_id" value="{{ $quote->id }}">
-                                <input type="hidden" name="brief" value="Draft a polite follow-up for this quote.">
+                                <input type="hidden" name="brief" value="{{ __('Draft a polite follow-up for this quote.') }}">
                                 <x-admin-panel::button type="submit" variant="outline" icon="sparkles" :disabled="!$aiAvailable" :title="$aiAvailable ? __('Draft with AI') : trans('crm::messages.ai.not_configured')">
                                     {{ __('AI Follow-up') }}
                                 </x-admin-panel::button>
@@ -163,7 +163,7 @@
                             @if($quote->deal)
                                 <label class="crm-checkbox-row">
                                     <input type="checkbox" name="mark_deal_won" value="1">
-                                    Mark related deal as won
+                                    {{ __('Mark related deal as won') }}
                                 </label>
                             @endif
                             <x-admin-panel::button type="submit" variant="success" icon="check">Accept Quote</x-admin-panel::button>
@@ -174,18 +174,18 @@
         </div>
 
         <x-admin-panel::card>
-            <x-slot:header>
-                Line Items
-            </x-slot:header>
+                <x-slot:header>
+                    Line Items
+                </x-slot:header>
 
             <x-admin-panel::table :headers="[
                 ['label' => '#', 'width' => '50px'],
-                ['label' => 'Item'],
-                ['label' => 'Qty'],
-                ['label' => 'Unit'],
-                ['label' => 'Discount'],
-                ['label' => 'Tax'],
-                ['label' => 'Line Total'],
+                ['label' => __('Item')],
+                ['label' => __('Qty')],
+                ['label' => __('Unit')],
+                ['label' => __('Discount')],
+                ['label' => __('Tax')],
+                ['label' => __('Line Total')],
             ]">
                 @foreach($quote->items as $item)
                     <tr>
@@ -206,10 +206,10 @@
             </x-admin-panel::table>
 
             <div class="crm-totals">
-                <div><span>Subtotal</span><strong>{{ $quote->currency }} {{ number_format((float) $quote->subtotal, 2) }}</strong></div>
-                <div><span>Discount</span><strong>{{ $quote->currency }} {{ number_format((float) $quote->discount_total, 2) }}</strong></div>
-                <div><span>Tax</span><strong>{{ $quote->currency }} {{ number_format((float) $quote->tax_total, 2) }}</strong></div>
-                <div><span>Grand Total</span><strong>{{ $quote->currency }} {{ number_format((float) $quote->grand_total, 2) }}</strong></div>
+                <div><span>{{ __('Subtotal') }}</span><strong>{{ $quote->currency }} {{ number_format((float) $quote->subtotal, 2) }}</strong></div>
+                <div><span>{{ __('Discount') }}</span><strong>{{ $quote->currency }} {{ number_format((float) $quote->discount_total, 2) }}</strong></div>
+                <div><span>{{ __('Tax') }}</span><strong>{{ $quote->currency }} {{ number_format((float) $quote->tax_total, 2) }}</strong></div>
+                <div><span>{{ __('Grand Total') }}</span><strong>{{ $quote->currency }} {{ number_format((float) $quote->grand_total, 2) }}</strong></div>
             </div>
         </x-admin-panel::card>
 

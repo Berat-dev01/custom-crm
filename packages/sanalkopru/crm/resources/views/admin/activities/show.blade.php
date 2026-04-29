@@ -1,4 +1,4 @@
-@extends('admin-panel::layouts.app')
+@extends('crm::layouts.app')
 
 @section('title', $activity->subject)
 @section('page-title', $activity->subject)
@@ -39,7 +39,7 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / Activities</p>
+                <p class="crm-admin-eyebrow">{{ __('CRM / Activities') }}</p>
                 <h1>{{ $activity->subject }}</h1>
                 <p class="crm-muted" style="margin-top:4px;">
                     <x-admin-panel::badge :variant="$typeVariant">{{ $typeLabel }}</x-admin-panel::badge>
@@ -57,9 +57,9 @@
             <x-slot:header>Activity Detail</x-slot:header>
 
             <dl class="crm-detail-list">
-                <dt>Type</dt>
+                <dt>{{ __('Type') }}</dt>
                 <dd><x-admin-panel::badge :variant="$typeVariant">{{ $typeLabel }}</x-admin-panel::badge></dd>
-                <dt>Related</dt>
+                <dt>{{ __('Related') }}</dt>
                 <dd>
                     @if($relatedRoute)
                         <a href="{{ $relatedRoute }}" style="color:#0369a1;">{{ $relatedLabel }}</a>
@@ -67,9 +67,9 @@
                         {{ $relatedLabel }}
                     @endif
                 </dd>
-                <dt>Logged by</dt>
-                <dd>{{ $activity->user?->name ?: 'System' }}</dd>
-                <dt>Occurred</dt>
+                <dt>{{ __('Logged by') }}</dt>
+                <dd>{{ $activity->user?->name ?: __('System') }}</dd>
+                <dt>{{ __('Occurred') }}</dt>
                 <dd>
                     {{ $activity->occurred_at?->format('d M Y H:i') ?: '-' }}
                     @if($activity->occurred_at)
@@ -77,7 +77,7 @@
                     @endif
                 </dd>
                 @if($activity->body)
-                    <dt>Notes</dt>
+                    <dt>{{ __('Notes') }}</dt>
                     <dd>{{ $activity->body }}</dd>
                 @endif
             </dl>

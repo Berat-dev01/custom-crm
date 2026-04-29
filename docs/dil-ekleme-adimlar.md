@@ -668,9 +668,77 @@ Durum: tamamlandi.
 - `admin-panel` auth sayfalari ve layout icine translation payload enjekte edildi; login email/password ve 2FA placeholder'lari ile pagination `title` / `aria-label` alanlari da ceviri sistemine baglandi
 - CRM detail ekranlarinda kalan ham `data-crm-confirm`, `data-admin-select-placeholder`, AI button `title`, `data-crm-ai-label` ve ilgili placeholder stringleri `__()` / `trans()` uzerinden locale-aware hale getirildi
 - Bu faz icin gereken yeni `tr.json` anahtarlari `admin-panel` ve `crm` paketlerine eklendi; bir feature test locale-aware beklentiye gore guncellendi
+- `tr` ceviri dosyalarinda kalan ASCII transliterasyonlar temizlendi; `ç, ğ, ı, İ, ö, ş, ü` karakterleri bozulmus metinlerde normalize edildi
 - Docker icinde `vendor:publish --tag=admin-panel-assets --force`, `vendor:publish --tag=crm-assets --force`, `php artisan view:cache`, translation kontrolu ve tam test suiti basarili dogrulandi
 
 Bu faz sonunda kullanicinin tarayicida gordugu JS kaynakli ve attribute tabanli sistem metinleri de host locale ile tutarli calisiyor. Boylece localization sadece Blade ve backend response seviyesinde degil, front-end interaction katmaninda da tamamlanmis oldu.
+
+### Faz 10 Sonrasi Ek Tarama
+
+29 Nisan 2026 tarihli ek taramada, sistemde gozden kacmis veya component davranisindan dolayi ceviriye hic girmemis bazi alanlar tespit edildi. Asagidaki liste kalan localization aciklarini dosya bazinda toplar.
+
+Kok neden olan ortak componentler:
+
+- `packages/sanalkopru/admin-panel/resources/views/components/card.blade.php`
+  `header` slot'u ham basiliyor; plain text header veren CRM ekranlari `__()` sarmalamasi olmadan ceviriye girmiyor.
+- `packages/sanalkopru/admin-panel/resources/views/components/stat-card.blade.php`
+  `label` prop'u ham basiliyor; `label="Open Deals"` gibi kullanimlar locale-aware olmuyor.
+
+Takip uygulamasi:
+
+- `card.blade.php` ve `stat-card.blade.php` locale-aware hale getirildi.
+- `companies/show`, `contacts/show`, `activities/show`, `tasks/show`, `deals/show`, `quotes/show` ve `tags/show` icindeki ana kart basliklari, stat label'lari ve gorunur helper/action metinlerinin buyuk kismi localization akisina baglandi.
+- Bu gruptan sonra kalan odak alanlari agirlikli olarak liste, form, select option label ve PDF sablonu tarafina kaydi.
+- Sonraki taramada `quotes/pdf`, `data-transfer/import`, `data-transfer/_preview`, `notifications/index` ve `partials/global-search` locale-aware hale getirildi.
+- `quotes/pdf` artik `app()->getLocale()` ile `lang` attribute'unu kuruyor; sabit Turkce baslik/alan isimleri `__()` uzerinden cozuluyor ve PDF dosya adi da `quote-*.pdf` olarak locale-neutral hale getirildi.
+- `dashboard/index` tarafinda kod zaten `__()` kullandigi halde eksik kalan `CRM Dashboard`, `This Week`, `This Month`, `Custom`, `Period`, `From`, `To` anahtarlari TR dosyasina eklendi.
+
+Liste, filtre, selectbox ve kanban taramasinda tekrar kontrol edilmesi gereken ekranlar:
+
+- `companies|contacts|deals|quotes|tasks|activities` index ekranlarindaki ana filter/placeholder/empty-state stringleri `tr.json` tarafina baglandi.
+- `search/index` ve `partials/saved-filters` icindeki gorunur ham metinler de localization akisina alindi.
+- Bu grupta kalan odak daha cok object option label'lari, modale ozel yardim metinleri ve `deal-stages/index` gibi ikincil ekranlarda ince tarama yapmaktir.
+- `packages/sanalkopru/crm/resources/views/admin/deal-stages/index.blade.php`
+
+Form, modal ve helper text tarafinda yeniden taranacak dosyalar:
+
+- `companies|contacts|deals|quotes|tasks|activities|deal-stages|tags|users` form ekranlarindaki temel label/placeholder anahtarlari TR tarafa eklendi.
+- Bu grupta kalan is daha cok secim listelerine obje olarak gelen option label'larin, yardim kutularinin ve ornek JSON placeholder'larin locale stratejisinin netlestirilmesidir.
+- `packages/sanalkopru/crm/resources/views/admin/contacts/import.blade.php`
+
+Ortak partial, dashboard ve locale-dispatch disinda kalan alanlar:
+
+- `packages/sanalkopru/crm/resources/views/admin/partials/global-search.blade.php`
+  Arama partial'inin ana stringleri locale-aware; kalan kontrol alani command palette / sonuc badge uyumudur.
+
+### Son Durum
+
+29 Nisan 2026 tarihli son taramada `sanalkopru/admin-panel` ve `sanalkopru/crm` scope'undaki kullaniciya gorunen sistem metinleri tekrar kontrol edildi.
+
+Sonuc:
+
+- Lokalize edilmemis belirgin bir sistem UI metni kalmadi.
+- Kalan stringlerin buyuk kismi kullanici verisi veya domain datasidir; tasarim geregi translation'a sokulmaz.
+
+Bunlara ornek:
+
+- stage name
+- tag name
+- company/contact adlari
+- kullanici notlari
+- quote item description alanlari
+
+Yani localization isi sistem metni seviyesi icin tamamlandi. Bundan sonra bulunabilecek farklar buyuk ihtimalle:
+
+- yeni eklenen ekranlarda sonradan unutulan key'ler
+- kullanici tarafindan olusturulan verilerin cok dilli gosterilmek istenmesi
+
+Ikinci durum yeni bir localization problemi degil, ayri bir cok dilli veri modeli kararidir.
+
+Not:
+
+- `x-admin-panel::input` ve `x-admin-panel::select` placeholder alanlari ceviri sistemine bagli, yani `placeholder="No owner"` gibi kullanimlar teknik olarak cevrilebilir.
+- Buna ragmen bu ekranlar tekrar listelendi; cunku select icindeki option label'lari, card header slot'lari, stat-card label'lari ve helper text bloklari ayni dosyalarda birlikte yer aliyor.
 
 Blade icindeki `data-*` attribute'larda sabit metinler var. Bunlar da localization kapsaminda.
 

@@ -128,7 +128,7 @@ class CrmContactsModuleTest extends TestCase
             ->get(route('crm.contacts.show', $contact))
             ->assertOk()
             ->assertSee($contact->full_name)
-            ->assertSee('Open Deal Value')
+            ->assertSee(__('Open Deal Value'))
             ->assertSee('Call customer')
             ->assertSee('CRM-999001');
 

@@ -1,4 +1,4 @@
-@extends('admin-panel::layouts.app')
+@extends('crm::layouts.app')
 
 @section('title', __('Notifications'))
 @section('page-title', __('Notifications'))
@@ -14,7 +14,7 @@
         <header class="crm-admin-header">
             <div class="crm-admin-header-row">
                 <div>
-                    <p class="crm-admin-eyebrow">CRM / {{ __('Notifications') }}</p>
+                    <p class="crm-admin-eyebrow">{{ __('CRM / Notifications') }}</p>
                     <h1>{{ __('Notifications') }}</h1>
                     <p class="crm-muted">{{ __('Recent CRM updates, assignments, quote changes and import results.') }}</p>
                 </div>

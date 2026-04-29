@@ -100,7 +100,7 @@ class CrmQuotesModuleTest extends TestCase
         $this->actingAs($this->admin, 'admin')
             ->get(route('crm.quotes.show', $quote))
             ->assertOk()
-            ->assertSee('Status actions do not edit line items.')
+            ->assertSee(__('Status actions do not edit line items.'))
             ->assertSee('Backend controls the totals.')
             ->assertSee('2,537.00');
 
@@ -248,17 +248,19 @@ class CrmQuotesModuleTest extends TestCase
         $quote = Quote::factory()->create(['quote_number' => 'CRM-PDF-001']);
         QuoteItem::factory()->create(['quote_id' => $quote->id, 'name' => 'PDF Service']);
 
-        $this->actingAs($this->admin, 'admin')
+        $this->withSession(['locale' => 'tr'])
+            ->actingAs($this->admin, 'admin')
             ->get(route('crm.quotes.preview', $quote))
             ->assertOk()
             ->assertSee('CRM-PDF-001')
             ->assertSee('PDF Service');
 
-        $response = $this->actingAs($this->admin, 'admin')
+        $response = $this->withSession(['locale' => 'tr'])
+            ->actingAs($this->admin, 'admin')
             ->get(route('crm.quotes.download', $quote))
             ->assertOk()
             ->assertHeader('Content-Type', 'application/pdf')
-            ->assertHeader('Content-Disposition', 'attachment; filename="teklif-CRM-PDF-001.pdf"');
+            ->assertHeader('Content-Disposition', 'attachment; filename="quote-CRM-PDF-001.pdf"');
 
         $this->assertStringStartsWith('%PDF', $response->getContent());
     }
@@ -301,7 +303,8 @@ class CrmQuotesModuleTest extends TestCase
             'position' => 1,
         ]);
 
-        $this->actingAs($this->admin, 'admin')
+        $this->withSession(['locale' => 'tr'])
+            ->actingAs($this->admin, 'admin')
             ->get(route('crm.quotes.preview', $quote))
             ->assertOk()
             ->assertSee('Teklif')
@@ -309,7 +312,7 @@ class CrmQuotesModuleTest extends TestCase
             ->assertSee('Maslak Mah. Büyükdere Cad. No: 1 İstanbul')
             ->assertSee('Vergi Dairesi: Şişli')
             ->assertSee('Çağdaş Üretim A.Ş.')
-            ->assertSee('İlgili kişi: İpek Çelik')
+            ->assertSee(__('Related Contact').': İpek Çelik')
             ->assertSee('Kurumsal CRM Geçiş Hizmeti')
             ->assertSee('Türkçe karakterler')
             ->assertSee('Genel Toplam')

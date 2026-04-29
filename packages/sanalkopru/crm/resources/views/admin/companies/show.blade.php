@@ -1,4 +1,4 @@
-@extends('admin-panel::layouts.app')
+@extends('crm::layouts.app')
 
 @section('title', $company->name)
 @section('page-title', $company->name)
@@ -19,9 +19,9 @@
 
         <header class="crm-admin-header crm-admin-header-row">
             <div>
-                <p class="crm-admin-eyebrow">CRM / Companies</p>
+                <p class="crm-admin-eyebrow">{{ __('CRM / Companies') }}</p>
                 <h1>{{ $company->name }}</h1>
-                <p class="crm-muted">{{ $company->sector ?: 'No sector' }}{{ $company->city ? ' / '.$company->city : '' }}</p>
+                <p class="crm-muted">{{ $company->sector ?: __('No sector') }}{{ $company->city ? ' / '.$company->city : '' }}</p>
             </div>
 
             <div class="crm-admin-actions">
@@ -56,15 +56,15 @@
             <x-admin-panel::card>
                 <x-slot:header>Company Info</x-slot:header>
                 <dl class="crm-detail-list">
-                    <dt>Email</dt><dd>{{ $company->email ?: '-' }}</dd>
-                    <dt>Phone</dt><dd>{{ $company->phone ?: '-' }}</dd>
-                    <dt>Website</dt><dd>{{ $company->website ?: '-' }}</dd>
-                    <dt>Tax number</dt><dd>{{ $company->tax_number ?: '-' }}</dd>
-                    <dt>Tax office</dt><dd>{{ $company->tax_office ?: '-' }}</dd>
-                    <dt>Owner</dt><dd>{{ $company->owner?->name ?: '-' }}</dd>
-                    <dt>Address</dt>
+                    <dt>{{ __('Email') }}</dt><dd>{{ $company->email ?: '-' }}</dd>
+                    <dt>{{ __('Phone') }}</dt><dd>{{ $company->phone ?: '-' }}</dd>
+                    <dt>{{ __('Website') }}</dt><dd>{{ $company->website ?: '-' }}</dd>
+                    <dt>{{ __('Tax number') }}</dt><dd>{{ $company->tax_number ?: '-' }}</dd>
+                    <dt>{{ __('Tax office') }}</dt><dd>{{ $company->tax_office ?: '-' }}</dd>
+                    <dt>{{ __('Owner') }}</dt><dd>{{ $company->owner?->name ?: '-' }}</dd>
+                    <dt>{{ __('Address') }}</dt>
                     <dd>{{ collect([$company->address_line_1, $company->address_line_2, $company->city, $company->state, $company->postal_code, $company->country])->filter()->implode(', ') ?: '-' }}</dd>
-                    <dt>Tags</dt>
+                    <dt>{{ __('Tags') }}</dt>
                     <dd>
                         @forelse($company->tags as $tag)
                             <x-admin-panel::badge variant="secondary">{{ $tag->name }}</x-admin-panel::badge>
@@ -88,7 +88,7 @@
                                 data-admin-select-searchable="1"
                                 data-admin-select-clearable="1"
                             >
-                                <label class="form-label" for="contact_ids">Available Contacts</label>
+                                <label class="form-label" for="contact_ids">{{ __('Available Contacts') }}</label>
                                 <select id="contact_ids" name="contact_ids[]" class="form-control" multiple required data-admin-select-native>
                                     @foreach($availableContacts as $contact)
                                         <option value="{{ $contact->id }}">
@@ -100,7 +100,7 @@
                             <x-admin-panel::button type="submit" icon="link">Attach Contacts</x-admin-panel::button>
                         </form>
                     @else
-                        <p class="crm-muted">No unassigned contacts are available.</p>
+                        <p class="crm-muted">{{ __('No unassigned contacts are available.') }}</p>
                     @endif
                 @endcan
             </x-admin-panel::card>
@@ -112,11 +112,11 @@
                 @forelse($company->contacts->sortBy('full_name') as $contact)
                     <div class="crm-list-item">
                         <a href="{{ route('crm.contacts.show', $contact) }}">{{ $contact->full_name }}</a>
-                        <span>{{ $contact->title ? $contact->title.' · ' : '' }}{{ $contact->email ?: 'No email' }}</span>
+                        <span>{{ $contact->title ? $contact->title.' · ' : '' }}{{ $contact->email ?: __('No email') }}</span>
                     </div>
                 @empty
                     <div class="crm-empty-state">
-                        <strong>No contacts attached.</strong>
+                        <strong>{{ __('No contacts attached.') }}</strong>
                     </div>
                 @endforelse
             </x-admin-panel::card>
@@ -130,7 +130,7 @@
                     </div>
                 @empty
                     <div class="crm-empty-state">
-                        <strong>No open deals.</strong>
+                        <strong>{{ __('No open deals.') }}</strong>
                     </div>
                 @endforelse
             </x-admin-panel::card>
@@ -150,7 +150,7 @@
                     </div>
                 @empty
                     <div class="crm-empty-state">
-                        <strong>No quotes yet.</strong>
+                        <strong>{{ __('No quotes yet.') }}</strong>
                     </div>
                 @endforelse
             </x-admin-panel::card>
@@ -167,7 +167,7 @@
                         <a href="{{ route('crm.tasks.show', $task) }}">{{ $task->title }}</a>
                         <span>
                             <x-admin-panel::badge :variant="$priorityVariant" size="sm">{{ $crmFormat->status($task->priority) }}</x-admin-panel::badge>
-                            {{ $task->due_at?->diffForHumans() ?: 'No due date' }}
+                            {{ $task->due_at?->diffForHumans() ?: __('No due date') }}
                         </span>
                     </div>
                 @empty
