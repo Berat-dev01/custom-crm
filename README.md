@@ -1,27 +1,31 @@
 # CRM Engine
 
-`sanalkopru/crm`, Sanal Kopru projelerine kurulabilen tekrar satilabilir Laravel CRM paketidir. Amac, musteri CRM istediginde sifirdan proje yazmak yerine, admin paneli hazir, testleri olan, customize edilebilir ve production deploy'a hazir bir cekirdegi hizla teslim etmektir.
+A production-ready, white-label Laravel CRM built for rapid client delivery. Drop it into any Laravel application, configure it once, and hand off a fully functional CRM without writing it from scratch.
 
-Urun varsayilan olarak single-tenant kurulur. Her musteri kendi kurulumu, veritabani ve domainiyle calisir. Kod yapisi tenant-ready tutulur; ileride public portal, mobil uygulama veya SaaS yuzeyi eklenirken is mantigi yeniden yazilmaz.
+Designed for single-tenant deployments by default — each client gets their own installation, database, and domain. The codebase is kept tenant-ready so a public portal, mobile app, or SaaS surface can be layered on top without rewriting business logic.
 
-## Ozellikler
+---
 
-- Admin CRM paneli: `/admin/crm`
-- Contacts ve companies yonetimi
-- Deals Kanban pipeline, drag-drop ve won/lost akislari
-- Tasks, reminder, queue ve scheduler destegi
-- Quotes, KDV/iskonto hesaplama, PDF preview/download
-- Activities timeline ve otomatik sistem aktiviteleri
-- Tags, saved filters, import/export
-- Dashboard, raporlama ve performans odakli aggregate sorgular
-- Settings, marka bilgileri, quote varsayilanlari ve logo upload
-- Token korumali `/api/crm` API katmani
-- Audit log, policy tabanli yetki sistemi ve rate limitler
-- Driver tabanli AI: `openai`, `claude`, `gemini`, `null`
+## Features
 
-## Hizli Development Kurulumu
+| Area | Capabilities |
+|---|---|
+| **Contacts & Companies** | Full management, lifecycle stages, tagging, import/export |
+| **Deals** | Kanban pipeline, drag-and-drop, won/lost flows |
+| **Tasks** | Reminders, queue-backed scheduling, calendar view |
+| **Quotes** | VAT/discount calculation, PDF preview and download |
+| **Activities** | Timeline, automated system activities |
+| **Dashboard** | Reporting, performance-optimised aggregate queries |
+| **Settings** | Brand info, quote defaults, logo upload |
+| **API** | Token-protected `/api/crm` layer |
+| **Security** | Audit log, policy-based permissions, rate limiting |
+| **AI** | Driver-based: `openai`, `claude`, `gemini`, `null` |
 
-Development tamamen Docker ile calisir. Host makinede `php`, `composer`, `npm` veya `php artisan` calistirilmaz.
+---
+
+## Quick Start (Docker)
+
+Development runs entirely inside Docker. No local PHP, Composer, or Node required.
 
 ```bash
 cp .env.example .env
@@ -31,33 +35,33 @@ make artisan CMD="key:generate"
 make fresh
 ```
 
-Uygulama: `http://localhost:8081`
+App: **http://localhost:8081**
 
-Demo kullanicilari:
+### Demo Accounts
 
-- `crm.owner@example.com` / `password`
-- `crm.manager@example.com` / `password`
-- `crm.sales@example.com` / `password`
-- `crm.support@example.com` / `password`
-- `crm.viewer@example.com` / `password`
+| Role | Email | Password |
+|---|---|---|
+| Owner | `crm.owner@example.com` | `password` |
+| Manager | `crm.manager@example.com` | `password` |
+| Sales | `crm.sales@example.com` | `password` |
+| Support | `crm.support@example.com` | `password` |
+| Viewer | `crm.viewer@example.com` | `password` |
 
-Demo verisi tek komutla gelir:
+### Seed Data
 
 ```bash
+# Demo dataset
 make artisan CMD="crm:seed-demo"
-```
 
-Performans veri seti:
-
-```bash
+# Large performance dataset
 make artisan CMD="crm:seed-performance"
 ```
 
-Detayli kurulum: [docs/installation.md](docs/installation.md)
+---
 
-## Admin Panel Entegrasyonu
+## Admin Panel Integration
 
-CRM view katmani `sanalkopru/admin-panel` paketinin layout ve admin guard yapisini kullanir. Root `composer.json` icinde admin panel private repository tanimlidir:
+CRM views are built on the `sanalkopru/admin-panel` package layout and admin guard. The private repository is declared in `composer.json`:
 
 ```json
 {
@@ -66,11 +70,13 @@ CRM view katmani `sanalkopru/admin-panel` paketinin layout ve admin guard yapisi
 }
 ```
 
-Private GitHub erisimi gerekiyorsa token repoya yazilmaz; lokal ortamdan `COMPOSER_AUTH` ile verilir.
+Private GitHub access is provided via `COMPOSER_AUTH` from the local environment — tokens are never committed to the repository.
 
-CRM ekranlari admin panelden izole sekilde `/admin/crm` altinda calisir. Public frontend'e CRM assetleri yuklenmez.
+CRM screens run isolated under `/admin/crm`. No CRM assets are loaded on the public frontend.
 
-## Paket Publish Komutlari
+---
+
+## Publish Commands
 
 ```bash
 make artisan CMD="vendor:publish --tag=crm-config"
@@ -80,9 +86,22 @@ make artisan CMD="vendor:publish --tag=crm-assets"
 make artisan CMD="migrate"
 ```
 
-Kurulum ve paket entegrasyonu icin: [docs/installation.md](docs/installation.md)
+---
 
-## Test ve QA
+## AI Provider
+
+Select a provider in `.env`:
+
+```env
+CRM_AI_ENABLED=false
+CRM_AI_DRIVER=openai   # openai | claude | gemini | null
+```
+
+The AI layer generates drafts and summaries. It does not modify CRM records without explicit user confirmation.
+
+---
+
+## Testing & QA
 
 ```bash
 make test
@@ -90,49 +109,27 @@ make artisan CMD="migrate:fresh --seed --force"
 make composer CMD="validate --strict"
 ```
 
-Test kapsami: [docs/qa/test-suite.md](docs/qa/test-suite.md)
-
-Manual QA checklist: [docs/qa-checklist.md](docs/qa-checklist.md)
-
-Quote kavram rehberi: [quotes-tanitim.txt](quotes-tanitim.txt)
-
-AI test haritasi: [ai-sayfalar.txt](ai-sayfalar.txt)
-
-## AI Provider Secimi
-
-`.env` icinden provider secilir:
-
-```env
-CRM_AI_ENABLED=false
-CRM_AI_DRIVER=openai
-```
-
-Desteklenen driver'lar: `openai`, `claude`, `gemini`, `null`. AI katmani taslak/ozet uretir; CRM kayitlarini kullanici onayi olmadan degistirmez.
+---
 
 ## Production
 
-Production'da Docker kullanilmaz. Hedef mimari Nginx, PHP-FPM, MySQL, Redis, Supervisor queue worker, Cron scheduler ve SSL/TLS uzerinedir.
+Production does not use Docker. Target stack: **Nginx · PHP-FPM · MySQL · Redis · Supervisor (queue) · Cron (scheduler) · SSL/TLS**.
 
-Production rehberi: [docs/production-deploy-no-docker.md](docs/production-deploy-no-docker.md)
+---
 
-## Dokumanlar
+## Project Structure
 
-- [Installation](docs/installation.md)
-- [Development Docker](docs/development-docker.md)
-- [Production Deploy No Docker](docs/production-deploy-no-docker.md)
-- [Modules](docs/modules.md)
-- [Customization](docs/customization.md)
-- [API](docs/api.md)
-- [Performance](docs/performance.md)
-- [Security Checklist](docs/security-checklist.md)
-- [Manual Test Guide](docs/manual-test-guide.md)
-- [QA Checklist](docs/qa-checklist.md)
-- [Troubleshooting](docs/troubleshooting.md)
-- [Architecture](docs/architecture.md)
-- [Product Scope](docs/product-scope.md)
-- [Quotes Tanitim](quotes-tanitim.txt)
-- [AI Sayfalar](ai-sayfalar.txt)
+```
+app/Crm/          Business logic, models, actions, policies
+config/crm.php    Package configuration
+routes/crm.php    CRM route definitions
+resources/views/crm/  Blade views
+packages/         Local packages (admin-panel)
+docs/             Internal development documentation (git-ignored)
+```
 
-## Roadmap
+---
 
-Tam uygulama plani ve adim durumlari [roadmap.md](roadmap.md) dosyasindadir.
+## License
+
+Proprietary. All rights reserved. Not for public distribution.
