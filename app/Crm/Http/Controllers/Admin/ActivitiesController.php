@@ -116,16 +116,17 @@ class ActivitiesController extends Controller
         Gate::authorize('crm.activities.delete');
 
         $validated = $request->validate([
-            'record_ids' => ['required', 'array', 'min:1'],
+            'record_ids' => ['required', 'array', 'min:1', 'max:500'],
             'record_ids.*' => ['integer', 'exists:activities,id'],
         ]);
 
         Activity::query()
             ->whereKey($validated['record_ids'])
-            ->get()
-            ->each(function (Activity $activity): void {
-                Gate::authorize('delete', $activity);
-                $activity->delete();
+            ->chunkById(200, function (\Illuminate\Support\Collection $activities): void {
+                $activities->each(function (Activity $activity): void {
+                    Gate::authorize('delete', $activity);
+                    $activity->delete();
+                });
             });
 
         return back()->with('crm_status', trans('crm::messages.activities.bulk_deleted'));

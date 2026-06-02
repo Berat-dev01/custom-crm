@@ -115,16 +115,17 @@ class QuotesController extends Controller
         Gate::authorize('crm.quotes.delete');
 
         $validated = $request->validate([
-            'record_ids' => ['required', 'array', 'min:1'],
+            'record_ids' => ['required', 'array', 'min:1', 'max:500'],
             'record_ids.*' => ['integer', 'exists:quotes,id'],
         ]);
 
         Quote::query()
             ->whereKey($validated['record_ids'])
-            ->get()
-            ->each(function (Quote $quote): void {
-                Gate::authorize('delete', $quote);
-                $quote->delete();
+            ->chunkById(200, function (\Illuminate\Support\Collection $quotes): void {
+                $quotes->each(function (Quote $quote): void {
+                    Gate::authorize('delete', $quote);
+                    $quote->delete();
+                });
             });
 
         return back()->with('crm_status', trans('crm::messages.quotes.bulk_deleted'));

@@ -108,16 +108,17 @@ class TasksController extends Controller
         Gate::authorize('crm.tasks.delete');
 
         $validated = $request->validate([
-            'record_ids' => ['required', 'array', 'min:1'],
+            'record_ids' => ['required', 'array', 'min:1', 'max:500'],
             'record_ids.*' => ['integer', 'exists:tasks,id'],
         ]);
 
         Task::query()
             ->whereKey($validated['record_ids'])
-            ->get()
-            ->each(function (Task $task): void {
-                Gate::authorize('delete', $task);
-                $task->delete();
+            ->chunkById(200, function (\Illuminate\Support\Collection $tasks): void {
+                $tasks->each(function (Task $task): void {
+                    Gate::authorize('delete', $task);
+                    $task->delete();
+                });
             });
 
         return back()->with('crm_status', trans('crm::messages.tasks.bulk_deleted'));

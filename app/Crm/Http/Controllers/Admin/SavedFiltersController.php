@@ -37,7 +37,15 @@ class SavedFiltersController extends Controller
 
     public function destroy(SavedFilter $savedFilter): RedirectResponse
     {
-        $this->authorizeAccess($savedFilter);
+        Gate::authorize("crm.{$savedFilter->module}.view");
+
+        $userId = request()->user()?->id;
+        $isOwner = $savedFilter->user_id === $userId;
+        $canManage = Gate::allows('crm.settings.manage');
+
+        if (! $isOwner && ! $canManage) {
+            abort(403, trans('crm::messages.saved_filters.private_access_denied'));
+        }
 
         $savedFilter->delete();
 

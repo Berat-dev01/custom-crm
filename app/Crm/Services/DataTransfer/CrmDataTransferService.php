@@ -616,6 +616,7 @@ class CrmDataTransferService
                     ->when($request->filled('tag_id'), fn ($q2) => $q2->whereHas('tags', fn ($tq) => $tq->whereKey($request->integer('tag_id'))))
                 )
                 ->orderBy('full_name')
+                ->limit(10000)
                 ->get()
                 ->map(fn (Contact $c): array => [
                     'full_name' => $c->full_name,
@@ -642,6 +643,7 @@ class CrmDataTransferService
                     ->when($request->filled('tag_id'), fn ($q2) => $q2->whereHas('tags', fn ($tq) => $tq->whereKey($request->integer('tag_id'))))
                 )
                 ->orderBy('name')
+                ->limit(10000)
                 ->get()
                 ->map(fn (Company $c): array => [
                     'name' => $c->name,
@@ -669,6 +671,7 @@ class CrmDataTransferService
                     ->when($request->filled('tag_id'), fn ($q2) => $q2->whereHas('tags', fn ($tq) => $tq->whereKey($request->integer('tag_id'))))
                 )
                 ->orderByDesc('updated_at')
+                ->limit(10000)
                 ->get()
                 ->map(fn (Deal $d): array => [
                     'title' => $d->title,
@@ -694,6 +697,7 @@ class CrmDataTransferService
                     ->when($request->filled('tag_id'), fn ($q2) => $q2->whereHas('tags', fn ($tq) => $tq->whereKey($request->integer('tag_id'))))
                 )
                 ->orderByDesc('updated_at')
+                ->limit(10000)
                 ->get()
                 ->map(fn (Quote $q): array => [
                     'quote_number' => $q->quote_number,

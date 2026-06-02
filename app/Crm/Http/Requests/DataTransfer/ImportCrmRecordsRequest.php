@@ -3,12 +3,19 @@
 namespace App\Crm\Http\Requests\DataTransfer;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class ImportCrmRecordsRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return (bool) $this->user();
+        $module = $this->route()->defaults['module'] ?? null;
+
+        if (! $module) {
+            return false;
+        }
+
+        return Gate::allows("crm.{$module}.import");
     }
 
     /**

@@ -25,7 +25,7 @@ Route::middleware(config('crm.routes.middleware', ['web']))
 
         Route::prefix(config('crm.routes.admin_prefix', 'admin/crm'))
             ->name('crm.')
-            ->middleware('crm.access')
+            ->middleware(['crm.access', 'throttle:240,1'])
             ->group(function () {
                 Route::get('/', DashboardController::class)->name('dashboard');
                 Route::get('search', SearchController::class)->name('search');

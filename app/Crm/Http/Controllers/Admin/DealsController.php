@@ -163,16 +163,17 @@ class DealsController extends Controller
         Gate::authorize('crm.deals.delete');
 
         $validated = $request->validate([
-            'record_ids' => ['required', 'array', 'min:1'],
+            'record_ids' => ['required', 'array', 'min:1', 'max:500'],
             'record_ids.*' => ['integer', 'exists:deals,id'],
         ]);
 
         Deal::query()
             ->whereKey($validated['record_ids'])
-            ->get()
-            ->each(function (Deal $deal): void {
-                Gate::authorize('delete', $deal);
-                $deal->delete();
+            ->chunkById(200, function (\Illuminate\Support\Collection $deals): void {
+                $deals->each(function (Deal $deal): void {
+                    Gate::authorize('delete', $deal);
+                    $deal->delete();
+                });
             });
 
         return back()->with('crm_status', trans('crm::messages.deals.bulk_deleted'));
@@ -292,6 +293,7 @@ class DealsController extends Controller
     public function storeTask(StoreDealTaskRequest $request, Deal $deal, AddDealTask $addTask): JsonResponse|RedirectResponse
     {
         Gate::authorize('view', $deal);
+        Gate::authorize('create', \App\Crm\Models\Task::class);
 
         $addTask->handle($deal, $request->validated(), $request->user());
 
@@ -307,6 +309,7 @@ class DealsController extends Controller
     public function storeQuote(StoreDealQuoteRequest $request, Deal $deal, CreateDealQuote $createQuote): RedirectResponse
     {
         Gate::authorize('view', $deal);
+        Gate::authorize('create', \App\Crm\Models\Quote::class);
 
         $createQuote->handle($deal, $request->validated(), $request->user());
 
@@ -318,6 +321,7 @@ class DealsController extends Controller
     public function storeActivity(StoreDealActivityRequest $request, Deal $deal, AddDealActivity $addActivity): JsonResponse|RedirectResponse
     {
         Gate::authorize('view', $deal);
+        Gate::authorize('create', \App\Crm\Models\Activity::class);
 
         $addActivity->handle($deal, $request->validated(), $request->user());
 

@@ -2,6 +2,7 @@
 
 namespace App\Crm\Services\Ai;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Crm\Contracts\AiProviderContract;
 use App\Crm\Models\Activity;
@@ -122,7 +123,12 @@ class AiAssistant
             return $content !== ''
                 ? AiResult::success($content)
                 : AiResult::failure(trans('crm::messages.ai.empty_draft'));
-        } catch (Throwable) {
+        } catch (Throwable $e) {
+            Log::error('CRM AI request failed', [
+                'error' => $e->getMessage(),
+                'class' => $e::class,
+            ]);
+
             return AiResult::failure(trans('crm::messages.ai.request_failed_retry'));
         }
     }

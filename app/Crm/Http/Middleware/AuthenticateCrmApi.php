@@ -12,7 +12,7 @@ class AuthenticateCrmApi
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $this->resolveBearerUser($request) ?? $request->user('admin') ?? $request->user('web');
+        $user = $this->resolveBearerUser($request);
 
         if (! $user) {
             return response()->json([
@@ -45,7 +45,9 @@ class AuthenticateCrmApi
             return null;
         }
 
-        $token->forceFill(['last_used_at' => now()])->save();
+        if (! $token->last_used_at || $token->last_used_at->diffInSeconds(now()) > 60) {
+            $token->forceFill(['last_used_at' => now()])->save();
+        }
 
         return $token->user;
     }

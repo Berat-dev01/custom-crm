@@ -345,6 +345,13 @@ class DashboardReport
 
     private function bucketExpression(string $bucket, string $column): string
     {
+        $allowedColumns = ['closed_at', 'created_at', 'updated_at', 'occurred_at'];
+        $allowedBuckets = ['hour', 'day', 'month'];
+
+        if (! in_array($column, $allowedColumns, true) || ! in_array($bucket, $allowedBuckets, true)) {
+            throw new \InvalidArgumentException("Invalid bucket '{$bucket}' or column '{$column}'.");
+        }
+
         $sqlite = match ($bucket) {
             'hour' => "strftime('%Y-%m-%d %H:00', {$column})",
             'day' => "strftime('%Y-%m-%d', {$column})",

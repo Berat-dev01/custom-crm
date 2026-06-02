@@ -127,7 +127,7 @@ class CompaniesController extends Controller
         Gate::authorize('crm.companies.delete');
 
         $validated = $request->validate([
-            'record_ids' => ['required', 'array', 'min:1'],
+            'record_ids' => ['required', 'array', 'min:1', 'max:500'],
             'record_ids.*' => ['integer', 'exists:companies,id'],
         ]);
 
@@ -136,18 +136,19 @@ class CompaniesController extends Controller
 
         Company::query()
             ->whereKey($validated['record_ids'])
-            ->get()
-            ->each(function (Company $company) use (&$deleted, &$blocked): void {
-                Gate::authorize('delete', $company);
+            ->chunkById(200, function (\Illuminate\Support\Collection $companies) use (&$deleted, &$blocked): void {
+                $companies->each(function (Company $company) use (&$deleted, &$blocked): void {
+                    Gate::authorize('delete', $company);
 
-                if ($company->contacts()->exists() || $company->deals()->exists() || $company->quotes()->exists()) {
-                    $blocked++;
+                    if ($company->contacts()->exists() || $company->deals()->exists() || $company->quotes()->exists()) {
+                        $blocked++;
 
-                    return;
-                }
+                        return;
+                    }
 
-                $company->delete();
-                $deleted++;
+                    $company->delete();
+                    $deleted++;
+                });
             });
 
         $message = $deleted > 0

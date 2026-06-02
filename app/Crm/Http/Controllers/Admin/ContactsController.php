@@ -12,7 +12,6 @@ use App\Crm\Actions\Contacts\AddContactNote;
 use App\Crm\Actions\Contacts\UpsertContact;
 use App\Crm\Http\Requests\Contacts\BulkAssignContactTagsRequest;
 use App\Crm\Http\Requests\Contacts\BulkDeleteContactsRequest;
-use App\Crm\Http\Requests\Contacts\ImportContactsRequest;
 use App\Crm\Http\Requests\Contacts\StoreContactNoteRequest;
 use App\Crm\Http\Requests\Contacts\StoreContactRequest;
 use App\Crm\Http\Requests\Contacts\UpdateContactRequest;
@@ -22,7 +21,6 @@ use App\Crm\Models\SavedFilter;
 use App\Crm\Models\Tag;
 use App\Crm\Services\Audit\CrmAuditLogger;
 use App\Crm\Services\Contacts\ContactCsvExporter;
-use App\Crm\Services\Contacts\ContactImportService;
 use App\Crm\Services\Contacts\ContactQuery;
 use App\Crm\Support\CrmExportSchema;
 use App\Crm\Support\CrmLabelCatalog;
@@ -123,12 +121,13 @@ class ContactsController extends Controller
     {
         Contact::query()
             ->whereKey($request->validated('contact_ids'))
-            ->get()
-            ->each(function (Contact $contact) use ($request): void {
-                $this->audit->record('crm.contact.deleted', $contact, $request->user(), $contact->only($this->auditedFields()), null, [
-                    'bulk' => true,
-                ]);
-                $contact->delete();
+            ->chunkById(200, function (\Illuminate\Support\Collection $contacts) use ($request): void {
+                $contacts->each(function (Contact $contact) use ($request): void {
+                    $this->audit->record('crm.contact.deleted', $contact, $request->user(), $contact->only($this->auditedFields()), null, [
+                        'bulk' => true,
+                    ]);
+                    $contact->delete();
+                });
             });
 
         return back()->with('crm_status', trans('crm::messages.contacts.bulk_deleted'));
@@ -149,26 +148,6 @@ class ContactsController extends Controller
         Gate::authorize('export', Contact::class);
 
         return $exporter->stream($this->contacts->forExport($request));
-    }
-
-    public function importForm(): View
-    {
-        Gate::authorize('import', Contact::class);
-
-        return view('crm::admin.contacts.import');
-    }
-
-    public function import(ImportContactsRequest $request, ContactImportService $importer): RedirectResponse
-    {
-        $result = $importer->import($request->file('file'), $request->user());
-
-        return redirect()
-            ->route('crm.contacts.import')
-            ->with('crm_import_result', $result)
-            ->with('crm_status', trans_choice('crm::messages.contacts.imported', (int) $result['created'], [
-                'created' => $result['created'],
-                'failed' => $result['failed'],
-            ]));
     }
 
     public function storeNote(StoreContactNoteRequest $request, Contact $contact, AddContactNote $addNote): RedirectResponse
