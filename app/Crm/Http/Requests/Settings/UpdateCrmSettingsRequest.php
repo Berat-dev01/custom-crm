@@ -3,6 +3,7 @@
 namespace App\Crm\Http\Requests\Settings;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use App\Crm\Support\Ai\AiDriver;
@@ -21,7 +22,16 @@ class UpdateCrmSettingsRequest extends FormRequest
     {
         return [
             'company_name' => ['required', 'string', 'max:160'],
-            'company_logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'company_logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048', function (string $attribute, mixed $value, \Closure $fail): void {
+                if (! ($value instanceof UploadedFile)) {
+                    return;
+                }
+                // Verify the file truly contains a valid image (guards against
+                // EXIF-payload files that pass MIME checks but fail real parsing).
+                if (@getimagesize($value->getRealPath()) === false) {
+                    $fail(__('The :attribute must be a valid image file.'));
+                }
+            }],
             'company_email' => ['nullable', 'email', 'max:255'],
             'company_phone' => ['nullable', 'string', 'max:80'],
             'company_address' => ['nullable', 'string', 'max:1000'],
