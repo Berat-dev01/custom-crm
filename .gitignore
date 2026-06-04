@@ -16,6 +16,7 @@
 /.composer-cache
 /auth.json
 /node_modules
+/package-lock.json
 /public/build
 /public/hot
 /public/storage

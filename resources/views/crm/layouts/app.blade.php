@@ -13,7 +13,7 @@
 --}}
 
 @push('styles')
-    @vite('resources/css/crm.css')
+    <link rel="stylesheet" href="{{ asset('crm/crm.css') }}?v={{ @filemtime(public_path('crm/crm.css')) ?: '' }}">
 @endpush
 
 @push('sidebar-nav')

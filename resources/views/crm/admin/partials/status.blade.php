@@ -1,7 +1,7 @@
 @once
     @push('scripts')
         @include('crm::admin.partials.translations')
-        @vite('resources/js/crm.js')
+        <script src="{{ asset('crm/crm.js') }}?v={{ @filemtime(public_path('crm/crm.js')) ?: '' }}"></script>
     @endpush
 @endonce
 
