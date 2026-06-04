@@ -12,10 +12,13 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(CrmPermissionSeeder::class);
         $this->call(CrmDealStageSeeder::class);
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ])->assignRole('crm_owner');
+        $user = \App\Models\User::create([
+            'name' => 'Admin',
+            'email' => 'admin@webakil.com',
+            'password' => bcrypt('demo1234'),
+            'email_verified_at' => now(),
+        ]);
+        $user->assignRole('crm_owner');
         $this->call(CrmDemoSeeder::class);
     }
 }
