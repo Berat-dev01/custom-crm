@@ -5,21 +5,8 @@
     "description": "Development application for the Sanal Kopru CRM Engine product.",
     "keywords": ["laravel", "crm", "sanalkopru"],
     "license": "MIT",
-    "repositories": [
-        {
-            "type": "path",
-            "url": "packages/sanalkopru/admin-panel",
-            "options": {
-                "symlink": true
-            }
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/Berat-dev01/admin-panel"
-        }
-    ],
-    "minimum-stability": "dev",
-"prefer-stable": true,
+    "minimum-stability": "stable",
+    "prefer-stable": true,
     "require": {
         "fakerphp/faker": "^1.23",
         "php": "^8.3",
@@ -28,7 +15,6 @@
         "laravel/tinker": "^2.10",
         "openai-php/laravel": "^0.19.1",
         "openspout/openspout": "^5.3",
-        "sanalkopru/admin-panel": "dev-main",
         "spatie/laravel-permission": "^7.3"
     },
     "require-dev": {
