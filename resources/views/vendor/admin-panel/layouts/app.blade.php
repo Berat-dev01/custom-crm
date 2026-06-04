@@ -41,7 +41,7 @@
 <body class="no-transition">
 
     @if(app()->environment('demo'))
-    <div style="position:fixed;top:0;left:0;right:0;z-index:9999;height:44px;background:#0f172a;border-bottom:1px solid #1e293b;display:flex;align-items:center;justify-content:space-between;padding:0 1rem;gap:0.75rem;">
+    <div style="position:static;top:0;left:0;right:0;z-index:9999;height:44px;background:#0f172a;border-bottom:1px solid #1e293b;display:flex;align-items:center;justify-content:space-between;padding:0 1rem;gap:0.75rem;">
         <div style="display:flex;align-items:center;gap:0.6rem;flex:1;min-width:0;overflow:hidden;">
             <span style="flex-shrink:0;background:#1e293b;color:#94a3b8;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.45rem;border-radius:4px;border:1px solid #334155;">DEMO</span>
             <span style="color:#cbd5e1;font-size:0.775rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
@@ -55,7 +55,6 @@
            onmouseover="this.style.background='#15803d'"
            onmouseout="this.style.background='#16a34a'">İletişime Geç</a>
     </div>
-    <style>body { padding-top: 44px; }</style>
     @endif
 
     @php
