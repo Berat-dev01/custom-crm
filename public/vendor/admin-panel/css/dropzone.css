@@ -1,0 +1,272 @@
+/**
+ * LaravelKit Admin - Dropzone Component Styles
+ * Custom Dropzone.js styling matching admin theme
+ */
+
+/* Hide default Dropzone previews */
+.dropzone .dz-preview {
+    display: none !important;
+}
+
+/* Dropzone Container */
+.admin-dropzone-container {
+    width: 100%;
+}
+
+/* Dropzone Upload Area */
+.admin-dropzone {
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-secondary);
+    padding: var(--space-8);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+}
+
+.admin-dropzone:hover {
+    border-color: var(--primary);
+    background-color: var(--bg-hover);
+}
+
+.admin-dropzone.dz-drag-hover {
+    border-color: var(--primary);
+    background-color: var(--primary-light);
+}
+
+.admin-dropzone-icon {
+    width: 48px;
+    height: 48px;
+    color: var(--text-tertiary);
+}
+
+.admin-dropzone:hover .admin-dropzone-icon {
+    color: var(--primary);
+}
+
+.admin-dropzone-text {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    font-weight: var(--font-medium);
+}
+
+.admin-dropzone-hint {
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+}
+
+/* Preview Grid */
+.admin-dropzone-previews {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+}
+
+@media (max-width: 768px) {
+    .admin-dropzone-previews {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-dropzone-previews {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Preview Card */
+.admin-dropzone-preview {
+    position: relative;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-primary);
+    overflow: hidden;
+    transition: all var(--transition-base);
+    cursor: grab;
+}
+
+.admin-dropzone-preview:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.admin-dropzone-preview.sortable-ghost {
+    opacity: 0.4;
+}
+
+.admin-dropzone-preview.sortable-chosen {
+    cursor: grabbing;
+}
+
+/* Primary Badge */
+.admin-dropzone-preview.is-primary {
+    border: 2px solid var(--primary);
+}
+
+.admin-dropzone-preview-badge {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    background-color: var(--primary);
+    color: white;
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-sm);
+    z-index: 10;
+    text-transform: uppercase;
+}
+
+/* Thumbnail */
+.admin-dropzone-preview-thumb {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    background-color: var(--bg-secondary);
+}
+
+/* Preview Info */
+.admin-dropzone-preview-info {
+    padding: var(--space-2);
+    background-color: var(--bg-primary);
+}
+
+.admin-dropzone-preview-name {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: var(--space-1);
+}
+
+/* Preview Actions */
+.admin-dropzone-preview-actions {
+    display: flex;
+    gap: var(--space-1);
+}
+
+.admin-dropzone-preview-btn {
+    flex: 1;
+    padding: 4px var(--space-2);
+    font-size: var(--text-xs);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-primary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-weight: var(--font-medium);
+}
+
+.admin-dropzone-preview-btn:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--border-color-hover);
+}
+
+.admin-dropzone-preview-btn.btn-primary-action {
+    background-color: var(--primary-light);
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.admin-dropzone-preview-btn.btn-primary-action:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+.admin-dropzone-preview-btn.btn-danger {
+    background-color: var(--danger-light);
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+.admin-dropzone-preview-btn.btn-danger:hover {
+    background-color: var(--danger);
+    color: white;
+}
+
+/* Existing Images (Edit Page) */
+.admin-existing-images {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--space-4);
+}
+
+@media (max-width: 768px) {
+    .admin-existing-images {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-existing-images {
+        grid-template-columns: 1fr;
+    }
+}
+
+.admin-existing-image {
+    position: relative;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-primary);
+    overflow: hidden;
+    transition: all var(--transition-base);
+    cursor: grab;
+}
+
+.admin-existing-image:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.admin-existing-image.sortable-ghost {
+    opacity: 0.4;
+}
+
+.admin-existing-image.sortable-chosen {
+    cursor: grabbing;
+}
+
+.admin-existing-image.is-primary {
+    border: 2px solid var(--primary);
+}
+
+.admin-existing-image.marked-for-deletion {
+    opacity: 0.4;
+}
+
+.admin-existing-image.marked-for-deletion::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(239, 68, 68, 0.3);
+    pointer-events: none;
+}
+
+.admin-existing-image-thumb {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+}
+
+.admin-existing-image-info {
+    padding: var(--space-2);
+}
+
+.admin-existing-image-actions {
+    display: flex;
+    gap: var(--space-1);
+}
+
+/* Help Text */
+.admin-dropzone-help {
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+    margin-top: var(--space-2);
+}

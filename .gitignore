@@ -19,7 +19,8 @@
 /public/build
 /public/hot
 /public/storage
-/public/vendor
+/public/vendor/*
+!/public/vendor/admin-panel/
 /resources/css/vendor
 /resources/js/vendor
 /storage/*.key

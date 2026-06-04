@@ -1,0 +1,82 @@
+/**
+ * LaravelKit Admin - Dark Theme
+ * Professional dark theme for reduced eye strain
+ */
+
+:root {
+    /* ===== Color System - Dark Overrides ===== */
+    /* Background Colors */
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --bg-hover: #1e293b;
+    --bg-active: #334155;
+
+    /* Text Colors */
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #94a3b8;
+    --text-muted: #64748b;
+    --text-inverse: #0f172a;
+
+    /* Border Colors */
+    --border-color: #334155;
+    --border-color-hover: #475569;
+    --border-color-focus: #3b82f6;
+
+    /* Brand Colors - Adjusted for dark backgrounds */
+    --primary: #3b82f6;
+    --primary-hover: #60a5fa;
+    --primary-light: #1e3a8a;
+
+    --success: #22c55e;
+    --success-hover: #4ade80;
+    --success-light: #14532d;
+
+    --danger: #ef4444;
+    --danger-hover: #f87171;
+    --danger-light: #7f1d1d;
+
+    --warning: #f59e0b;
+    --warning-hover: #fbbf24;
+    --warning-light: #78350f;
+
+    --info: #3b82f6;
+    --info-hover: #60a5fa;
+    --info-light: #1e3a8a;
+
+    /* ===== Component Specific - Dark Overrides ===== */
+    /* Sidebar */
+    --sidebar-bg: #0f172a;
+    --sidebar-border: #1e293b;
+    --sidebar-item-hover: #1e293b;
+    --sidebar-item-active: #1e3a8a;
+    --sidebar-item-active-text: #60a5fa;
+
+    /* Topbar */
+    --topbar-bg: #0f172a;
+    --topbar-border: #1e293b;
+
+    /* Cards */
+    --card-bg: #1e293b;
+    --card-border: #334155;
+    --card-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.4);
+
+    /* Forms */
+    --input-bg: #1e293b;
+    --input-border: #334155;
+    --input-border-focus: #3b82f6;
+    --input-text: #f1f5f9;
+    --input-placeholder: #64748b;
+
+    /* Tables */
+    --table-border: #334155;
+    --table-row-hover: #1e293b;
+    --table-header-bg: #1e293b;
+
+    /* Shadows - Enhanced for dark theme */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 2px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 4px 12px -2px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.5);
+}
