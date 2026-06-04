@@ -45,7 +45,7 @@
         <div style="display:flex;align-items:center;gap:0.6rem;flex:1;min-width:0;overflow:hidden;">
             <span style="flex-shrink:0;background:#1e293b;color:#94a3b8;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.45rem;border-radius:4px;border:1px solid #334155;">DEMO</span>
             <span style="color:#cbd5e1;font-size:0.775rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                🔒 Bu bir demo önizlemesidir — Tüm haklar <strong style="color:#f1f5f9;">Webakil</strong>'e aittir. Yazılım tamamen özelleştirilebilir ve geliştirilebilir. Bilgi için: <a href="mailto:info@webakil.com" style="color:#93c5fd;text-decoration:none;">info@webakil.com</a>
+                🔒 Bu bir demo önizlemesidir — Tüm haklar <strong style="color:#f1f5f9;">WebAkıl</strong>'e aittir. Yazılım tamamen özelleştirilebilir ve geliştirilebilir. Bilgi için: <a href="mailto:info@webakil.com" style="color:#93c5fd;text-decoration:none;">info@webakil.com</a>
             </span>
         </div>
         <a href="https://webakil.com/iletisim"
