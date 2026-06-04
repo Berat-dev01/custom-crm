@@ -111,6 +111,35 @@ make composer CMD="validate --strict"
 
 ---
 
+## Demo Reset
+
+Set `APP_ENV=demo` in `.env` to unlock the `demo:reset` command. The command runs `migrate:fresh --seed --force` and refuses to execute in any other environment.
+
+```bash
+# Manual reset
+php artisan demo:reset
+
+# Or via Docker
+make artisan CMD="demo:reset"
+```
+
+To schedule an automatic reset (e.g. every night at 02:00), add the Laravel scheduler to the server crontab and configure the schedule in `routes/console.php`:
+
+```php
+// routes/console.php
+use Illuminate\Support\Facades\Schedule;
+
+Schedule::command('demo:reset')->dailyAt('02:00');
+```
+
+Then register the scheduler cron on the server (once per server):
+
+```cron
+* * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1
+```
+
+---
+
 ## Production
 
 Production does not use Docker. Target stack: **Nginx · PHP-FPM · MySQL · Redis · Supervisor (queue) · Cron (scheduler) · SSL/TLS**.
