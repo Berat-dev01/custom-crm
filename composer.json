@@ -21,6 +21,7 @@
     "minimum-stability": "dev",
 "prefer-stable": true,
     "require": {
+        "fakerphp/faker": "^1.23",
         "php": "^8.3",
         "dompdf/dompdf": "^3.1",
         "laravel/framework": "^12.0",
@@ -31,7 +32,6 @@
         "spatie/laravel-permission": "^7.3"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2",
         "laravel/pint": "^1.18",
         "mockery/mockery": "^1.6",
