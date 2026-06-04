@@ -99,26 +99,6 @@
         </div>
 
         <div class="login-body">
-            @if(app()->environment('demo'))
-            <div style="background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 100%);border-radius:8px;padding:1rem 1.1rem;margin-bottom:1.25rem;border:1px solid rgba(99,163,255,0.35);">
-                <div style="display:flex;align-items:flex-start;gap:0.65rem;">
-                    <span style="font-size:1.15rem;flex-shrink:0;margin-top:1px;">🔒</span>
-                    <div style="min-width:0;">
-                        <p style="color:#fff;font-weight:700;font-size:0.85rem;margin:0 0 0.25rem;">Demo Önizlemesi</p>
-                        <p style="color:rgba(255,255,255,0.82);font-size:0.775rem;margin:0 0 0.65rem;line-height:1.55;">
-                            Bu sistem <strong style="color:#fff;">Webakil</strong> tarafından geliştirilmiş bir demo ortamıdır.
-                            Tüm haklar saklıdır — yazılım tamamen özelleştirilebilir ve geliştirilebilir.
-                        </p>
-                        <div style="display:flex;align-items:center;gap:0.35rem;flex-wrap:wrap;">
-                            <span style="color:rgba(255,255,255,0.6);font-size:0.7rem;">Giriş bilgileri:</span>
-                            <span style="background:rgba(255,255,255,0.13);color:#e0f2fe;font-size:0.7rem;padding:0.15rem 0.5rem;border-radius:4px;font-family:monospace;border:1px solid rgba(255,255,255,0.15);">crm.owner@example.com</span>
-                            <span style="background:rgba(255,255,255,0.13);color:#e0f2fe;font-size:0.7rem;padding:0.15rem 0.5rem;border-radius:4px;font-family:monospace;border:1px solid rgba(255,255,255,0.15);">password</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @endif
-
             @if ($errors->any())
                 <x-admin-panel::alert variant="danger" class="mb-4">
                     <ul class="m-0 p-0" style="list-style: none;">
