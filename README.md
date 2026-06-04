@@ -61,18 +61,9 @@ make artisan CMD="crm:seed-performance"
 
 ## Admin Panel Integration
 
-CRM views are built on the `sanalkopru/admin-panel` package layout and admin guard. The private repository is declared in `composer.json`:
+CRM views are built on the embedded `admin-panel` layout and admin guard. The package source lives under `app/AdminPanel/` — no external package dependency at runtime.
 
-```json
-{
-  "type": "vcs",
-  "url": "https://github.com/ZyixQQ/admin-panel"
-}
-```
-
-Private GitHub access is provided via `COMPOSER_AUTH` from the local environment — tokens are never committed to the repository.
-
-CRM screens run isolated under `/admin/crm`. No CRM assets are loaded on the public frontend.
+CRM screens run isolated under `/admin/crm`. Admin authentication is handled by the `admin` guard configured in `config/admin-panel.php`.
 
 ---
 
@@ -149,12 +140,13 @@ Production does not use Docker. Target stack: **Nginx · PHP-FPM · MySQL · Red
 ## Project Structure
 
 ```
-app/Crm/          Business logic, models, actions, policies
-config/crm.php    Package configuration
-routes/crm.php    CRM route definitions
-resources/views/crm/  Blade views
-packages/         Local packages (admin-panel)
-docs/             Internal development documentation (git-ignored)
+app/Crm/               Business logic, models, actions, policies
+app/AdminPanel/        Embedded admin panel (layout, middleware, facade)
+config/crm.php         CRM configuration
+config/admin-panel.php Admin panel configuration
+routes/crm.php         CRM route definitions
+resources/views/crm/   Blade views
+docs/                  Internal development documentation (git-ignored)
 ```
 
 ---
