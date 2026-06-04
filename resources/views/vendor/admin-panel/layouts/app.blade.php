@@ -39,6 +39,25 @@
     @stack('styles')
 </head>
 <body class="no-transition">
+
+    @if(app()->environment('demo'))
+    <div style="position:fixed;top:0;left:0;right:0;z-index:9999;height:44px;background:#0f172a;border-bottom:1px solid #1e293b;display:flex;align-items:center;justify-content:space-between;padding:0 1rem;gap:0.75rem;">
+        <div style="display:flex;align-items:center;gap:0.6rem;flex:1;min-width:0;overflow:hidden;">
+            <span style="flex-shrink:0;background:#1e293b;color:#94a3b8;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.45rem;border-radius:4px;border:1px solid #334155;">DEMO</span>
+            <span style="color:#cbd5e1;font-size:0.775rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                🔒 Bu bir demo önizlemesidir — Tüm haklar <strong style="color:#f1f5f9;">Webakil</strong>'e aittir. Yazılım tamamen özelleştirilebilir ve geliştirilebilir. Bilgi için: <a href="mailto:info@webakil.com" style="color:#93c5fd;text-decoration:none;">info@webakil.com</a>
+            </span>
+        </div>
+        <a href="https://webakil.com/iletisim"
+           target="_blank"
+           rel="noopener noreferrer"
+           style="flex-shrink:0;background:#16a34a;color:#fff;text-decoration:none;font-size:0.75rem;font-weight:600;padding:0.3rem 0.9rem;border-radius:6px;border:1px solid #15803d;transition:background 0.15s;"
+           onmouseover="this.style.background='#15803d'"
+           onmouseout="this.style.background='#16a34a'">İletişime Geç</a>
+    </div>
+    <style>body { padding-top: 44px; }</style>
+    @endif
+
     @php
         $adminPanelName = config('admin-panel.app_name', config('app.name', 'Admin Panel'));
         if (class_exists(\App\Models\Setting::class) && method_exists(\App\Models\Setting::class, 'get')) {
