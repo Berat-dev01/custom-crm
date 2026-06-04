@@ -18,6 +18,8 @@
             "url": "https://github.com/Berat-dev01/admin-panel"
         }
     ],
+    "minimum-stability": "dev",
+"prefer-stable": true,
     "require": {
         "php": "^8.3",
         "dompdf/dompdf": "^3.1",
@@ -25,7 +27,7 @@
         "laravel/tinker": "^2.10",
         "openai-php/laravel": "^0.19.1",
         "openspout/openspout": "^5.3",
-        "sanalkopru/admin-panel": "^1.0",
+        "sanalkopru/admin-panel": "dev-main",
         "spatie/laravel-permission": "^7.3"
     },
     "require-dev": {
@@ -100,7 +102,5 @@
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true
+    }
 }
