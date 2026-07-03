@@ -94,6 +94,7 @@ return [
     ],
     'notifications' => [
         'marked_read' => 'Notification marked as read.',
+        'preferences_saved' => 'Notification preferences saved.',
         'marked_all_read' => 'Notifications marked as read.',
     ],
     'settings' => [

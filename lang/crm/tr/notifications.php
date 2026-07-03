@@ -25,6 +25,11 @@ return [
         'completed_title' => ':module içe aktarma tamamlandı',
         'completed_body' => ':created oluşturuldu, :failed başarısız oldu.',
     ],
+    'mail' => [
+        'greeting' => 'Merhaba :name,',
+        'action' => "CRM'i Aç",
+        'footer' => 'E-posta bildirim tercihlerinizi Bildirimler sayfasından yönetebilirsiniz.',
+    ],
     'center' => [
         'default_title' => 'Bildirim',
         'fallback_due_at' => 'Vade: :value',

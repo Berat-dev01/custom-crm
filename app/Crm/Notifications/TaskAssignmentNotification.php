@@ -2,22 +2,35 @@
 
 namespace App\Crm\Notifications;
 
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use App\Crm\Notifications\Concerns\RoutesEmailByPreference;
 use App\Crm\Models\Task;
 
-class TaskAssignmentNotification extends Notification
+class TaskAssignmentNotification extends Notification implements ShouldQueue
 {
+    use Queueable;
+    use RoutesEmailByPreference;
+
+    public const EMAIL_PREFERENCE_KEY = 'task_assignments';
+
     public function __construct(
         public readonly Task $task,
         public readonly bool $reassigned = false
     ) {}
 
-    /**
-     * @return list<string>
-     */
-    public function via(object $notifiable): array
+    public function toMail(object $notifiable): MailMessage
     {
-        return ['database'];
+        $data = $this->toArray($notifiable);
+
+        return (new MailMessage)
+            ->subject($data['title'])
+            ->greeting(trans('crm::notifications.mail.greeting', ['name' => $notifiable->name ?? '']))
+            ->line($data['body'])
+            ->action(trans('crm::notifications.mail.action'), $data['url'])
+            ->line(trans('crm::notifications.mail.footer'));
     }
 
     /**

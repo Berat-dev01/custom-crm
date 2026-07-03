@@ -55,6 +55,11 @@
 
                 <div class="crm-settings-toggles">
                     <label class="crm-checkbox-row">
+                        <input type="hidden" name="notify_email_enabled" value="0">
+                        <input type="checkbox" name="notify_email_enabled" value="1" @checked(old('notify_email_enabled', $settings['notify_email_enabled']))>
+                        <span>{{ __('Send notifications by email (requires configured SMTP)') }}</span>
+                    </label>
+                    <label class="crm-checkbox-row">
                         <input type="hidden" name="notify_task_reminders" value="0">
                         <input type="checkbox" name="notify_task_reminders" value="1" @checked(old('notify_task_reminders', $settings['notify_task_reminders']))>
                         <span>{{ __('Send task reminder notifications') }}</span>

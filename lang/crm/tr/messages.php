@@ -94,6 +94,7 @@ return [
     ],
     'notifications' => [
         'marked_read' => 'Bildirim okundu olarak işaretlendi.',
+        'preferences_saved' => 'Bildirim tercihleri kaydedildi.',
         'marked_all_read' => 'Bildirimlerin tamamı okundu olarak işaretlendi.',
     ],
     'settings' => [

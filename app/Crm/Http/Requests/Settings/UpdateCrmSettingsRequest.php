@@ -41,6 +41,7 @@ class UpdateCrmSettingsRequest extends FormRequest
             'default_tax_rate' => ['required', 'numeric', 'min:0', 'max:100'],
             'quote_prefix' => ['required', 'string', 'max:20'],
             'quote_terms' => ['nullable', 'string', 'max:10000'],
+            'notify_email_enabled' => ['nullable', 'boolean'],
             'notify_task_reminders' => ['nullable', 'boolean'],
             'notify_task_assignments' => ['nullable', 'boolean'],
             'notify_quote_status_changes' => ['nullable', 'boolean'],

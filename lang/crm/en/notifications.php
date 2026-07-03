@@ -25,6 +25,11 @@ return [
         'completed_title' => ':module import completed',
         'completed_body' => ':created created, :failed failed.',
     ],
+    'mail' => [
+        'greeting' => 'Hello :name,',
+        'action' => 'Open CRM',
+        'footer' => 'You can manage your email notification preferences from the Notifications page.',
+    ],
     'center' => [
         'default_title' => 'Notification',
         'fallback_due_at' => 'Due at :value',

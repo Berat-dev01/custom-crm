@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Notification;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Crm\Models\Quote;
 use App\Crm\Models\Task;
+use App\Crm\Models\CrmSetting;
+use App\Crm\Notifications\TaskAssignmentNotification;
 use App\Crm\Notifications\TaskReminderNotification;
 use App\Crm\Services\Notifications\CrmBusinessNotifier;
 use App\Crm\Support\CrmLabelCatalog;
@@ -116,5 +118,95 @@ class CrmNotificationsModuleTest extends TestCase
             ]),
             data_get($notification?->data, 'title')
         );
+    }
+
+    public function test_email_channel_follows_global_and_user_preferences(): void
+    {
+        Notification::fake();
+
+        $assignee = User::factory()->create()->assignRole('crm_sales');
+        $task = Task::factory()->create(['assigned_to' => $assignee->id]);
+
+        // Default: global switch on, no user opt-out -> mail included.
+        app(CrmBusinessNotifier::class)->taskAssigned($task->fresh('assignee'), $this->admin);
+        Notification::assertSentTo(
+            $assignee,
+            TaskAssignmentNotification::class,
+            fn (TaskAssignmentNotification $notification, array $channels): bool => in_array('mail', $channels, true)
+        );
+    }
+
+    public function test_email_channel_respects_user_opt_out(): void
+    {
+        Notification::fake();
+
+        $assignee = User::factory()->create()->assignRole('crm_sales');
+        $assignee->forceFill(['notification_email_prefs' => ['task_assignments' => false]])->save();
+        $task = Task::factory()->create(['assigned_to' => $assignee->id]);
+
+        app(CrmBusinessNotifier::class)->taskAssigned($task->fresh('assignee'), $this->admin);
+
+        Notification::assertSentTo(
+            $assignee,
+            TaskAssignmentNotification::class,
+            fn (TaskAssignmentNotification $notification, array $channels): bool => ! in_array('mail', $channels, true)
+                && in_array('database', $channels, true)
+        );
+    }
+
+    public function test_email_channel_respects_global_switch(): void
+    {
+        Notification::fake();
+
+        CrmSetting::query()->create([
+            'organization_id' => null,
+            'key' => 'notify_email_enabled',
+            'group' => 'notifications',
+            'value' => ['value' => false],
+            'type' => 'boolean',
+            'is_encrypted' => false,
+        ]);
+        \Illuminate\Support\Facades\Cache::flush();
+
+        $assignee = User::factory()->create()->assignRole('crm_sales');
+        $task = Task::factory()->create(['assigned_to' => $assignee->id]);
+
+        app(CrmBusinessNotifier::class)->taskAssigned($task->fresh('assignee'), $this->admin);
+
+        Notification::assertSentTo(
+            $assignee,
+            TaskAssignmentNotification::class,
+            fn (TaskAssignmentNotification $notification, array $channels): bool => ! in_array('mail', $channels, true)
+        );
+    }
+
+    public function test_email_preferences_can_be_saved_from_notifications_page(): void
+    {
+        $this->actingAs($this->admin, 'admin')
+            ->put(route('crm.notifications.preferences'), [
+                'email_prefs' => [
+                    'task_reminders' => '1',
+                    'task_assignments' => '0',
+                    'quote_status_changes' => '1',
+                    'import_status_updates' => '0',
+                ],
+            ])
+            ->assertRedirect();
+
+        $prefs = $this->admin->refresh()->notification_email_prefs;
+        $this->assertTrue($prefs['task_reminders']);
+        $this->assertFalse($prefs['task_assignments']);
+        $this->assertTrue($prefs['quote_status_changes']);
+        $this->assertFalse($prefs['import_status_updates']);
+    }
+
+    public function test_notification_mail_message_reuses_database_payload(): void
+    {
+        $task = Task::factory()->create(['assigned_to' => $this->admin->id]);
+
+        $mail = (new TaskAssignmentNotification($task))->toMail($this->admin);
+
+        $this->assertNotEmpty($mail->subject);
+        $this->assertStringContainsString((string) route('crm.tasks.show', $task), (string) $mail->actionUrl);
     }
 }

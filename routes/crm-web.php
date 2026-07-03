@@ -32,6 +32,7 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::get('notifications', [NotificationsController::class, 'index'])->name('notifications.index');
                 Route::get('notifications/all', [NotificationsController::class, 'page'])->name('notifications.page');
                 Route::post('notifications/read-all', [NotificationsController::class, 'readAll'])->name('notifications.read-all');
+                Route::put('notifications/preferences', [NotificationsController::class, 'preferences'])->name('notifications.preferences');
                 Route::post('notifications/{notification}/read', [NotificationsController::class, 'read'])->name('notifications.read');
 
                 Route::get('imports/{import:public_id}/errors', [DataTransferController::class, 'errors'])->name('imports.errors');

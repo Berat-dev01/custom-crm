@@ -27,4 +27,44 @@ class NotificationPreferences
     {
         return (bool) $this->settings->get('notify_import_status_updates', true);
     }
+
+    /**
+     * Event keys users can opt out of receiving by email.
+     *
+     * @return list<string>
+     */
+    public static function emailEvents(): array
+    {
+        return [
+            'task_reminders',
+            'task_assignments',
+            'quote_status_changes',
+            'import_status_updates',
+        ];
+    }
+
+    public function emailChannelEnabled(): bool
+    {
+        return (bool) $this->settings->get('notify_email_enabled', true);
+    }
+
+    /**
+     * Whether the given notifiable should receive this event by email:
+     * the global email switch must be on, the user must have an address,
+     * and the user must not have opted out of the event.
+     */
+    public function emailEnabledFor(?object $notifiable, string $event): bool
+    {
+        if (! $this->emailChannelEnabled()) {
+            return false;
+        }
+
+        if (! $notifiable || empty($notifiable->email)) {
+            return false;
+        }
+
+        $prefs = $notifiable->notification_email_prefs ?? [];
+
+        return (bool) ($prefs[$event] ?? true);
+    }
 }

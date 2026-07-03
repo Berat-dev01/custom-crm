@@ -7,20 +7,16 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Crm\Models\Task;
+use App\Crm\Notifications\Concerns\RoutesEmailByPreference;
 
 class TaskReminderNotification extends Notification implements ShouldQueue
 {
     use Queueable;
+    use RoutesEmailByPreference;
+
+    public const EMAIL_PREFERENCE_KEY = 'task_reminders';
 
     public function __construct(public readonly Task $task) {}
-
-    /**
-     * @return list<string>
-     */
-    public function via(object $notifiable): array
-    {
-        return ['database', 'mail'];
-    }
 
     public function toMail(object $notifiable): MailMessage
     {

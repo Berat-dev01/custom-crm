@@ -78,5 +78,32 @@
                 </div>
             @endif
         </x-admin-panel::card>
+
+        <x-admin-panel::card>
+            <x-slot:header>{{ __('Email preferences') }}</x-slot:header>
+
+            <form method="POST" action="{{ route('crm.notifications.preferences') }}">
+                @csrf
+                @method('PUT')
+
+                <p class="crm-muted">{{ __('Choose which notifications you also receive by email. In-app notifications stay on.') }}</p>
+
+                <div class="crm-settings-toggles">
+                    @foreach($emailEvents as $event => $label)
+                        <label class="crm-checkbox-row">
+                            <input type="hidden" name="email_prefs[{{ $event }}]" value="0">
+                            <input type="checkbox" name="email_prefs[{{ $event }}]" value="1" @checked(old("email_prefs.$event", $emailPrefs[$event] ?? true))>
+                            <span>{{ $label }}</span>
+                        </label>
+                    @endforeach
+                </div>
+
+                <div class="crm-form-actions">
+                    <x-admin-panel::button type="submit" icon="save">
+                        {{ __('Save preferences') }}
+                    </x-admin-panel::button>
+                </div>
+            </form>
+        </x-admin-panel::card>
     </section>
 @endsection
