@@ -57,6 +57,8 @@ return [
         'rejected' => 'Quote rejected.',
         'expired' => 'Quote expired.',
         'duplicated_as_draft' => 'Quote duplicated as a draft.',
+        'invalid_status_transition' => 'Quote status cannot change from :from to :to.',
+        'locked' => 'Accepted or rejected quotes cannot be edited. Duplicate the quote to make changes.',
     ],
     'tasks' => [
         'created' => 'Task created.',

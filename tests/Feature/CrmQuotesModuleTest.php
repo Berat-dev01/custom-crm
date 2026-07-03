@@ -215,16 +215,61 @@ class CrmQuotesModuleTest extends TestCase
             fn (QuoteStatusChangedNotification $notification): bool => $notification->quote->is($copy) && $notification->status === 'rejected'
         );
 
+        // Rejected is terminal and locked: expiring it is forbidden.
         $this->actingAs($this->admin, 'admin')
+            ->from(route('crm.quotes.show', $copy))
             ->patch(route('crm.quotes.expire', $copy))
-            ->assertRedirect(route('crm.quotes.show', $copy));
-        $this->assertSame('expired', $copy->refresh()->status);
+            ->assertForbidden();
+        $this->assertSame('rejected', $copy->refresh()->status);
+
+        // A sent quote can expire.
+        $sentQuote = Quote::factory()->create(['owner_id' => $recipient->id, 'status' => 'sent', 'deal_id' => null]);
+        $this->actingAs($this->admin, 'admin')
+            ->patch(route('crm.quotes.expire', $sentQuote))
+            ->assertRedirect(route('crm.quotes.show', $sentQuote));
+        $this->assertSame('expired', $sentQuote->refresh()->status);
         Notification::assertSentTo(
             $recipient,
             QuoteStatusChangedNotification::class,
-            fn (QuoteStatusChangedNotification $notification): bool => $notification->quote->is($copy->fresh()) && $notification->status === 'expired'
+            fn (QuoteStatusChangedNotification $notification): bool => $notification->quote->is($sentQuote->fresh()) && $notification->status === 'expired'
         );
         Notification::assertCount(4);
+    }
+
+    public function test_locked_quotes_cannot_be_edited_and_invalid_transitions_are_rejected(): void
+    {
+        $accepted = Quote::factory()->create(['status' => 'accepted']);
+
+        // Accepted quotes are locked for editing.
+        $this->actingAs($this->admin, 'admin')
+            ->get(route('crm.quotes.edit', $accepted))
+            ->assertForbidden();
+
+        // Accepted is terminal: send/reject must be rejected.
+        $this->actingAs($this->admin, 'admin')
+            ->from(route('crm.quotes.show', $accepted))
+            ->patch(route('crm.quotes.send', $accepted))
+            ->assertSessionHasErrors('status');
+        $this->assertSame('accepted', $accepted->refresh()->status);
+
+        $this->actingAs($this->admin, 'admin')
+            ->from(route('crm.quotes.show', $accepted))
+            ->patch(route('crm.quotes.reject', $accepted))
+            ->assertSessionHasErrors('status');
+        $this->assertSame('accepted', $accepted->refresh()->status);
+
+        // An expired quote can be re-sent after extending validity.
+        $expired = Quote::factory()->create(['status' => 'expired']);
+        $this->actingAs($this->admin, 'admin')
+            ->patch(route('crm.quotes.send', $expired))
+            ->assertRedirect(route('crm.quotes.show', $expired));
+        $this->assertSame('sent', $expired->refresh()->status);
+
+        // Form updates cannot jump an existing quote to an invalid status.
+        $rejected = Quote::factory()->create(['status' => 'rejected']);
+        $this->actingAs($this->admin, 'admin')
+            ->put(route('crm.quotes.update', $rejected), ['status' => 'accepted'])
+            ->assertForbidden();
     }
 
     public function test_quote_status_notifications_can_be_disabled_from_settings_defaults(): void

@@ -20,6 +20,12 @@ class AcceptQuote
 
     public function handle(Quote $quote, bool $markDealWon = false, ?Authenticatable $user = null): Quote
     {
+        if ($quote->status === Quote::STATUS_ACCEPTED) {
+            return $quote;
+        }
+
+        $quote->assertCanTransitionTo(Quote::STATUS_ACCEPTED);
+
         return DB::transaction(function () use ($quote, $markDealWon, $user): Quote {
             $before = $quote->only(['status', 'accepted_at', 'rejected_at']);
             $statusChanged = ($before['status'] ?? null) !== 'accepted';

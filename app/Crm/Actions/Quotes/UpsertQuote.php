@@ -26,9 +26,30 @@ class UpsertQuote
             $calculation = $this->calculator->calculate($payload);
             $relationshipPayload = $this->relationshipPayload($payload);
 
-            $quote->fill(array_merge($relationshipPayload, [
+            $currentStatus = $quote->exists ? ($quote->status ?: Quote::STATUS_DRAFT) : null;
+            $newStatus = $payload['status'] ?? $currentStatus ?? Quote::STATUS_DRAFT;
+
+            if ($quote->exists && $newStatus !== $currentStatus) {
+                $quote->assertCanTransitionTo($newStatus);
+            }
+
+            $statusTimestamps = [];
+
+            if ($newStatus === Quote::STATUS_SENT && ! $quote->sent_at) {
+                $statusTimestamps['sent_at'] = now();
+            }
+
+            if ($newStatus === Quote::STATUS_ACCEPTED && ! $quote->accepted_at) {
+                $statusTimestamps['accepted_at'] = now();
+            }
+
+            if ($newStatus === Quote::STATUS_REJECTED && ! $quote->rejected_at) {
+                $statusTimestamps['rejected_at'] = now();
+            }
+
+            $quote->fill(array_merge($relationshipPayload, $statusTimestamps, [
                 'quote_number' => $quote->quote_number ?: $this->numbers->next(),
-                'status' => $payload['status'] ?? $quote->status ?: 'draft',
+                'status' => $newStatus,
                 'currency' => $payload['currency'],
                 'discount_type' => $payload['discount_type'] ?? null,
                 'discount_value' => $calculation['quote']['discount_value'],

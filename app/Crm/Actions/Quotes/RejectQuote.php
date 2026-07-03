@@ -16,6 +16,12 @@ class RejectQuote
 
     public function handle(Quote $quote, ?Authenticatable $user = null): Quote
     {
+        if ($quote->status === Quote::STATUS_REJECTED) {
+            return $quote;
+        }
+
+        $quote->assertCanTransitionTo(Quote::STATUS_REJECTED);
+
         $before = $quote->only(['status', 'rejected_at']);
         $statusChanged = ($before['status'] ?? null) !== 'rejected';
 

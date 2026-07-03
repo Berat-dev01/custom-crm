@@ -24,7 +24,9 @@ class QuotePolicy extends CrmPolicy
 
     public function update(Authenticatable $user, Quote $quote): bool
     {
-        return $this->can($user, 'crm.quotes.update');
+        // Accepted and rejected quotes are locked; changes require
+        // duplicating the quote as a new draft.
+        return $this->can($user, 'crm.quotes.update') && ! $quote->isLocked();
     }
 
     public function delete(Authenticatable $user, Quote $quote): bool

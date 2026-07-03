@@ -57,6 +57,8 @@ return [
         'rejected' => 'Teklif reddedildi.',
         'expired' => 'Teklifin süresi doldu.',
         'duplicated_as_draft' => 'Teklif taslak olarak kopyalandı.',
+        'invalid_status_transition' => 'Teklif durumu :from durumundan :to durumuna geçemez.',
+        'locked' => 'Kabul edilmiş veya reddedilmiş teklifler düzenlenemez. Değişiklik için teklifi kopyalayın.',
     ],
     'tasks' => [
         'created' => 'Görev oluşturuldu.',

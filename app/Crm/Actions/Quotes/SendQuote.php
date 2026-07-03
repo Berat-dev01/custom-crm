@@ -17,6 +17,12 @@ class SendQuote
 
     public function handle(Quote $quote, ?Authenticatable $user = null): Quote
     {
+        if ($quote->status === Quote::STATUS_SENT) {
+            return $quote;
+        }
+
+        $quote->assertCanTransitionTo(Quote::STATUS_SENT);
+
         $before = $quote->only(['status', 'sent_at']);
         $statusChanged = ($before['status'] ?? null) !== 'sent';
 

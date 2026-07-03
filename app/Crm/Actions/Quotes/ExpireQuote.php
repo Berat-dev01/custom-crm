@@ -12,6 +12,12 @@ class ExpireQuote
 
     public function handle(Quote $quote, ?Authenticatable $user = null): Quote
     {
+        if ($quote->status === Quote::STATUS_EXPIRED) {
+            return $quote;
+        }
+
+        $quote->assertCanTransitionTo(Quote::STATUS_EXPIRED);
+
         $statusChanged = $quote->status !== 'expired';
 
         $quote->forceFill([

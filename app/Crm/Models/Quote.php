@@ -20,7 +20,53 @@ class Quote extends Model
     use HasPublicId;
     use SoftDeletes;
 
+    public const STATUS_DRAFT = 'draft';
+
+    public const STATUS_SENT = 'sent';
+
+    public const STATUS_ACCEPTED = 'accepted';
+
+    public const STATUS_REJECTED = 'rejected';
+
+    public const STATUS_EXPIRED = 'expired';
+
+    /**
+     * Valid forward transitions per status. Accepted and rejected are
+     * terminal: further changes require duplicating the quote as a draft.
+     */
+    private const STATUS_TRANSITIONS = [
+        self::STATUS_DRAFT => [self::STATUS_SENT, self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_EXPIRED],
+        self::STATUS_SENT => [self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_EXPIRED],
+        self::STATUS_EXPIRED => [self::STATUS_SENT],
+        self::STATUS_ACCEPTED => [],
+        self::STATUS_REJECTED => [],
+    ];
+
     protected $guarded = ['id'];
+
+    public function canTransitionTo(string $status): bool
+    {
+        return in_array($status, self::STATUS_TRANSITIONS[$this->status] ?? [], true);
+    }
+
+    public function assertCanTransitionTo(string $status): void
+    {
+        if (! $this->canTransitionTo($status)) {
+            $labels = app(\App\Crm\Support\CrmLabelCatalog::class)->quoteStatuses();
+
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'status' => trans('crm::messages.quotes.invalid_status_transition', [
+                    'from' => $labels[$this->status] ?? $this->status,
+                    'to' => $labels[$status] ?? $status,
+                ]),
+            ]);
+        }
+    }
+
+    public function isLocked(): bool
+    {
+        return in_array($this->status, [self::STATUS_ACCEPTED, self::STATUS_REJECTED], true);
+    }
 
     protected function casts(): array
     {
