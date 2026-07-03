@@ -149,7 +149,7 @@ class CrmSecurityBoundaryTest extends TestCase
     public function test_api_rejects_session_only_request_without_bearer_token(): void
     {
         $this->actingAs($this->owner)
-            ->getJson('/api/crm/contacts')
+            ->getJson('/api/crm/v1/contacts')
             ->assertUnauthorized();
     }
 

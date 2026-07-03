@@ -31,7 +31,7 @@ class AdminCrmBootstrapTest extends TestCase
 
     public function test_crm_api_health_route_is_available(): void
     {
-        $this->getJson('/api/crm/health')
+        $this->getJson('/api/crm/v1/health')
             ->assertOk()
             ->assertJson(['status' => 'ok']);
     }

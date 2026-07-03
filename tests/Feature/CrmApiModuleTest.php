@@ -43,7 +43,7 @@ class CrmApiModuleTest extends TestCase
     {
         Contact::factory()->create();
 
-        $this->getJson('/api/crm/contacts')
+        $this->getJson('/api/crm/v1/contacts')
             ->assertUnauthorized()
             ->assertJsonPath('message', trans('crm::messages.api.unauthenticated'));
     }
@@ -53,14 +53,14 @@ class CrmApiModuleTest extends TestCase
         Contact::factory()->create(['full_name' => 'Ada Api']);
 
         $this->withToken($this->ownerToken)
-            ->getJson('/api/crm/contacts?search=Ada')
+            ->getJson('/api/crm/v1/contacts?search=Ada')
             ->assertOk()
             ->assertJsonPath('data.0.full_name', 'Ada Api');
 
         $company = Company::factory()->create();
 
         $this->withToken($this->ownerToken)
-            ->postJson('/api/crm/contacts', [
+            ->postJson('/api/crm/v1/contacts', [
                 'first_name' => 'API',
                 'last_name' => 'Contact',
                 'email' => 'api.contact@example.test',
@@ -86,7 +86,7 @@ class CrmApiModuleTest extends TestCase
         $token = CrmApiToken::issueFor($viewer, 'viewer-test')['plain_text_token'];
 
         $this->withToken($token)
-            ->postJson('/api/crm/contacts', [
+            ->postJson('/api/crm/v1/contacts', [
                 'full_name' => 'Forbidden Contact',
                 'lifecycle_stage' => 'lead',
             ])
@@ -98,7 +98,7 @@ class CrmApiModuleTest extends TestCase
         $contact = Contact::factory()->create();
 
         $this->withToken($this->ownerToken)
-            ->deleteJson("/api/crm/contacts/{$contact->id}")
+            ->deleteJson("/api/crm/v1/contacts/{$contact->id}")
             ->assertOk()
             ->assertJsonPath('message', trans('crm::messages.contacts.deleted'));
 
@@ -112,7 +112,7 @@ class CrmApiModuleTest extends TestCase
         $company = Company::factory()->create();
 
         $this->withToken($token)
-            ->deleteJson("/api/crm/companies/{$company->id}")
+            ->deleteJson("/api/crm/v1/companies/{$company->id}")
             ->assertForbidden();
 
         $this->assertDatabaseHas('companies', ['id' => $company->id, 'deleted_at' => null]);
@@ -121,7 +121,7 @@ class CrmApiModuleTest extends TestCase
     public function test_validation_errors_are_consistent_json(): void
     {
         $this->withToken($this->ownerToken)
-            ->postJson('/api/crm/companies', [
+            ->postJson('/api/crm/v1/companies', [
                 'email' => 'not-an-email',
             ])
             ->assertUnprocessable()
@@ -155,7 +155,7 @@ class CrmApiModuleTest extends TestCase
         $task = Task::factory()->create(['status' => 'open', 'completed_at' => null]);
 
         $this->withToken($this->ownerToken)
-            ->postJson("/api/crm/deals/{$deal->id}/move", [
+            ->postJson("/api/crm/v1/deals/{$deal->id}/move", [
                 'stage_id' => $targetStage->id,
                 'position' => 1,
             ])
@@ -165,7 +165,7 @@ class CrmApiModuleTest extends TestCase
             ->assertJsonPath('data.probability', 70);
 
         $this->withToken($this->ownerToken)
-            ->postJson("/api/crm/tasks/{$task->id}/complete")
+            ->postJson("/api/crm/v1/tasks/{$task->id}/complete")
             ->assertOk()
             ->assertJsonPath('message', trans('crm::messages.tasks.completed'))
             ->assertJsonPath('data.status', 'completed');
@@ -179,7 +179,7 @@ class CrmApiModuleTest extends TestCase
         $contact = Contact::factory()->create(['company_id' => $company->id]);
 
         $this->withToken($this->ownerToken)
-            ->postJson('/api/crm/quotes', [
+            ->postJson('/api/crm/v1/quotes', [
                 'company_id' => $company->id,
                 'contact_id' => $contact->id,
                 'currency' => 'TRY',
@@ -202,7 +202,7 @@ class CrmApiModuleTest extends TestCase
         $quote = Quote::query()->firstOrFail();
 
         $this->withToken($this->ownerToken)
-            ->getJson("/api/crm/quotes/{$quote->id}")
+            ->getJson("/api/crm/v1/quotes/{$quote->id}")
             ->assertOk()
             ->assertJsonPath('data.items.0.line_total', 2400);
     }
@@ -241,6 +241,58 @@ class CrmApiModuleTest extends TestCase
             'crm.api.quotes.show',
             'crm.api.quotes.update',
             'crm.api.quotes.destroy',
+            'crm.api.activities.index',
+            'crm.api.activities.store',
+            'crm.api.tags.index',
+            'crm.api.deal-stages.index',
         ];
+    }
+
+    public function test_legacy_unversioned_paths_redirect_to_v1(): void
+    {
+        $this->get('/api/crm/health')
+            ->assertStatus(308)
+            ->assertRedirect('/api/crm/v1/health');
+
+        $this->get('/api/crm/contacts?search=Ada')
+            ->assertStatus(308)
+            ->assertRedirect('/api/crm/v1/contacts?search=Ada');
+    }
+
+    public function test_tags_and_deal_stages_read_endpoints(): void
+    {
+        $this->seed(\App\Crm\Database\Seeders\CrmDealStageSeeder::class);
+        \App\Crm\Models\Tag::query()->create(['name' => 'VIP', 'slug' => 'vip', 'color' => '#ff0000']);
+
+        $this->withToken($this->ownerToken)
+            ->getJson('/api/crm/v1/tags')
+            ->assertOk()
+            ->assertJsonPath('data.0.name', 'VIP');
+
+        $this->withToken($this->ownerToken)
+            ->getJson('/api/crm/v1/deal-stages')
+            ->assertOk()
+            ->assertJsonStructure(['data' => [['id', 'name', 'position', 'probability', 'is_won', 'is_lost']]]);
+    }
+
+    public function test_activities_can_be_listed_and_created_via_api(): void
+    {
+        $contact = Contact::factory()->create();
+
+        $this->withToken($this->ownerToken)
+            ->postJson('/api/crm/v1/activities', [
+                'activityable_type' => 'contact',
+                'activityable_id' => $contact->id,
+                'type' => 'call',
+                'subject' => 'Intro call',
+                'body' => 'Talked about pricing.',
+            ])
+            ->assertCreated()
+            ->assertJsonPath('data.subject', 'Intro call');
+
+        $this->withToken($this->ownerToken)
+            ->getJson('/api/crm/v1/activities')
+            ->assertOk()
+            ->assertJsonPath('data.0.type', 'call');
     }
 }

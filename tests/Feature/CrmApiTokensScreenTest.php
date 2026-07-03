@@ -57,7 +57,7 @@ class CrmApiTokensScreenTest extends TestCase
 
         // Issued token authenticates against the API.
         $this->withToken($plain)
-            ->getJson('/api/crm/contacts')
+            ->getJson('/api/crm/v1/contacts')
             ->assertOk();
 
         // Plaintext is flashed once and rendered on the follow-up page.
@@ -72,7 +72,7 @@ class CrmApiTokensScreenTest extends TestCase
         $issued = CrmApiToken::issueFor($this->owner, 'to-revoke');
 
         $this->withToken($issued['plain_text_token'])
-            ->getJson('/api/crm/contacts')
+            ->getJson('/api/crm/v1/contacts')
             ->assertOk();
 
         $this->actingAs($this->owner, 'admin')
@@ -80,7 +80,7 @@ class CrmApiTokensScreenTest extends TestCase
             ->assertRedirect(route('crm.api-tokens.index'));
 
         $this->withToken($issued['plain_text_token'])
-            ->getJson('/api/crm/contacts')
+            ->getJson('/api/crm/v1/contacts')
             ->assertUnauthorized();
 
         $this->assertSoftDeleted('crm_api_tokens', ['id' => $issued['token']->id]);
