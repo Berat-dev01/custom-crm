@@ -43,6 +43,8 @@ class AcceptQuote
                 if ($wonStage) {
                     $this->moveDeal->handle($quote->deal, $wonStage, null, null, $user);
                 } else {
+                    $wasWon = $quote->deal->status === 'won';
+
                     $quote->deal->forceFill([
                         'status' => 'won',
                         'probability' => 100,
@@ -50,6 +52,10 @@ class AcceptQuote
                         'lost_reason' => null,
                         'updated_by' => $user?->getAuthIdentifier(),
                     ])->save();
+
+                    if (! $wasWon) {
+                        $this->notifications->dealClosed($quote->deal->refresh(), 'won', $user);
+                    }
                 }
             }
 

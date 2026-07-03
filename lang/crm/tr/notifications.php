@@ -25,6 +25,20 @@ return [
         'completed_title' => ':module içe aktarma tamamlandı',
         'completed_body' => ':created oluşturuldu, :failed başarısız oldu.',
     ],
+    'deal_closed' => [
+        'won_title' => 'Fırsat kazanıldı',
+        'lost_title' => 'Fırsat kaybedildi',
+        'body' => ':deal - :value',
+    ],
+    'quote_customer' => [
+        'subject' => ':company - :quote numaralı teklif',
+        'greeting' => 'Merhaba :name,',
+        'intro' => ':company sizin için bir teklif hazırladı.',
+        'total' => 'Toplam: :value',
+        'valid_until' => 'Geçerlilik: :date',
+        'attachment_note' => 'Teklifin tamamını ekteki PDF dosyasında bulabilirsiniz.',
+        'outro' => 'Sorularınız için bu e-postayı yanıtlamanız yeterli.',
+    ],
     'mail' => [
         'greeting' => 'Merhaba :name,',
         'action' => "CRM'i Aç",

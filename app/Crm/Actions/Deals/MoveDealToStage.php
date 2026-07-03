@@ -9,10 +9,14 @@ use App\Crm\Events\DealMoved;
 use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
 use App\Crm\Services\Audit\CrmAuditLogger;
+use App\Crm\Services\Notifications\CrmBusinessNotifier;
 
 class MoveDealToStage
 {
-    public function __construct(private readonly CrmAuditLogger $audit) {}
+    public function __construct(
+        private readonly CrmAuditLogger $audit,
+        private readonly CrmBusinessNotifier $notifications
+    ) {}
 
     public function handle(
         Deal $deal,
@@ -85,6 +89,10 @@ class MoveDealToStage
                     'to_stage' => $stage->name,
                 ]
             );
+
+            if (in_array($deal->status, ['won', 'lost'], true) && ($before['status'] ?? null) !== $deal->status) {
+                $this->notifications->dealClosed($deal, $deal->status, $user);
+            }
 
             return $deal;
         });

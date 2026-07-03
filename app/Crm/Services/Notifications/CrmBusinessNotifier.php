@@ -5,9 +5,11 @@ namespace App\Crm\Services\Notifications;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Models\CrmImport;
+use App\Crm\Models\Deal;
 use App\Crm\Models\Quote;
 use App\Crm\Models\Task;
 use App\Crm\Notifications\ImportStatusNotification;
+use App\Crm\Notifications\DealClosedNotification;
 use App\Crm\Notifications\QuoteStatusChangedNotification;
 use App\Crm\Notifications\TaskAssignmentNotification;
 
@@ -41,6 +43,33 @@ class CrmBusinessNotifier
         }
 
         $recipient->notify(new TaskAssignmentNotification($task, $reassigned));
+    }
+
+    public function dealClosed(Deal $deal, string $result, ?Authenticatable $actor = null): void
+    {
+        if (! $this->preferences->dealClosedEnabled()) {
+            return;
+        }
+
+        $deal->loadMissing('owner');
+        $recipient = $deal->owner;
+
+        if (! $recipient instanceof User) {
+            return;
+        }
+
+        if ($actor && (int) $actor->getAuthIdentifier() === (int) $recipient->getKey()) {
+            return;
+        }
+
+        if ($this->alreadyHasUnread($recipient, [
+            'kind' => 'deal_'.$result,
+            'deal_id' => $deal->id,
+        ])) {
+            return;
+        }
+
+        $recipient->notify(new DealClosedNotification($deal, $result));
     }
 
     public function quoteStatusChanged(Quote $quote, string $status, ?Authenticatable $actor = null): void

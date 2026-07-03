@@ -28,6 +28,11 @@ class NotificationPreferences
         return (bool) $this->settings->get('notify_import_status_updates', true);
     }
 
+    public function dealClosedEnabled(): bool
+    {
+        return (bool) $this->settings->get('notify_deal_closed', true);
+    }
+
     /**
      * Event keys users can opt out of receiving by email.
      *
@@ -39,6 +44,7 @@ class NotificationPreferences
             'task_reminders',
             'task_assignments',
             'quote_status_changes',
+            'deal_closed',
             'import_status_updates',
         ];
     }

@@ -33,6 +33,7 @@ class NotificationsController extends Controller
                 'task_reminders' => __('Task reminders'),
                 'task_assignments' => __('Task assignments'),
                 'quote_status_changes' => __('Quote status changes'),
+                'deal_closed' => __('Deal won/lost results'),
                 'import_status_updates' => __('Import status updates'),
             ],
             'emailPrefs' => $request->user('admin')?->notification_email_prefs ?? [],

@@ -9,6 +9,9 @@ use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Crm\Models\Quote;
 use App\Crm\Models\Task;
 use App\Crm\Models\CrmSetting;
+use App\Crm\Models\Deal;
+use App\Crm\Models\DealStage;
+use App\Crm\Notifications\DealClosedNotification;
 use App\Crm\Notifications\TaskAssignmentNotification;
 use App\Crm\Notifications\TaskReminderNotification;
 use App\Crm\Services\Notifications\CrmBusinessNotifier;
@@ -208,5 +211,41 @@ class CrmNotificationsModuleTest extends TestCase
 
         $this->assertNotEmpty($mail->subject);
         $this->assertStringContainsString((string) route('crm.tasks.show', $task), (string) $mail->actionUrl);
+    }
+
+    public function test_deal_owner_is_notified_when_deal_is_won_or_lost(): void
+    {
+        Notification::fake();
+        $this->seed(\App\Crm\Database\Seeders\CrmDealStageSeeder::class);
+
+        $owner = User::factory()->create()->assignRole('crm_sales');
+        $openStage = DealStage::query()->where('is_won', false)->where('is_lost', false)->ordered()->firstOrFail();
+        $deal = Deal::factory()->create(['stage_id' => $openStage->id, 'status' => 'open', 'owner_id' => $owner->id]);
+
+        $this->actingAs($this->admin, 'admin')
+            ->patch(route('crm.deals.close-won', $deal))
+            ->assertRedirect();
+
+        Notification::assertSentTo(
+            $owner,
+            DealClosedNotification::class,
+            fn (DealClosedNotification $notification, array $channels): bool => $notification->result === 'won'
+                && in_array('mail', $channels, true)
+        );
+    }
+
+    public function test_deal_close_actor_does_not_notify_themselves(): void
+    {
+        Notification::fake();
+        $this->seed(\App\Crm\Database\Seeders\CrmDealStageSeeder::class);
+
+        $openStage = DealStage::query()->where('is_won', false)->where('is_lost', false)->ordered()->firstOrFail();
+        $deal = Deal::factory()->create(['stage_id' => $openStage->id, 'status' => 'open', 'owner_id' => $this->admin->id]);
+
+        $this->actingAs($this->admin, 'admin')
+            ->patch(route('crm.deals.close-won', $deal))
+            ->assertRedirect();
+
+        Notification::assertNotSentTo($this->admin, DealClosedNotification::class);
     }
 }

@@ -75,6 +75,11 @@
                         <span>{{ __('Notify quote status changes') }}</span>
                     </label>
                     <label class="crm-checkbox-row">
+                        <input type="hidden" name="notify_deal_closed" value="0">
+                        <input type="checkbox" name="notify_deal_closed" value="1" @checked(old('notify_deal_closed', $settings['notify_deal_closed']))>
+                        <span>{{ __('Notify deal won and lost results') }}</span>
+                    </label>
+                    <label class="crm-checkbox-row">
                         <input type="hidden" name="notify_import_status_updates" value="0">
                         <input type="checkbox" name="notify_import_status_updates" value="1" @checked(old('notify_import_status_updates', $settings['notify_import_status_updates']))>
                         <span>{{ __('Notify import queued and completion updates') }}</span>

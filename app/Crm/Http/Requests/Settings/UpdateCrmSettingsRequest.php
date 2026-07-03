@@ -45,6 +45,7 @@ class UpdateCrmSettingsRequest extends FormRequest
             'notify_task_reminders' => ['nullable', 'boolean'],
             'notify_task_assignments' => ['nullable', 'boolean'],
             'notify_quote_status_changes' => ['nullable', 'boolean'],
+            'notify_deal_closed' => ['nullable', 'boolean'],
             'notify_import_status_updates' => ['nullable', 'boolean'],
             'ai_enabled' => ['nullable', 'boolean'],
             'ai_driver' => ['required', 'string', Rule::in(AiDriver::values())],

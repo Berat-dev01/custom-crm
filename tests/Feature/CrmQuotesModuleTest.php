@@ -14,6 +14,8 @@ use App\Crm\Models\Quote;
 use App\Crm\Models\QuoteItem;
 use App\Crm\Models\Tag;
 use App\Crm\Notifications\QuoteStatusChangedNotification;
+use Illuminate\Support\Facades\Mail;
+use App\Crm\Mail\QuoteCustomerMail;
 use Tests\TestCase;
 
 class CrmQuotesModuleTest extends TestCase
@@ -233,7 +235,13 @@ class CrmQuotesModuleTest extends TestCase
             QuoteStatusChangedNotification::class,
             fn (QuoteStatusChangedNotification $notification): bool => $notification->quote->is($sentQuote->fresh()) && $notification->status === 'expired'
         );
-        Notification::assertCount(4);
+        // 4 quote status notifications + 1 deal-closed notification from mark_deal_won.
+        Notification::assertSentTo(
+            $recipient,
+            \App\Crm\Notifications\DealClosedNotification::class,
+            fn (\App\Crm\Notifications\DealClosedNotification $notification): bool => $notification->result === 'won'
+        );
+        Notification::assertCount(5);
     }
 
     public function test_locked_quotes_cannot_be_edited_and_invalid_transitions_are_rejected(): void
@@ -383,5 +391,45 @@ class CrmQuotesModuleTest extends TestCase
         $this->actingAs($viewer, 'admin')
             ->get(route('crm.quotes.download', $quote))
             ->assertForbidden();
+    }
+
+    public function test_sending_quote_emails_customer_with_pdf(): void
+    {
+        Mail::fake();
+
+        $contact = \App\Crm\Models\Contact::factory()->create(['email' => 'musteri@example.test']);
+        $quote = Quote::factory()->create(['status' => 'draft', 'contact_id' => $contact->id, 'deal_id' => null]);
+
+        $this->actingAs($this->admin, 'admin')
+            ->patch(route('crm.quotes.send', $quote))
+            ->assertRedirect(route('crm.quotes.show', $quote));
+
+        Mail::assertQueued(
+            QuoteCustomerMail::class,
+            fn (QuoteCustomerMail $mail): bool => $mail->hasTo('musteri@example.test') && $mail->quote->is($quote)
+        );
+    }
+
+    public function test_sending_quote_without_customer_email_queues_no_mail(): void
+    {
+        Mail::fake();
+
+        $contact = \App\Crm\Models\Contact::factory()->create(['email' => null]);
+        $quote = Quote::factory()->create(['status' => 'draft', 'contact_id' => $contact->id, 'company_id' => null, 'deal_id' => null]);
+
+        $this->actingAs($this->admin, 'admin')
+            ->patch(route('crm.quotes.send', $quote))
+            ->assertRedirect(route('crm.quotes.show', $quote));
+
+        Mail::assertNothingQueued();
+    }
+
+    public function test_quote_customer_mail_renders(): void
+    {
+        $quote = Quote::factory()->create(['status' => 'sent']);
+
+        $html = (new QuoteCustomerMail($quote))->render();
+
+        $this->assertStringContainsString($quote->quote_number, $html);
     }
 }

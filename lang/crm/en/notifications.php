@@ -25,6 +25,20 @@ return [
         'completed_title' => ':module import completed',
         'completed_body' => ':created created, :failed failed.',
     ],
+    'deal_closed' => [
+        'won_title' => 'Deal won',
+        'lost_title' => 'Deal lost',
+        'body' => ':deal - :value',
+    ],
+    'quote_customer' => [
+        'subject' => 'Quote :quote from :company',
+        'greeting' => 'Hello :name,',
+        'intro' => ':company has prepared a quote for you.',
+        'total' => 'Total: :value',
+        'valid_until' => 'Valid until: :date',
+        'attachment_note' => 'You can find the full quote attached as a PDF.',
+        'outro' => 'If you have any questions, simply reply to this email.',
+    ],
     'mail' => [
         'greeting' => 'Hello :name,',
         'action' => 'Open CRM',
