@@ -13,6 +13,7 @@ use App\Crm\Http\Controllers\Admin\QuotesController;
 use App\Crm\Http\Controllers\Admin\SavedFiltersController;
 use App\Crm\Http\Controllers\Admin\SearchController;
 use App\Crm\Http\Controllers\Admin\ApiTokensController;
+use App\Crm\Http\Controllers\Admin\AuditLogsController;
 use App\Crm\Http\Controllers\Admin\SettingsController;
 use App\Crm\Http\Controllers\Admin\TagsController;
 use App\Crm\Http\Controllers\Admin\TasksController;
@@ -95,6 +96,7 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::post('saved-filters', [SavedFiltersController::class, 'store'])->name('saved-filters.store');
                 Route::get('saved-filters/{savedFilter}/apply', [SavedFiltersController::class, 'apply'])->name('saved-filters.apply');
                 Route::delete('saved-filters/{savedFilter}', [SavedFiltersController::class, 'destroy'])->name('saved-filters.destroy');
+                Route::get('audit-logs', [AuditLogsController::class, 'index'])->name('audit-logs.index');
                 Route::get('api-tokens', [ApiTokensController::class, 'index'])->name('api-tokens.index');
                 Route::post('api-tokens', [ApiTokensController::class, 'store'])->name('api-tokens.store');
                 Route::delete('api-tokens/{apiToken}', [ApiTokensController::class, 'destroy'])->name('api-tokens.destroy');
