@@ -7,10 +7,14 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
+use App\Crm\Services\Webhooks\CrmWebhookDispatcher;
 
 class UpsertDeal
 {
-    public function __construct(private readonly MoveDealToStage $moveDeal) {}
+    public function __construct(
+        private readonly MoveDealToStage $moveDeal,
+        private readonly CrmWebhookDispatcher $webhooks
+    ) {}
 
     /**
      * @param  array<string, mixed>  $payload
@@ -21,6 +25,7 @@ class UpsertDeal
             $tagIds = Arr::pull($payload, 'tag_ids', []);
             $stageId = (int) Arr::pull($payload, 'stage_id');
             $lostReason = Arr::pull($payload, 'lost_reason');
+            $isNew = ! $deal->exists;
 
             $payload[$deal->exists ? 'updated_by' : 'created_by'] = $user?->getAuthIdentifier();
 
@@ -38,7 +43,13 @@ class UpsertDeal
                 $deal = $this->moveDeal->handle($deal, DealStage::query()->findOrFail($stageId), null, $lostReason, $user);
             }
 
-            return $deal->refresh();
+            $deal = $deal->refresh();
+
+            if ($isNew) {
+                $this->webhooks->dispatch('deal.created', $deal);
+            }
+
+            return $deal;
         });
     }
 

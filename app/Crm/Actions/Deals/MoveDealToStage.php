@@ -10,12 +10,14 @@ use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
 use App\Crm\Services\Audit\CrmAuditLogger;
 use App\Crm\Services\Notifications\CrmBusinessNotifier;
+use App\Crm\Services\Webhooks\CrmWebhookDispatcher;
 
 class MoveDealToStage
 {
     public function __construct(
         private readonly CrmAuditLogger $audit,
-        private readonly CrmBusinessNotifier $notifications
+        private readonly CrmBusinessNotifier $notifications,
+        private readonly CrmWebhookDispatcher $webhooks
     ) {}
 
     public function handle(
@@ -92,6 +94,7 @@ class MoveDealToStage
 
             if (in_array($deal->status, ['won', 'lost'], true) && ($before['status'] ?? null) !== $deal->status) {
                 $this->notifications->dealClosed($deal, $deal->status, $user);
+                $this->webhooks->dispatch('deal.'.$deal->status, $deal);
             }
 
             return $deal;

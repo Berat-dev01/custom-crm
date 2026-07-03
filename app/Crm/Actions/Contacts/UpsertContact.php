@@ -7,10 +7,14 @@ use Illuminate\Support\Arr;
 use App\Crm\Events\ContactCreated;
 use App\Crm\Models\Contact;
 use App\Crm\Services\Audit\CrmAuditLogger;
+use App\Crm\Services\Webhooks\CrmWebhookDispatcher;
 
 class UpsertContact
 {
-    public function __construct(private readonly CrmAuditLogger $audit) {}
+    public function __construct(
+        private readonly CrmAuditLogger $audit,
+        private readonly CrmWebhookDispatcher $webhooks
+    ) {}
 
     /**
      * @param  array<string, mixed>  $payload
@@ -32,6 +36,7 @@ class UpsertContact
         if ($isNew) {
             event(new ContactCreated($contact->refresh(), $user));
             $this->audit->record('crm.contact.created', $contact, $user, null, $contact->only($this->auditedFields()));
+            $this->webhooks->dispatch('contact.created', $contact);
         } else {
             $changes = $this->audit->diff($before, $contact->only($this->auditedFields()));
 

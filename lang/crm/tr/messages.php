@@ -92,6 +92,12 @@ return [
         'cannot_deactivate_own' => 'Kendi hesabınızı devre dışı bırakamazsınız.',
         'cannot_deactivate_last_owner' => 'Son sahip hesabı devre dışı bırakılamaz.',
     ],
+    'webhooks' => [
+        'created' => 'Webhook oluşturuldu. İmza anahtarını şimdi kopyalayın — bir daha gösterilmeyecek.',
+        'enabled' => 'Webhook devam ettirildi.',
+        'disabled' => 'Webhook duraklatıldı.',
+        'deleted' => 'Webhook silindi.',
+    ],
     'api_tokens' => [
         'created' => 'API token oluşturuldu. Şimdi kopyalayın — bir daha gösterilmeyecek.',
         'revoked' => 'API token iptal edildi.',

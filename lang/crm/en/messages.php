@@ -92,6 +92,12 @@ return [
         'cannot_deactivate_own' => 'You cannot deactivate your own account.',
         'cannot_deactivate_last_owner' => 'Cannot deactivate the last owner account.',
     ],
+    'webhooks' => [
+        'created' => 'Webhook created. Copy the signing secret now — it will not be shown again.',
+        'enabled' => 'Webhook resumed.',
+        'disabled' => 'Webhook paused.',
+        'deleted' => 'Webhook deleted.',
+    ],
     'api_tokens' => [
         'created' => 'API token created. Copy it now — it will not be shown again.',
         'revoked' => 'API token revoked.',

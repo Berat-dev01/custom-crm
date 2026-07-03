@@ -9,13 +9,15 @@ use App\Crm\Models\DealStage;
 use App\Crm\Models\Quote;
 use App\Crm\Services\Audit\CrmAuditLogger;
 use App\Crm\Services\Notifications\CrmBusinessNotifier;
+use App\Crm\Services\Webhooks\CrmWebhookDispatcher;
 
 class AcceptQuote
 {
     public function __construct(
         private readonly MoveDealToStage $moveDeal,
         private readonly CrmAuditLogger $audit,
-        private readonly CrmBusinessNotifier $notifications
+        private readonly CrmBusinessNotifier $notifications,
+        private readonly CrmWebhookDispatcher $webhooks
     ) {}
 
     public function handle(Quote $quote, bool $markDealWon = false, ?Authenticatable $user = null): Quote
@@ -55,6 +57,7 @@ class AcceptQuote
 
                     if (! $wasWon) {
                         $this->notifications->dealClosed($quote->deal->refresh(), 'won', $user);
+                        $this->webhooks->dispatch('deal.won', $quote->deal);
                     }
                 }
             }
@@ -64,6 +67,7 @@ class AcceptQuote
 
             if ($statusChanged) {
                 $this->notifications->quoteStatusChanged($quote->fresh(['owner', 'company', 'deal.owner']), 'accepted', $user);
+                $this->webhooks->dispatch('quote.accepted', $quote);
             }
 
             return $quote;

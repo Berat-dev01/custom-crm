@@ -6,12 +6,14 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Models\Quote;
 use App\Crm\Services\Audit\CrmAuditLogger;
 use App\Crm\Services\Notifications\CrmBusinessNotifier;
+use App\Crm\Services\Webhooks\CrmWebhookDispatcher;
 
 class RejectQuote
 {
     public function __construct(
         private readonly CrmAuditLogger $audit,
-        private readonly CrmBusinessNotifier $notifications
+        private readonly CrmBusinessNotifier $notifications,
+        private readonly CrmWebhookDispatcher $webhooks
     ) {}
 
     public function handle(Quote $quote, ?Authenticatable $user = null): Quote
@@ -36,6 +38,7 @@ class RejectQuote
 
         if ($statusChanged) {
             $this->notifications->quoteStatusChanged($quote->fresh(['owner', 'company', 'deal.owner']), 'rejected', $user);
+            $this->webhooks->dispatch('quote.rejected', $quote);
         }
 
         return $quote;
