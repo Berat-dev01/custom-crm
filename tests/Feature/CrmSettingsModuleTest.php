@@ -110,6 +110,40 @@ class CrmSettingsModuleTest extends TestCase
         $this->assertSame('gemini-test-model', $ai->model());
     }
 
+    public function test_uploaded_logo_is_re_encoded_and_payload_stripped(): void
+    {
+        Storage::fake('public');
+
+        $image = imagecreatetruecolor(40, 20);
+        ob_start();
+        imagepng($image);
+        $binary = (string) ob_get_clean();
+        imagedestroy($image);
+
+        $file = UploadedFile::fake()->createWithContent('logo.png', $binary.'<?php echo "payload";');
+
+        $this->actingAs($this->owner, 'admin')
+            ->put(route('crm.settings.update'), [
+                'company_name' => 'Sanal Kopru CRM',
+                'company_logo' => $file,
+                'default_currency' => 'TRY',
+                'default_tax_rate' => '20',
+                'quote_prefix' => 'CRM-',
+                'ai_driver' => 'null',
+            ])
+            ->assertRedirect(route('crm.settings.index'));
+
+        $logoPath = data_get(
+            CrmSetting::query()->where('key', 'company_logo_path')->value('value'),
+            'value'
+        );
+        Storage::disk('public')->assertExists($logoPath);
+
+        $stored = (string) Storage::disk('public')->get($logoPath);
+        $this->assertStringNotContainsString('<?php', $stored);
+        $this->assertNotFalse(@imagecreatefromstring($stored));
+    }
+
     public function test_quote_preview_uses_settings_company_profile(): void
     {
         $this->actingAs($this->owner, 'admin')

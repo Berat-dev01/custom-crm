@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use App\Crm\Models\CrmSetting;
 use App\Crm\Services\Audit\CrmAuditLogger;
 
@@ -192,11 +193,34 @@ class CrmSettingsManager
 
     private function storeLogo(UploadedFile $logo): string
     {
-        return $logo->storeAs(
-            'crm/settings',
-            'company-logo-'.Str::uuid().'.'.$logo->guessExtension(),
-            'public'
-        );
+        // Re-encode through GD so anything beyond pure pixel data
+        // (EXIF payloads, appended bytes) is stripped before storage.
+        $source = @imagecreatefromstring((string) file_get_contents($logo->getRealPath()));
+
+        if ($source === false) {
+            throw ValidationException::withMessages([
+                'company_logo' => __('The company logo must be a valid image file.'),
+            ]);
+        }
+
+        $isPng = $logo->getMimeType() === 'image/png';
+        $path = 'crm/settings/company-logo-'.Str::uuid().'.'.($isPng ? 'png' : 'jpg');
+
+        ob_start();
+
+        if ($isPng) {
+            imagesavealpha($source, true);
+            imagepng($source);
+        } else {
+            imagejpeg($source, null, 90);
+        }
+
+        $binary = (string) ob_get_clean();
+        imagedestroy($source);
+
+        Storage::disk('public')->put($path, $binary);
+
+        return $path;
     }
 
     private function nullableString(string $key): ?string

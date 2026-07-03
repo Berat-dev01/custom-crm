@@ -22,7 +22,7 @@ class UpdateCrmSettingsRequest extends FormRequest
     {
         return [
             'company_name' => ['required', 'string', 'max:160'],
-            'company_logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048', function (string $attribute, mixed $value, \Closure $fail): void {
+            'company_logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048', function (string $attribute, mixed $value, \Closure $fail): void {
                 if (! ($value instanceof UploadedFile)) {
                     return;
                 }
