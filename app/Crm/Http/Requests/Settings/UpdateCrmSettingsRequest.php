@@ -47,6 +47,7 @@ class UpdateCrmSettingsRequest extends FormRequest
             'notify_quote_status_changes' => ['nullable', 'boolean'],
             'notify_deal_closed' => ['nullable', 'boolean'],
             'notify_import_status_updates' => ['nullable', 'boolean'],
+            'notify_weekly_digest' => ['nullable', 'boolean'],
             'ai_enabled' => ['nullable', 'boolean'],
             'ai_driver' => ['required', 'string', Rule::in(AiDriver::values())],
             'ai_model' => ['nullable', 'string', 'max:120'],

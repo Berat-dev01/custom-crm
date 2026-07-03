@@ -39,6 +39,15 @@ return [
         'attachment_note' => 'You can find the full quote attached as a PDF.',
         'outro' => 'If you have any questions, simply reply to this email.',
     ],
+    'weekly_digest' => [
+        'subject' => 'Your weekly CRM digest',
+        'intro' => 'Here is what happened in your CRM over the last 7 days.',
+        'pipeline' => 'Open pipeline: :count deal(s) worth :value',
+        'won' => 'Won last week: :count deal(s) worth :value',
+        'lost' => 'Lost last week: :count deal(s)',
+        'overdue_tasks' => 'Overdue tasks: :count',
+        'pending_quotes' => 'Quotes awaiting response: :count',
+    ],
     'mail' => [
         'greeting' => 'Hello :name,',
         'action' => 'Open CRM',

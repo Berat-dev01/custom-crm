@@ -35,6 +35,7 @@ class NotificationsController extends Controller
                 'quote_status_changes' => __('Quote status changes'),
                 'deal_closed' => __('Deal won/lost results'),
                 'import_status_updates' => __('Import status updates'),
+                'weekly_digest' => __('Weekly digest email'),
             ],
             'emailPrefs' => $request->user('admin')?->notification_email_prefs ?? [],
         ]);

@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Crm\Console\SeedCrmDemoCommand;
 use App\Crm\Console\SeedCrmPerformanceCommand;
 use App\Crm\Console\SendTaskRemindersCommand;
+use App\Crm\Console\SendWeeklyDigestCommand;
 use App\Crm\Contracts\AiProviderContract;
 use App\Crm\Events\ContactCreated;
 use App\Crm\Events\DealMoved;
@@ -99,6 +100,7 @@ class CrmServiceProvider extends ServiceProvider
                 SeedCrmDemoCommand::class,
                 SeedCrmPerformanceCommand::class,
                 SendTaskRemindersCommand::class,
+                SendWeeklyDigestCommand::class,
             ]);
         }
 
@@ -194,6 +196,11 @@ class CrmServiceProvider extends ServiceProvider
             $this->app->make(Schedule::class)
                 ->command('crm:tasks:send-reminders')
                 ->everyFiveMinutes()
+                ->withoutOverlapping();
+
+            $this->app->make(Schedule::class)
+                ->command('crm:digest:send-weekly')
+                ->weeklyOn(1, '08:00')
                 ->withoutOverlapping();
         });
     }

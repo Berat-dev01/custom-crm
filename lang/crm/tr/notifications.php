@@ -39,6 +39,15 @@ return [
         'attachment_note' => 'Teklifin tamamını ekteki PDF dosyasında bulabilirsiniz.',
         'outro' => 'Sorularınız için bu e-postayı yanıtlamanız yeterli.',
     ],
+    'weekly_digest' => [
+        'subject' => 'Haftalık CRM özetiniz',
+        'intro' => 'Son 7 günde CRM tarafında olanlar aşağıda.',
+        'pipeline' => 'Açık pipeline: :count fırsat, toplam :value',
+        'won' => 'Geçen hafta kazanılan: :count fırsat, toplam :value',
+        'lost' => 'Geçen hafta kaybedilen: :count fırsat',
+        'overdue_tasks' => 'Geciken görevler: :count',
+        'pending_quotes' => 'Yanıt bekleyen teklifler: :count',
+    ],
     'mail' => [
         'greeting' => 'Merhaba :name,',
         'action' => "CRM'i Aç",

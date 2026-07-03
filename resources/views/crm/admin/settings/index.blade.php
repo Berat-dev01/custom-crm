@@ -84,6 +84,11 @@
                         <input type="checkbox" name="notify_import_status_updates" value="1" @checked(old('notify_import_status_updates', $settings['notify_import_status_updates']))>
                         <span>{{ __('Notify import queued and completion updates') }}</span>
                     </label>
+                    <label class="crm-checkbox-row">
+                        <input type="hidden" name="notify_weekly_digest" value="0">
+                        <input type="checkbox" name="notify_weekly_digest" value="1" @checked(old('notify_weekly_digest', $settings['notify_weekly_digest']))>
+                        <span>{{ __('Send weekly digest email to owners and managers') }}</span>
+                    </label>
                 </div>
             </x-admin-panel::card>
 

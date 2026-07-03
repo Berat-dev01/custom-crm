@@ -33,6 +33,11 @@ class NotificationPreferences
         return (bool) $this->settings->get('notify_deal_closed', true);
     }
 
+    public function weeklyDigestEnabled(): bool
+    {
+        return (bool) $this->settings->get('notify_weekly_digest', true);
+    }
+
     /**
      * Event keys users can opt out of receiving by email.
      *
@@ -46,6 +51,7 @@ class NotificationPreferences
             'quote_status_changes',
             'deal_closed',
             'import_status_updates',
+            'weekly_digest',
         ];
     }
 
