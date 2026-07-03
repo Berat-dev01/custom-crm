@@ -141,7 +141,7 @@ class CrmSecurityBoundaryTest extends TestCase
             ->delete(route('crm.saved-filters.destroy', $filter))
             ->assertRedirect();
 
-        $this->assertDatabaseMissing('saved_filters', ['id' => $filter->id]);
+        $this->assertSoftDeleted('crm_saved_filters', ['id' => $filter->id]);
     }
 
     // --- API: bearer token required, session alone is not enough (#3) ---

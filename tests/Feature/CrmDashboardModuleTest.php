@@ -32,6 +32,10 @@ class CrmDashboardModuleTest extends TestCase
     {
         parent::setUp();
 
+        // Pin the clock to mid-month so relative dates (e.g. subDays(5))
+        // never cross a month boundary and break trend assertions.
+        $this->travelTo(now()->startOfMonth()->addDays(14)->setTime(10, 0));
+
         $this->seed(CrmPermissionSeeder::class);
         $this->seed(CrmDealStageSeeder::class);
 

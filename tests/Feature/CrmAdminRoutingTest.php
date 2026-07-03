@@ -73,9 +73,12 @@ class CrmAdminRoutingTest extends TestCase
             ->assertAccepted();
     }
 
-    public function test_public_frontend_does_not_load_crm_admin_shell(): void
+    public function test_public_root_redirects_to_admin_without_crm_shell(): void
     {
         $this->get('/')
+            ->assertRedirect('/admin');
+
+        $this->get('/admin/login')
             ->assertOk()
             ->assertDontSee('crm-admin-shell')
             ->assertDontSee('vendor/crm/css/crm.css');
