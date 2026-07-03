@@ -92,6 +92,10 @@ return [
         'cannot_deactivate_own' => 'You cannot deactivate your own account.',
         'cannot_deactivate_last_owner' => 'Cannot deactivate the last owner account.',
     ],
+    'api_tokens' => [
+        'created' => 'API token created. Copy it now — it will not be shown again.',
+        'revoked' => 'API token revoked.',
+    ],
     'notifications' => [
         'marked_read' => 'Notification marked as read.',
         'preferences_saved' => 'Notification preferences saved.',

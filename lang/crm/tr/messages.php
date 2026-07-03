@@ -92,6 +92,10 @@ return [
         'cannot_deactivate_own' => 'Kendi hesabınızı devre dışı bırakamazsınız.',
         'cannot_deactivate_last_owner' => 'Son sahip hesabı devre dışı bırakılamaz.',
     ],
+    'api_tokens' => [
+        'created' => 'API token oluşturuldu. Şimdi kopyalayın — bir daha gösterilmeyecek.',
+        'revoked' => 'API token iptal edildi.',
+    ],
     'notifications' => [
         'marked_read' => 'Bildirim okundu olarak işaretlendi.',
         'preferences_saved' => 'Bildirim tercihleri kaydedildi.',
