@@ -64,6 +64,15 @@ class TasksController extends Controller
             ->additional(['message' => trans('crm::messages.tasks.completed')]);
     }
 
+    public function destroy(Task $task): mixed
+    {
+        Gate::authorize('delete', $task);
+
+        $task->delete();
+
+        return response()->json(['message' => trans('crm::messages.tasks.deleted')]);
+    }
+
     private function validateIndex(Request $request): void
     {
         $request->validate([

@@ -14,12 +14,12 @@ Route::prefix('crm')
         Route::get('/health', HealthController::class)->name('health');
 
         Route::middleware(['crm.api.auth', 'throttle:crm-api'])->group(function () {
-            Route::apiResource('contacts', ContactsController::class)->only(['index', 'store', 'show', 'update']);
-            Route::apiResource('companies', CompaniesController::class)->only(['index', 'store', 'show', 'update']);
-            Route::apiResource('deals', DealsController::class)->only(['index', 'store', 'show', 'update']);
+            Route::apiResource('contacts', ContactsController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
+            Route::apiResource('companies', CompaniesController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
+            Route::apiResource('deals', DealsController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
             Route::post('deals/{deal}/move', [DealsController::class, 'move'])->name('deals.move');
-            Route::apiResource('tasks', TasksController::class)->only(['index', 'store', 'show', 'update']);
+            Route::apiResource('tasks', TasksController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
             Route::post('tasks/{task}/complete', [TasksController::class, 'complete'])->name('tasks.complete');
-            Route::apiResource('quotes', QuotesController::class)->only(['index', 'store', 'show', 'update']);
+            Route::apiResource('quotes', QuotesController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
         });
     });

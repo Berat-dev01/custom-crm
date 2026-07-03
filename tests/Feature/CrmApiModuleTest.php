@@ -93,6 +93,31 @@ class CrmApiModuleTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_bearer_token_can_delete_records(): void
+    {
+        $contact = Contact::factory()->create();
+
+        $this->withToken($this->ownerToken)
+            ->deleteJson("/api/crm/contacts/{$contact->id}")
+            ->assertOk()
+            ->assertJsonPath('message', trans('crm::messages.contacts.deleted'));
+
+        $this->assertSoftDeleted('contacts', ['id' => $contact->id]);
+    }
+
+    public function test_viewer_token_cannot_delete_records(): void
+    {
+        $viewer = User::factory()->create()->assignRole('crm_viewer');
+        $token = CrmApiToken::issueFor($viewer, 'viewer-test')['plain_text_token'];
+        $company = Company::factory()->create();
+
+        $this->withToken($token)
+            ->deleteJson("/api/crm/companies/{$company->id}")
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('companies', ['id' => $company->id, 'deleted_at' => null]);
+    }
+
     public function test_validation_errors_are_consistent_json(): void
     {
         $this->withToken($this->ownerToken)
@@ -193,24 +218,29 @@ class CrmApiModuleTest extends TestCase
             'crm.api.contacts.store',
             'crm.api.contacts.show',
             'crm.api.contacts.update',
+            'crm.api.contacts.destroy',
             'crm.api.companies.index',
             'crm.api.companies.store',
             'crm.api.companies.show',
             'crm.api.companies.update',
+            'crm.api.companies.destroy',
             'crm.api.deals.index',
             'crm.api.deals.store',
             'crm.api.deals.show',
             'crm.api.deals.update',
+            'crm.api.deals.destroy',
             'crm.api.deals.move',
             'crm.api.tasks.index',
             'crm.api.tasks.store',
             'crm.api.tasks.show',
             'crm.api.tasks.update',
+            'crm.api.tasks.destroy',
             'crm.api.tasks.complete',
             'crm.api.quotes.index',
             'crm.api.quotes.store',
             'crm.api.quotes.show',
             'crm.api.quotes.update',
+            'crm.api.quotes.destroy',
         ];
     }
 }

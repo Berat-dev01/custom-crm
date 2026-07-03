@@ -49,6 +49,15 @@ class ContactsController extends Controller
             ->additional(['message' => trans('crm::messages.contacts.updated')]);
     }
 
+    public function destroy(Contact $contact): mixed
+    {
+        Gate::authorize('delete', $contact);
+
+        $contact->delete();
+
+        return response()->json(['message' => trans('crm::messages.contacts.deleted')]);
+    }
+
     private function validateIndex(Request $request): void
     {
         $request->validate([

@@ -49,6 +49,15 @@ class CompaniesController extends Controller
             ->additional(['message' => trans('crm::messages.companies.updated')]);
     }
 
+    public function destroy(Company $company): mixed
+    {
+        Gate::authorize('delete', $company);
+
+        $company->delete();
+
+        return response()->json(['message' => trans('crm::messages.companies.deleted')]);
+    }
+
     private function validateIndex(Request $request): void
     {
         $request->validate([

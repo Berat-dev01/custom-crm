@@ -70,6 +70,15 @@ class DealsController extends Controller
             ->additional(['message' => trans('crm::messages.deals.moved')]);
     }
 
+    public function destroy(Deal $deal): mixed
+    {
+        Gate::authorize('delete', $deal);
+
+        $deal->delete();
+
+        return response()->json(['message' => trans('crm::messages.deals.deleted')]);
+    }
+
     private function validateIndex(Request $request): void
     {
         $request->validate([

@@ -50,6 +50,15 @@ class QuotesController extends Controller
             ->additional(['message' => trans('crm::messages.quotes.updated')]);
     }
 
+    public function destroy(Quote $quote): mixed
+    {
+        Gate::authorize('delete', $quote);
+
+        $quote->delete();
+
+        return response()->json(['message' => trans('crm::messages.quotes.deleted')]);
+    }
+
     private function validateIndex(Request $request): void
     {
         $request->validate([
