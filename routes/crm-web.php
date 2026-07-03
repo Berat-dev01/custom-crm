@@ -14,6 +14,7 @@ use App\Crm\Http\Controllers\Admin\SavedFiltersController;
 use App\Crm\Http\Controllers\Admin\SearchController;
 use App\Crm\Http\Controllers\Admin\ApiTokensController;
 use App\Crm\Http\Controllers\Admin\AuditLogsController;
+use App\Crm\Http\Controllers\Admin\TrashController;
 use App\Crm\Http\Controllers\Admin\WebhooksController;
 use App\Crm\Http\Controllers\Admin\SettingsController;
 use App\Crm\Http\Controllers\Admin\TagsController;
@@ -97,6 +98,9 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::post('saved-filters', [SavedFiltersController::class, 'store'])->name('saved-filters.store');
                 Route::get('saved-filters/{savedFilter}/apply', [SavedFiltersController::class, 'apply'])->name('saved-filters.apply');
                 Route::delete('saved-filters/{savedFilter}', [SavedFiltersController::class, 'destroy'])->name('saved-filters.destroy');
+                Route::get('trash', [TrashController::class, 'index'])->name('trash.index');
+                Route::post('trash/{module}/{id}/restore', [TrashController::class, 'restore'])->name('trash.restore');
+                Route::delete('trash/{module}/{id}', [TrashController::class, 'destroy'])->name('trash.destroy');
                 Route::get('webhooks', [WebhooksController::class, 'index'])->name('webhooks.index');
                 Route::post('webhooks', [WebhooksController::class, 'store'])->name('webhooks.store');
                 Route::patch('webhooks/{webhook}/toggle', [WebhooksController::class, 'toggle'])->name('webhooks.toggle');
