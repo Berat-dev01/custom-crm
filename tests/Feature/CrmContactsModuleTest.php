@@ -2,9 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\UploadedFile;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Crm\Models\Activity;
 use App\Crm\Models\Company;
@@ -13,6 +10,9 @@ use App\Crm\Models\Deal;
 use App\Crm\Models\Quote;
 use App\Crm\Models\Tag;
 use App\Crm\Models\Task as CrmTask;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 class CrmContactsModuleTest extends TestCase

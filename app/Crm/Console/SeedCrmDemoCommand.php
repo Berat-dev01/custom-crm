@@ -2,8 +2,8 @@
 
 namespace App\Crm\Console;
 
-use Illuminate\Console\Command;
 use App\Crm\Database\Seeders\CrmDemoSeeder;
+use Illuminate\Console\Command;
 
 class SeedCrmDemoCommand extends Command
 {

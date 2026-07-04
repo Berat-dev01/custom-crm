@@ -2,8 +2,8 @@
 
 namespace App\Crm\Policies;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Services\Authorization\CrmAuthorization;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 abstract class CrmPolicy
 {

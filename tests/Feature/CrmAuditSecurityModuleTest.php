@@ -2,11 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Facades\Route;
 use App\Crm\Database\Seeders\CrmDealStageSeeder;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Crm\Models\Company;
@@ -15,6 +10,11 @@ use App\Crm\Models\CrmAuditLog;
 use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
 use App\Crm\Models\Quote;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 class CrmAuditSecurityModuleTest extends TestCase

@@ -2,8 +2,8 @@
 
 namespace App\Crm\Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Crm\Services\Authorization\PermissionCatalog;
+use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;

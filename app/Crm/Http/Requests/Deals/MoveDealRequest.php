@@ -2,9 +2,9 @@
 
 namespace App\Crm\Http\Requests\Deals;
 
+use App\Crm\Models\DealStage;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
-use App\Crm\Models\DealStage;
 
 class MoveDealRequest extends FormRequest
 {

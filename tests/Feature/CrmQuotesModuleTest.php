@@ -2,10 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Notification;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
+use App\Crm\Mail\QuoteCustomerMail;
 use App\Crm\Models\Company;
 use App\Crm\Models\Contact;
 use App\Crm\Models\Deal;
@@ -13,9 +11,12 @@ use App\Crm\Models\DealStage;
 use App\Crm\Models\Quote;
 use App\Crm\Models\QuoteItem;
 use App\Crm\Models\Tag;
+use App\Crm\Notifications\DealClosedNotification;
 use App\Crm\Notifications\QuoteStatusChangedNotification;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
-use App\Crm\Mail\QuoteCustomerMail;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class CrmQuotesModuleTest extends TestCase
@@ -238,8 +239,8 @@ class CrmQuotesModuleTest extends TestCase
         // 4 quote status notifications + 1 deal-closed notification from mark_deal_won.
         Notification::assertSentTo(
             $recipient,
-            \App\Crm\Notifications\DealClosedNotification::class,
-            fn (\App\Crm\Notifications\DealClosedNotification $notification): bool => $notification->result === 'won'
+            DealClosedNotification::class,
+            fn (DealClosedNotification $notification): bool => $notification->result === 'won'
         );
         Notification::assertCount(5);
     }
@@ -397,7 +398,7 @@ class CrmQuotesModuleTest extends TestCase
     {
         Mail::fake();
 
-        $contact = \App\Crm\Models\Contact::factory()->create(['email' => 'musteri@example.test']);
+        $contact = Contact::factory()->create(['email' => 'musteri@example.test']);
         $quote = Quote::factory()->create(['status' => 'draft', 'contact_id' => $contact->id, 'deal_id' => null]);
 
         $this->actingAs($this->admin, 'admin')
@@ -414,7 +415,7 @@ class CrmQuotesModuleTest extends TestCase
     {
         Mail::fake();
 
-        $contact = \App\Crm\Models\Contact::factory()->create(['email' => null]);
+        $contact = Contact::factory()->create(['email' => null]);
         $quote = Quote::factory()->create(['status' => 'draft', 'contact_id' => $contact->id, 'company_id' => null, 'deal_id' => null]);
 
         $this->actingAs($this->admin, 'admin')

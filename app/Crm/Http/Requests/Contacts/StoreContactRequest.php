@@ -2,10 +2,10 @@
 
 namespace App\Crm\Http\Requests\Contacts;
 
+use App\Crm\Http\Requests\Contacts\Concerns\BuildsContactPayload;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use App\Crm\Http\Requests\Contacts\Concerns\BuildsContactPayload;
 
 class StoreContactRequest extends FormRequest
 {

@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 

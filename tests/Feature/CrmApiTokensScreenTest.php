@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Crm\Models\CrmApiToken;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CrmApiTokensScreenTest extends TestCase

@@ -2,14 +2,14 @@
 
 namespace App\Crm\Console;
 
-use App\Models\User;
-use Illuminate\Console\Command;
 use App\Crm\Models\Deal;
 use App\Crm\Models\Quote;
 use App\Crm\Models\Task;
 use App\Crm\Notifications\WeeklyDigestNotification;
 use App\Crm\Services\Configuration\MoneySettings;
 use App\Crm\Services\Notifications\NotificationPreferences;
+use App\Models\User;
+use Illuminate\Console\Command;
 
 class SendWeeklyDigestCommand extends Command
 {

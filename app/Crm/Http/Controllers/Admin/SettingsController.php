@@ -2,13 +2,13 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
+use App\Crm\Http\Requests\Settings\UpdateCrmSettingsRequest;
+use App\Crm\Services\Settings\CrmSettingsManager;
+use App\Crm\Support\Ai\AiDriver;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
-use App\Crm\Http\Requests\Settings\UpdateCrmSettingsRequest;
-use App\Crm\Services\Settings\CrmSettingsManager;
-use App\Crm\Support\Ai\AiDriver;
 
 class SettingsController extends Controller
 {

@@ -2,8 +2,8 @@
 
 namespace App\Crm\Http\Requests\Tasks;
 
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Http\Requests\Tasks\Concerns\BuildsTaskPayload;
+use Illuminate\Support\Facades\Gate;
 
 class UpdateTaskRequest extends StoreTaskRequest
 {

@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
-use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use Tests\TestCase;
 
 class CrmAdminRoutingTest extends TestCase

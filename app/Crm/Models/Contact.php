@@ -2,6 +2,8 @@
 
 namespace App\Crm\Models;
 
+use App\Crm\Database\Factories\ContactFactory;
+use App\Crm\Models\Concerns\HasPublicId;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,8 +13,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Crm\Database\Factories\ContactFactory;
-use App\Crm\Models\Concerns\HasPublicId;
 
 class Contact extends Model
 {

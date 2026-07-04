@@ -2,16 +2,16 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Crm\Database\Seeders\CrmDealStageSeeder;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
 use App\Crm\Services\Dashboard\DashboardReport;
 use App\Crm\Services\Deals\DealQuery;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class CrmPerformanceModuleTest extends TestCase

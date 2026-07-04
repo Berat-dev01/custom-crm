@@ -1,10 +1,9 @@
 <?php
 
-use App\Http\Controllers\AdminAuthController;
-use Illuminate\Support\Facades\Route;
-
 use App\Crm\Http\Controllers\PublicCalendarController;
 use App\Crm\Http\Controllers\PublicQuoteController;
+use App\Http\Controllers\AdminAuthController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect('/admin');

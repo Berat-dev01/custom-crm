@@ -2,8 +2,8 @@
 
 namespace App\Crm\Services\Contacts;
 
-use Illuminate\Support\Collection;
 use App\Crm\Models\Contact;
+use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ContactCsvExporter

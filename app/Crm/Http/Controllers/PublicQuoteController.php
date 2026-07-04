@@ -2,15 +2,16 @@
 
 namespace App\Crm\Http\Controllers;
 
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 use App\Crm\Actions\Quotes\AcceptQuote;
 use App\Crm\Actions\Quotes\RejectQuote;
 use App\Crm\Models\Quote;
 use App\Crm\Services\Activities\ActivityLogger;
 use App\Crm\Services\Quotes\QuotePdfRenderer;
+use App\Crm\Services\Settings\CrmSettingsManager;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
 class PublicQuoteController extends Controller
@@ -21,8 +22,8 @@ class PublicQuoteController extends Controller
 
         return view('crm::public.quote', [
             'quote' => $quote->load(['contact', 'company', 'items']),
-            'companyProfile' => app(\App\Crm\Services\Settings\CrmSettingsManager::class)->companyProfile(),
-            'logoUrl' => app(\App\Crm\Services\Settings\CrmSettingsManager::class)->logoUrl(),
+            'companyProfile' => app(CrmSettingsManager::class)->companyProfile(),
+            'logoUrl' => app(CrmSettingsManager::class)->logoUrl(),
         ]);
     }
 

@@ -2,11 +2,11 @@
 
 namespace App\Crm\Actions\Deals;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Actions\Quotes\UpsertQuote;
 use App\Crm\Models\Deal;
 use App\Crm\Models\Quote;
 use App\Crm\Services\Configuration\MoneySettings;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class CreateDealQuote
 {

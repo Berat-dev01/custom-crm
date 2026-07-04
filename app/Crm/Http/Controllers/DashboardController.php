@@ -2,11 +2,11 @@
 
 namespace App\Crm\Http\Controllers;
 
+use App\Crm\Services\Dashboard\DashboardReport;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
-use App\Crm\Services\Dashboard\DashboardReport;
 
 class DashboardController extends Controller
 {

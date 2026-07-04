@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
 use App\Crm\Services\Quotes\QuoteCalculator;
+use PHPUnit\Framework\TestCase;
 
 class QuoteCalculatorTest extends TestCase
 {

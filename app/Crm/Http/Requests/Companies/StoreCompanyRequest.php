@@ -2,10 +2,10 @@
 
 namespace App\Crm\Http\Requests\Companies;
 
+use App\Crm\Http\Requests\Companies\Concerns\BuildsCompanyPayload;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use App\Crm\Http\Requests\Companies\Concerns\BuildsCompanyPayload;
 
 class StoreCompanyRequest extends FormRequest
 {

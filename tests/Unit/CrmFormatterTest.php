@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Support\Carbon;
 use App\Crm\Support\CrmFormatter;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class CrmFormatterTest extends TestCase

@@ -2,6 +2,8 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
+use App\Crm\Services\Authorization\PermissionCatalog;
+use App\Crm\Support\CrmLabelCatalog;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -10,8 +12,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use App\Crm\Services\Authorization\PermissionCatalog;
-use App\Crm\Support\CrmLabelCatalog;
+use Illuminate\Validation\Rules\Password;
 use Spatie\Permission\Models\Role;
 
 class UsersController extends Controller
@@ -53,7 +54,7 @@ class UsersController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', \Illuminate\Validation\Rules\Password::defaults(), 'confirmed'],
+            'password' => ['required', 'string', Password::defaults(), 'confirmed'],
             'crm_role' => ['nullable', 'string', Rule::in(array_keys($this->crmRoles()))],
         ]);
 
@@ -95,7 +96,7 @@ class UsersController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'password' => ['nullable', 'string', \Illuminate\Validation\Rules\Password::defaults(), 'confirmed'],
+            'password' => ['nullable', 'string', Password::defaults(), 'confirmed'],
             'crm_role' => ['nullable', 'string', Rule::in(array_keys($this->crmRoles()))],
         ]);
 

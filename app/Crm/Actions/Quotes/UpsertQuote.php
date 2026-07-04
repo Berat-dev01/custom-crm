@@ -2,13 +2,13 @@
 
 namespace App\Crm\Actions\Quotes;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Facades\DB;
 use App\Crm\Models\Deal;
 use App\Crm\Models\Quote;
 use App\Crm\Models\QuoteItem;
 use App\Crm\Services\Quotes\QuoteCalculator;
 use App\Crm\Services\Quotes\QuoteNumberGenerator;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class UpsertQuote
 {

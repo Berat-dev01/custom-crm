@@ -2,8 +2,8 @@
 
 namespace App\Crm\Console;
 
-use Illuminate\Console\Command;
 use App\Crm\Database\Seeders\CrmPerformanceSeeder;
+use Illuminate\Console\Command;
 
 class SeedCrmPerformanceCommand extends Command
 {

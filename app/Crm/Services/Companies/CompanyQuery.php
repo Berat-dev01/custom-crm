@@ -2,10 +2,10 @@
 
 namespace App\Crm\Services\Companies;
 
+use App\Crm\Models\Company;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use App\Crm\Models\Company;
 
 class CompanyQuery
 {

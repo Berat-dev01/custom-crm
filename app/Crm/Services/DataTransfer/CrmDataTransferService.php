@@ -2,18 +2,6 @@
 
 namespace App\Crm\Services\DataTransfer;
 
-use App\Models\User;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
-use OpenSpout\Common\Entity\Row;
-use OpenSpout\Writer\CSV\Writer as CsvWriter;
-use OpenSpout\Writer\XLSX\Writer as XlsxWriter;
 use App\Crm\Actions\Companies\UpsertCompany;
 use App\Crm\Actions\Contacts\UpsertContact;
 use App\Crm\Actions\Deals\UpsertDeal;
@@ -29,6 +17,18 @@ use App\Crm\Services\Audit\CrmAuditLogger;
 use App\Crm\Services\Configuration\MoneySettings;
 use App\Crm\Services\Notifications\CrmBusinessNotifier;
 use App\Crm\Support\CrmExportSchema;
+use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\CSV\Writer as CsvWriter;
+use OpenSpout\Writer\XLSX\Writer as XlsxWriter;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CrmDataTransferService

@@ -2,12 +2,6 @@
 
 namespace App\Crm\Services\Dashboard;
 
-use Carbon\CarbonImmutable;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use App\Crm\Models\Activity;
 use App\Crm\Models\Company;
 use App\Crm\Models\Contact;
@@ -16,6 +10,13 @@ use App\Crm\Models\DealStage;
 use App\Crm\Models\Quote;
 use App\Crm\Models\Task;
 use App\Crm\Support\CrmFormatter;
+use Carbon\CarbonImmutable;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class DashboardReport
 {
@@ -55,7 +56,7 @@ class DashboardReport
             return $compute();
         }
 
-        return \Illuminate\Support\Facades\Cache::remember($cacheKey, $ttl, $compute);
+        return Cache::remember($cacheKey, $ttl, $compute);
     }
 
     /**

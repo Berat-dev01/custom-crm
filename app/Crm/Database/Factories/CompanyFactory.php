@@ -2,9 +2,9 @@
 
 namespace App\Crm\Database\Factories;
 
+use App\Crm\Models\Company;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Crm\Models\Company;
 
 /**
  * @extends Factory<Company>

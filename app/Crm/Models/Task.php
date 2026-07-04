@@ -2,6 +2,8 @@
 
 namespace App\Crm\Models;
 
+use App\Crm\Database\Factories\TaskFactory;
+use App\Crm\Models\Concerns\HasPublicId;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,8 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Crm\Database\Factories\TaskFactory;
-use App\Crm\Models\Concerns\HasPublicId;
 
 class Task extends Model
 {

@@ -2,8 +2,8 @@
 
 namespace App\Crm\Services\Navigation;
 
-use Illuminate\Http\Request;
 use App\Crm\Support\CrmLabelCatalog;
+use Illuminate\Http\Request;
 
 class CrmNavigation
 {

@@ -2,8 +2,8 @@
 
 namespace App\Crm\Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Crm\Models\DealStage;
+use Illuminate\Database\Seeder;
 
 class CrmDealStageSeeder extends Seeder
 {

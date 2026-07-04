@@ -2,16 +2,16 @@
 
 namespace App\Crm\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\Rule;
 use App\Crm\Actions\Quotes\UpsertQuote;
 use App\Crm\Http\Requests\Quotes\StoreQuoteRequest;
 use App\Crm\Http\Requests\Quotes\UpdateQuoteRequest;
 use App\Crm\Http\Resources\Api\QuoteResource;
 use App\Crm\Models\Quote;
 use App\Crm\Services\Quotes\QuoteQuery;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class QuotesController extends Controller
 {

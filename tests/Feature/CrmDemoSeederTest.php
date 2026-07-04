@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Crm\Database\Seeders\CrmDemoSeeder;
 use App\Crm\Models\Activity;
 use App\Crm\Models\Company;
@@ -13,6 +12,7 @@ use App\Crm\Models\Quote;
 use App\Crm\Models\QuoteItem;
 use App\Crm\Models\Tag;
 use App\Crm\Models\Task as CrmTask;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CrmDemoSeederTest extends TestCase

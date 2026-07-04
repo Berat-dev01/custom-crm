@@ -2,6 +2,8 @@
 
 namespace App\Crm\Services\Settings;
 
+use App\Crm\Models\CrmSetting;
+use App\Crm\Services\Audit\CrmAuditLogger;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
@@ -9,8 +11,6 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use App\Crm\Models\CrmSetting;
-use App\Crm\Services\Audit\CrmAuditLogger;
 
 class CrmSettingsManager
 {

@@ -2,9 +2,6 @@
 
 namespace App\Crm\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Actions\Tasks\CompleteTask;
 use App\Crm\Actions\Tasks\UpsertTask;
 use App\Crm\Http\Requests\Tasks\StoreTaskRequest;
@@ -12,6 +9,9 @@ use App\Crm\Http\Requests\Tasks\UpdateTaskRequest;
 use App\Crm\Http\Resources\Api\TaskResource;
 use App\Crm\Models\Task;
 use App\Crm\Services\Tasks\TaskQuery;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 
 class TasksController extends Controller
 {

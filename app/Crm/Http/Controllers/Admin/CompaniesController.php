@@ -2,12 +2,6 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
-use App\Models\User;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Actions\Companies\AttachContactsToCompany;
 use App\Crm\Actions\Companies\UpsertCompany;
 use App\Crm\Http\Requests\Companies\AttachCompanyContactsRequest;
@@ -19,6 +13,13 @@ use App\Crm\Models\SavedFilter;
 use App\Crm\Models\Tag;
 use App\Crm\Services\Companies\CompanyQuery;
 use App\Crm\Support\CrmExportSchema;
+use App\Models\User;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Gate;
 
 class CompaniesController extends Controller
 {
@@ -136,7 +137,7 @@ class CompaniesController extends Controller
 
         Company::query()
             ->whereKey($validated['record_ids'])
-            ->chunkById(200, function (\Illuminate\Support\Collection $companies) use (&$deleted, &$blocked): void {
+            ->chunkById(200, function (Collection $companies) use (&$deleted, &$blocked): void {
                 $companies->each(function (Company $company) use (&$deleted, &$blocked): void {
                     Gate::authorize('delete', $company);
 

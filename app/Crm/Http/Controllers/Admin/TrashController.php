@@ -2,17 +2,17 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
+use App\Crm\Models\Company;
+use App\Crm\Models\Contact;
+use App\Crm\Models\Deal;
+use App\Crm\Models\Quote;
+use App\Crm\Services\Audit\CrmAuditLogger;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use App\Crm\Models\Company;
-use App\Crm\Models\Contact;
-use App\Crm\Models\Deal;
-use App\Crm\Models\Quote;
-use App\Crm\Services\Audit\CrmAuditLogger;
 
 class TrashController extends Controller
 {

@@ -1,10 +1,12 @@
 <?php
+
 namespace Database\Seeders;
-use App\Models\User;
-use Illuminate\Database\Seeder;
+
 use App\Crm\Database\Seeders\CrmDealStageSeeder;
 use App\Crm\Database\Seeders\CrmDemoSeeder;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,7 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(CrmPermissionSeeder::class);
         $this->call(CrmDealStageSeeder::class);
-        $user = \App\Models\User::create([
+        $user = User::create([
             'name' => 'Admin',
             'email' => 'admin@webakil.com',
             'password' => bcrypt('demo1234'),

@@ -2,11 +2,11 @@
 
 namespace App\Crm\Services\Notifications;
 
+use App\Crm\Support\CrmFormatter;
+use App\Crm\Support\CrmLabelCatalog;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Notifications\DatabaseNotification;
-use App\Crm\Support\CrmFormatter;
-use App\Crm\Support\CrmLabelCatalog;
 
 class NotificationCenter
 {

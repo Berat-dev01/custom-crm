@@ -2,11 +2,11 @@
 
 namespace App\Crm\Http\Requests\Companies;
 
+use App\Crm\Http\Requests\Companies\Concerns\BuildsCompanyPayload;
+use App\Crm\Models\Company;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use App\Crm\Http\Requests\Companies\Concerns\BuildsCompanyPayload;
-use App\Crm\Models\Company;
 
 class UpdateCompanyRequest extends FormRequest
 {

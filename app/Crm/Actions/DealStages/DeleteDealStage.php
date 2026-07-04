@@ -2,11 +2,11 @@
 
 namespace App\Crm\Actions\DealStages;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Validation\ValidationException;
 use App\Crm\Actions\Deals\MoveDealToStage;
 use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Validation\ValidationException;
 
 class DeleteDealStage
 {

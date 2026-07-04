@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Crm\Models\Activity;
 use App\Crm\Models\Company;
@@ -13,6 +11,8 @@ use App\Crm\Models\DealStage;
 use App\Crm\Models\Quote;
 use App\Crm\Models\Tag;
 use App\Crm\Models\Task as CrmTask;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CrmDealsPipelineModuleTest extends TestCase

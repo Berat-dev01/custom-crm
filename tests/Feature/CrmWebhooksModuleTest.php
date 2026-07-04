@@ -2,17 +2,18 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Queue;
 use App\Crm\Database\Seeders\CrmDealStageSeeder;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Crm\Jobs\SendCrmWebhook;
 use App\Crm\Models\Contact;
 use App\Crm\Models\CrmWebhook;
+use App\Crm\Models\CrmWebhookDelivery;
 use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class CrmWebhooksModuleTest extends TestCase
@@ -92,7 +93,7 @@ class CrmWebhooksModuleTest extends TestCase
             'event' => 'deal.won',
             'status' => 'pending',
         ]);
-        $this->assertSame(1, \App\Crm\Models\CrmWebhookDelivery::query()->count());
+        $this->assertSame(1, CrmWebhookDelivery::query()->count());
     }
 
     public function test_contact_created_dispatches_webhook(): void
@@ -110,7 +111,7 @@ class CrmWebhooksModuleTest extends TestCase
 
         Queue::assertPushed(SendCrmWebhook::class, 1);
 
-        $delivery = \App\Crm\Models\CrmWebhookDelivery::query()->firstOrFail();
+        $delivery = CrmWebhookDelivery::query()->firstOrFail();
         $this->assertSame('contact.created', $delivery->event);
         $this->assertSame('contact', $delivery->payload['data']['type']);
         $this->assertSame('Hook Test', $delivery->payload['data']['full_name']);

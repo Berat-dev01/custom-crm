@@ -2,12 +2,6 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
-use App\Models\User;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Http\Requests\Activities\StoreActivityRequest;
 use App\Crm\Http\Requests\Activities\UpdateActivityRequest;
 use App\Crm\Models\Activity;
@@ -19,6 +13,13 @@ use App\Crm\Models\SavedFilter;
 use App\Crm\Services\Activities\ActivityLogger;
 use App\Crm\Services\Activities\ActivityQuery;
 use App\Crm\Support\CrmLabelCatalog;
+use App\Models\User;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Gate;
 
 class ActivitiesController extends Controller
 {
@@ -122,7 +123,7 @@ class ActivitiesController extends Controller
 
         Activity::query()
             ->whereKey($validated['record_ids'])
-            ->chunkById(200, function (\Illuminate\Support\Collection $activities): void {
+            ->chunkById(200, function (Collection $activities): void {
                 $activities->each(function (Activity $activity): void {
                     Gate::authorize('delete', $activity);
                     $activity->delete();

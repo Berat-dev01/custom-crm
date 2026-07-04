@@ -2,10 +2,10 @@
 
 namespace App\Crm\Http\Requests\DealStages;
 
+use App\Crm\Http\Requests\DealStages\Concerns\BuildsDealStagePayload;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use App\Crm\Http\Requests\DealStages\Concerns\BuildsDealStagePayload;
 
 class StoreDealStageRequest extends FormRequest
 {

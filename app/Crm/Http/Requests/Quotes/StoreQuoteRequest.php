@@ -2,11 +2,11 @@
 
 namespace App\Crm\Http\Requests\Quotes;
 
+use App\Crm\Http\Requests\Quotes\Concerns\BuildsQuotePayload;
+use App\Crm\Models\Quote;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use App\Crm\Http\Requests\Quotes\Concerns\BuildsQuotePayload;
-use App\Crm\Models\Quote;
 
 class StoreQuoteRequest extends FormRequest
 {

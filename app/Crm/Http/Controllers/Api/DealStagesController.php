@@ -2,11 +2,11 @@
 
 namespace App\Crm\Http\Controllers\Api;
 
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Http\Resources\Api\DealStageResource;
 use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 
 class DealStagesController extends Controller
 {

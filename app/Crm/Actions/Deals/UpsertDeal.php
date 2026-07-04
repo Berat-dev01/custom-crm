@@ -2,12 +2,12 @@
 
 namespace App\Crm\Actions\Deals;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
 use App\Crm\Services\Webhooks\CrmWebhookDispatcher;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class UpsertDeal
 {

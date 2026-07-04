@@ -2,11 +2,11 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
+use App\Crm\Http\Requests\SavedFilters\StoreSavedFilterRequest;
+use App\Crm\Models\SavedFilter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
-use App\Crm\Http\Requests\SavedFilters\StoreSavedFilterRequest;
-use App\Crm\Models\SavedFilter;
 
 class SavedFiltersController extends Controller
 {

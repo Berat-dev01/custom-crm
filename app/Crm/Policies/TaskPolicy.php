@@ -2,8 +2,8 @@
 
 namespace App\Crm\Policies;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Models\Task;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class TaskPolicy extends CrmPolicy
 {

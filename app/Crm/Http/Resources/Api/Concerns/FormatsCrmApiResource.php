@@ -2,9 +2,6 @@
 
 namespace App\Crm\Http\Resources\Api\Concerns;
 
-use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Resources\MissingValue;
 use App\Crm\Models\Company;
 use App\Crm\Models\Contact;
 use App\Crm\Models\Deal;
@@ -12,6 +9,9 @@ use App\Crm\Models\Quote;
 use App\Crm\Models\Tag;
 use App\Crm\Support\CrmFormatter;
 use App\Crm\Support\CrmLabelCatalog;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Resources\MissingValue;
 
 trait FormatsCrmApiResource
 {

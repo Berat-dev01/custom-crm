@@ -2,14 +2,15 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
+use App\Crm\Services\Audit\CrmAuditLogger;
+use App\Crm\Services\Security\TwoFactorService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
-use App\Crm\Services\Audit\CrmAuditLogger;
-use App\Crm\Services\Security\TwoFactorService;
+use Illuminate\Support\Str;
 
 class SecurityController extends Controller
 {
@@ -84,7 +85,7 @@ class SecurityController extends Controller
         Gate::authorize('crm.dashboard.view');
 
         $request->user('admin')->forceFill([
-            'calendar_token' => \Illuminate\Support\Str::random(48),
+            'calendar_token' => Str::random(48),
         ])->save();
 
         return redirect()

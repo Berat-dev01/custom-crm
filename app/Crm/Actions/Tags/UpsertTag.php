@@ -2,9 +2,9 @@
 
 namespace App\Crm\Actions\Tags;
 
+use App\Crm\Models\Tag;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Str;
-use App\Crm\Models\Tag;
 
 class UpsertTag
 {

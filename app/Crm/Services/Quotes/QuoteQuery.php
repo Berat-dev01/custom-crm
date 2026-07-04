@@ -2,10 +2,10 @@
 
 namespace App\Crm\Services\Quotes;
 
+use App\Crm\Models\Quote;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use App\Crm\Models\Quote;
 
 class QuoteQuery
 {

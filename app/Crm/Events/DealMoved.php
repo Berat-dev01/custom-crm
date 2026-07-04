@@ -2,9 +2,9 @@
 
 namespace App\Crm\Events;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class DealMoved
 {

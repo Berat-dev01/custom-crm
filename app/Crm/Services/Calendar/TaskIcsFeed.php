@@ -2,8 +2,9 @@
 
 namespace App\Crm\Services\Calendar;
 
-use App\Models\User;
 use App\Crm\Models\Task;
+use App\Models\User;
+use Carbon\CarbonInterface;
 
 class TaskIcsFeed
 {
@@ -66,7 +67,7 @@ class TaskIcsFeed
         return $lines;
     }
 
-    private function timestamp(\Carbon\CarbonInterface $moment): string
+    private function timestamp(CarbonInterface $moment): string
     {
         return $moment->copy()->utc()->format('Ymd\THis\Z');
     }

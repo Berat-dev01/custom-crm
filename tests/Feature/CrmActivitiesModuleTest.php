@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Crm\Events\QuoteSent;
 use App\Crm\Models\Activity;
@@ -13,6 +11,8 @@ use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
 use App\Crm\Models\Quote;
 use App\Crm\Models\Task as CrmTask;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CrmActivitiesModuleTest extends TestCase
@@ -41,7 +41,7 @@ class CrmActivitiesModuleTest extends TestCase
             'occurred_at' => '2026-05-10 10:00:00',
         ]);
         Activity::factory()->create([
-            'activityable_type' => (new \App\Crm\Models\Contact)->getMorphClass(),
+            'activityable_type' => (new Contact)->getMorphClass(),
             'activityable_id' => Contact::factory()->create()->id,
             'type' => 'email',
             'subject' => 'Unrelated email',

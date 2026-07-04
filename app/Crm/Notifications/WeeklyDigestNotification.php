@@ -2,11 +2,11 @@
 
 namespace App\Crm\Notifications;
 
+use App\Crm\Services\Notifications\NotificationPreferences;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Crm\Services\Notifications\NotificationPreferences;
 
 class WeeklyDigestNotification extends Notification implements ShouldQueue
 {

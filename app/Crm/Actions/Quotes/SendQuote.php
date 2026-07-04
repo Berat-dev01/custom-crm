@@ -2,15 +2,15 @@
 
 namespace App\Crm\Actions\Quotes;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Facades\Mail;
 use App\Crm\Events\QuoteSent;
 use App\Crm\Mail\QuoteCustomerMail;
-use App\Crm\Services\Notifications\NotificationPreferences;
 use App\Crm\Models\Quote;
 use App\Crm\Services\Audit\CrmAuditLogger;
 use App\Crm\Services\Notifications\CrmBusinessNotifier;
+use App\Crm\Services\Notifications\NotificationPreferences;
 use App\Crm\Services\Webhooks\CrmWebhookDispatcher;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Mail;
 
 class SendQuote
 {

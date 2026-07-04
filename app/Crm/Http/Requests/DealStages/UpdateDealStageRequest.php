@@ -2,11 +2,11 @@
 
 namespace App\Crm\Http\Requests\DealStages;
 
+use App\Crm\Http\Requests\DealStages\Concerns\BuildsDealStagePayload;
+use App\Crm\Models\DealStage;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use App\Crm\Http\Requests\DealStages\Concerns\BuildsDealStagePayload;
-use App\Crm\Models\DealStage;
 
 class UpdateDealStageRequest extends FormRequest
 {

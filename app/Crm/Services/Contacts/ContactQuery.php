@@ -2,11 +2,11 @@
 
 namespace App\Crm\Services\Contacts;
 
+use App\Crm\Models\Contact;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use App\Crm\Models\Contact;
 
 class ContactQuery
 {

@@ -2,9 +2,9 @@
 
 namespace App\Crm\Database\Factories;
 
+use App\Crm\Models\Tag;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Crm\Models\Tag;
 
 /**
  * @extends Factory<Tag>

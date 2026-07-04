@@ -2,9 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
 use App\Crm\Database\Seeders\CrmDealStageSeeder;
 use App\Crm\Database\Seeders\CrmDemoSeeder;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
@@ -16,6 +13,9 @@ use App\Crm\Models\DealStage;
 use App\Crm\Models\Quote;
 use App\Crm\Models\Task as CrmTask;
 use App\Crm\Services\Dashboard\DashboardReport;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
 use Tests\TestCase;
 
 class CrmDashboardModuleTest extends TestCase

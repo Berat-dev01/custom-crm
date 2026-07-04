@@ -2,9 +2,9 @@
 
 namespace App\Crm\Database\Factories;
 
+use App\Crm\Models\DealStage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Crm\Models\DealStage;
 
 /**
  * @extends Factory<DealStage>

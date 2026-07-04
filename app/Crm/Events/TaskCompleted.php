@@ -2,8 +2,8 @@
 
 namespace App\Crm\Events;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Models\Task;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class TaskCompleted
 {

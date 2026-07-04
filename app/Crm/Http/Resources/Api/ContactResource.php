@@ -2,9 +2,9 @@
 
 namespace App\Crm\Http\Resources\Api;
 
+use App\Crm\Http\Resources\Api\Concerns\FormatsCrmApiResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Crm\Http\Resources\Api\Concerns\FormatsCrmApiResource;
 
 class ContactResource extends JsonResource
 {

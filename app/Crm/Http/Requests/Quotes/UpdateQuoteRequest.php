@@ -2,8 +2,8 @@
 
 namespace App\Crm\Http\Requests\Quotes;
 
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Http\Requests\Quotes\Concerns\BuildsQuotePayload;
+use Illuminate\Support\Facades\Gate;
 
 class UpdateQuoteRequest extends StoreQuoteRequest
 {

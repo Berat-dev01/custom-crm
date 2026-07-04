@@ -2,14 +2,16 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Notification;
 use App\Crm\Database\Seeders\CrmDealStageSeeder;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
+use App\Crm\Models\CrmSetting;
 use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
 use App\Crm\Notifications\WeeklyDigestNotification;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class CrmWeeklyDigestCommandTest extends TestCase
@@ -68,7 +70,7 @@ class CrmWeeklyDigestCommandTest extends TestCase
 
         User::factory()->create()->assignRole('crm_owner');
 
-        \App\Crm\Models\CrmSetting::query()->create([
+        CrmSetting::query()->create([
             'organization_id' => null,
             'key' => 'notify_weekly_digest',
             'group' => 'notifications',
@@ -76,7 +78,7 @@ class CrmWeeklyDigestCommandTest extends TestCase
             'type' => 'boolean',
             'is_encrypted' => false,
         ]);
-        \Illuminate\Support\Facades\Cache::flush();
+        Cache::flush();
 
         $this->artisan('crm:digest:send-weekly')
             ->expectsOutputToContain('Sent 0 weekly CRM digest email(s).')

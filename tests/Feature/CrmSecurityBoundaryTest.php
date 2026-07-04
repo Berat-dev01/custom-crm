@@ -2,14 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Crm\Database\Seeders\CrmDealStageSeeder;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
-use App\Crm\Models\Contact;
 use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
 use App\Crm\Models\SavedFilter;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CrmSecurityBoundaryTest extends TestCase
@@ -17,6 +16,7 @@ class CrmSecurityBoundaryTest extends TestCase
     use RefreshDatabase;
 
     private User $viewer;
+
     private User $owner;
 
     protected function setUp(): void
@@ -27,7 +27,7 @@ class CrmSecurityBoundaryTest extends TestCase
         $this->seed(CrmDealStageSeeder::class);
 
         $this->viewer = User::factory()->create()->assignRole('crm_viewer');
-        $this->owner  = User::factory()->create()->assignRole('crm_owner');
+        $this->owner = User::factory()->create()->assignRole('crm_owner');
     }
 
     // --- Deal sub-resource creation requires create permission (#1) ---
@@ -38,7 +38,7 @@ class CrmSecurityBoundaryTest extends TestCase
 
         $this->actingAs($this->viewer)
             ->post(route('crm.deals.tasks.store', $deal), [
-                'title'    => 'Test task',
+                'title' => 'Test task',
                 'priority' => 'normal',
             ])
             ->assertForbidden();
@@ -50,7 +50,7 @@ class CrmSecurityBoundaryTest extends TestCase
 
         $this->actingAs($this->viewer)
             ->post(route('crm.deals.activities.store', $deal), [
-                'type'    => 'note',
+                'type' => 'note',
                 'subject' => 'Test note',
             ])
             ->assertForbidden();
@@ -62,10 +62,10 @@ class CrmSecurityBoundaryTest extends TestCase
 
         $this->actingAs($this->viewer)
             ->post(route('crm.deals.quotes.store', $deal), [
-                'item_name'  => 'Service',
-                'quantity'   => 1,
+                'item_name' => 'Service',
+                'quantity' => 1,
                 'unit_price' => 100,
-                'currency'   => 'TRY',
+                'currency' => 'TRY',
             ])
             ->assertForbidden();
     }
@@ -115,11 +115,11 @@ class CrmSecurityBoundaryTest extends TestCase
         $otherUser = User::factory()->create()->assignRole('crm_sales');
 
         $filter = SavedFilter::create([
-            'name'       => 'Other user filter',
-            'module'     => 'contacts',
-            'filters'    => [],
+            'name' => 'Other user filter',
+            'module' => 'contacts',
+            'filters' => [],
             'visibility' => 'shared',
-            'user_id'    => $otherUser->id,
+            'user_id' => $otherUser->id,
         ]);
 
         $this->actingAs($this->viewer)
@@ -130,11 +130,11 @@ class CrmSecurityBoundaryTest extends TestCase
     public function test_owner_of_filter_can_delete_own_filter(): void
     {
         $filter = SavedFilter::create([
-            'name'       => 'My filter',
-            'module'     => 'contacts',
-            'filters'    => [],
+            'name' => 'My filter',
+            'module' => 'contacts',
+            'filters' => [],
             'visibility' => 'shared',
-            'user_id'    => $this->owner->id,
+            'user_id' => $this->owner->id,
         ]);
 
         $this->actingAs($this->owner)

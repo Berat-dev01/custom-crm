@@ -2,9 +2,9 @@
 
 namespace App\Crm\Services\Activities;
 
+use App\Crm\Models\Activity;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-use App\Crm\Models\Activity;
 
 class ActivityLogger
 {

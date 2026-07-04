@@ -2,10 +2,10 @@
 
 namespace App\Crm\Actions\Deals;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Models\Activity;
 use App\Crm\Models\Deal;
 use App\Crm\Services\Activities\ActivityLogger;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class AddDealActivity
 {

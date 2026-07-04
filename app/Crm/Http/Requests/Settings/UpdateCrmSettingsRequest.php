@@ -2,11 +2,11 @@
 
 namespace App\Crm\Http\Requests\Settings;
 
+use App\Crm\Support\Ai\AiDriver;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use App\Crm\Support\Ai\AiDriver;
 
 class UpdateCrmSettingsRequest extends FormRequest
 {

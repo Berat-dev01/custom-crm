@@ -2,10 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Crm\Models\Company;
 use App\Crm\Models\Contact;
@@ -17,6 +13,10 @@ use App\Crm\Services\Quotes\QuoteNumberGenerator;
 use App\Crm\Services\Quotes\QuotePdfRenderer;
 use App\Crm\Services\Settings\CrmSettingsManager;
 use App\Crm\Support\Ai\AiDriver;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class CrmSettingsModuleTest extends TestCase

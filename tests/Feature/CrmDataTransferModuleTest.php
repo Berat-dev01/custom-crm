@@ -2,11 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Queue;
 use App\Crm\Database\Seeders\CrmDealStageSeeder;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Crm\Jobs\ProcessCrmImport;
@@ -19,6 +14,11 @@ use App\Crm\Models\Quote;
 use App\Crm\Notifications\ImportStatusNotification;
 use App\Crm\Services\DataTransfer\CrmDataTransferService;
 use App\Crm\Support\CrmLabelCatalog;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class CrmDataTransferModuleTest extends TestCase

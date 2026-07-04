@@ -2,9 +2,9 @@
 
 namespace App\Crm\Actions\Companies;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Models\Company;
 use App\Crm\Models\Contact;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class AttachContactsToCompany
 {

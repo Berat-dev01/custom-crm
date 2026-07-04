@@ -2,12 +2,13 @@
 
 namespace App\Crm\Services\Deals;
 
+use App\Crm\Models\Deal;
+use App\Crm\Models\DealStage;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use App\Crm\Models\Deal;
-use App\Crm\Models\DealStage;
+use Illuminate\Support\Facades\DB;
 
 class DealQuery
 {
@@ -33,7 +34,7 @@ class DealQuery
             ->select('id')
             ->selectRaw('ROW_NUMBER() OVER (PARTITION BY stage_id ORDER BY position, id) as stage_rank');
 
-        $visibleIds = \Illuminate\Support\Facades\DB::query()
+        $visibleIds = DB::query()
             ->fromSub($ranked->toBase(), 'ranked')
             ->where('stage_rank', '<=', $perStageLimit)
             ->pluck('id');

@@ -2,11 +2,11 @@
 
 namespace Tests\Unit;
 
-use Mockery;
 use App\Crm\Contracts\AiProviderContract;
 use App\Crm\Services\Ai\AiAssistant;
 use App\Crm\Services\Ai\AiDriverManager;
 use App\Crm\Services\Ai\PromptTemplates;
+use Mockery;
 use Tests\TestCase;
 
 class AiAssistantPromptTest extends TestCase

@@ -38,7 +38,7 @@ class TwoFactorService
     {
         $renderer = new ImageRenderer(
             new RendererStyle(220),
-            new SvgImageBackEnd()
+            new SvgImageBackEnd
         );
 
         return (new Writer($renderer))->writeString($this->otpauthUrl($user, $secret));

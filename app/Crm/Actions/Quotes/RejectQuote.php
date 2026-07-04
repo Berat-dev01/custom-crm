@@ -2,11 +2,11 @@
 
 namespace App\Crm\Actions\Quotes;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Models\Quote;
 use App\Crm\Services\Audit\CrmAuditLogger;
 use App\Crm\Services\Notifications\CrmBusinessNotifier;
 use App\Crm\Services\Webhooks\CrmWebhookDispatcher;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class RejectQuote
 {

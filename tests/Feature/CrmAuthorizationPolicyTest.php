@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Crm\Models\Contact;
 use App\Crm\Models\Deal;
 use App\Crm\Services\Authorization\CrmAuthorization;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CrmAuthorizationPolicyTest extends TestCase

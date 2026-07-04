@@ -2,17 +2,17 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Actions\Tags\BulkTagRecords;
 use App\Crm\Actions\Tags\UpsertTag;
 use App\Crm\Http\Requests\Tags\BulkTagRecordsRequest;
 use App\Crm\Http\Requests\Tags\StoreTagRequest;
 use App\Crm\Http\Requests\Tags\UpdateTagRequest;
 use App\Crm\Models\Tag;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 
 class TagsController extends Controller
 {

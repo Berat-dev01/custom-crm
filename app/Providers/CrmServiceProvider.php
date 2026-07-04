@@ -2,18 +2,6 @@
 
 namespace App\Providers;
 
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Crm\Console\SeedCrmDemoCommand;
 use App\Crm\Console\SeedCrmPerformanceCommand;
 use App\Crm\Console\SendTaskRemindersCommand;
@@ -32,6 +20,7 @@ use App\Crm\Listeners\LogTaskCompletedActivity;
 use App\Crm\Models\Activity;
 use App\Crm\Models\Company;
 use App\Crm\Models\Contact;
+use App\Crm\Models\CrmExport;
 use App\Crm\Models\Deal;
 use App\Crm\Models\Quote;
 use App\Crm\Models\Tag;
@@ -54,6 +43,18 @@ use App\Crm\Services\Navigation\CrmNavigation;
 use App\Crm\Services\Settings\CrmSettingsManager;
 use App\Crm\Support\CrmFormatter;
 use App\Crm\Support\CrmLabelCatalog;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
 
 class CrmServiceProvider extends ServiceProvider
 {
@@ -76,14 +77,14 @@ class CrmServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Relation::morphMap([
-            'contact'    => \App\Crm\Models\Contact::class,
-            'company'    => \App\Crm\Models\Company::class,
-            'deal'       => \App\Crm\Models\Deal::class,
-            'quote'      => \App\Crm\Models\Quote::class,
-            'task'       => \App\Crm\Models\Task::class,
-            'activity'   => \App\Crm\Models\Activity::class,
-            'tag'        => \App\Crm\Models\Tag::class,
-            'crm_export' => \App\Crm\Models\CrmExport::class,
+            'contact' => Contact::class,
+            'company' => Company::class,
+            'deal' => Deal::class,
+            'quote' => Quote::class,
+            'task' => Task::class,
+            'activity' => Activity::class,
+            'tag' => Tag::class,
+            'crm_export' => CrmExport::class,
         ]);
 
         $this->loadTranslationsFrom(lang_path('crm'), 'crm');
@@ -144,7 +145,7 @@ class CrmServiceProvider extends ServiceProvider
                 ->filter(fn ($item) => isset($item['permission']) ? Gate::allows($item['permission']) : true)
                 ->map(fn ($item) => [
                     'label' => $item['label'],
-                    'url'   => route($item['route']),
+                    'url' => route($item['route']),
                     'group' => 'CRM',
                 ])
                 ->values();

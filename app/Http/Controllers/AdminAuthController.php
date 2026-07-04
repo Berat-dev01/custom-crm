@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Crm\Services\Security\TwoFactorService;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
-use App\Crm\Services\Security\TwoFactorService;
 
 class AdminAuthController extends Controller
 {

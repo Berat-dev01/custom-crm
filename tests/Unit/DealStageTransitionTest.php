@@ -2,11 +2,11 @@
 
 namespace Tests\Unit;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Crm\Actions\Deals\MoveDealToStage;
 use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class DealStageTransitionTest extends TestCase

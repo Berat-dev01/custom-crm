@@ -2,11 +2,11 @@
 
 namespace App\Crm\Database\Seeders;
 
+use App\Crm\Models\DealStage;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use App\Crm\Models\DealStage;
 
 class CrmPerformanceSeeder extends Seeder
 {

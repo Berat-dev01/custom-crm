@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Crm\Models\Contact;
 use App\Crm\Models\Quote;
 use App\Crm\Models\QuoteItem;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CrmPublicQuoteTest extends TestCase

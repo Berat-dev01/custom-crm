@@ -2,7 +2,6 @@
 
 namespace App\Crm\Services\Ai;
 
-use InvalidArgumentException;
 use App\Crm\Contracts\AiProviderContract;
 use App\Crm\Services\Ai\Providers\ClaudeProvider;
 use App\Crm\Services\Ai\Providers\GeminiProvider;
@@ -10,6 +9,7 @@ use App\Crm\Services\Ai\Providers\NullAiProvider;
 use App\Crm\Services\Ai\Providers\OpenAiProvider;
 use App\Crm\Services\Settings\CrmSettingsManager;
 use App\Crm\Support\Ai\AiDriver;
+use InvalidArgumentException;
 
 class AiDriverManager
 {

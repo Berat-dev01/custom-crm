@@ -2,11 +2,11 @@
 
 namespace App\Crm\Services\Audit;
 
+use App\Crm\Models\CrmAuditLog;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Str;
-use App\Crm\Models\CrmAuditLog;
 
 class CrmAuditLogger
 {

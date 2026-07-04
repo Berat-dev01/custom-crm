@@ -2,9 +2,9 @@
 
 namespace App\Crm\Actions\DealStages;
 
+use App\Crm\Models\DealStage;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\DB;
-use App\Crm\Models\DealStage;
 
 class UpsertDealStage
 {

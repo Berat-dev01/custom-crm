@@ -2,10 +2,10 @@
 
 namespace App\Crm\Console;
 
-use Illuminate\Console\Command;
 use App\Crm\Models\Task;
 use App\Crm\Notifications\TaskReminderNotification;
 use App\Crm\Services\Notifications\NotificationPreferences;
+use Illuminate\Console\Command;
 
 class SendTaskRemindersCommand extends Command
 {

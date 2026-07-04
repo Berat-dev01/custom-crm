@@ -2,9 +2,9 @@
 
 namespace App\Crm\Http\Requests\Activities;
 
+use App\Crm\Http\Requests\Activities\Concerns\BuildsActivityPayload;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
-use App\Crm\Http\Requests\Activities\Concerns\BuildsActivityPayload;
 
 class StoreActivityRequest extends FormRequest
 {

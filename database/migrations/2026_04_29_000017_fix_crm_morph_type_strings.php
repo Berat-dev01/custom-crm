@@ -6,13 +6,13 @@ use Illuminate\Support\Facades\DB;
 return new class extends Migration
 {
     private array $map = [
-        'Sanalkopru\Crm\Models\Contact'   => 'contact',
-        'Sanalkopru\Crm\Models\Company'   => 'company',
-        'Sanalkopru\Crm\Models\Deal'      => 'deal',
-        'Sanalkopru\Crm\Models\Quote'     => 'quote',
-        'Sanalkopru\Crm\Models\Task'      => 'task',
-        'Sanalkopru\Crm\Models\Activity'  => 'activity',
-        'Sanalkopru\Crm\Models\Tag'       => 'tag',
+        'Sanalkopru\Crm\Models\Contact' => 'contact',
+        'Sanalkopru\Crm\Models\Company' => 'company',
+        'Sanalkopru\Crm\Models\Deal' => 'deal',
+        'Sanalkopru\Crm\Models\Quote' => 'quote',
+        'Sanalkopru\Crm\Models\Task' => 'task',
+        'Sanalkopru\Crm\Models\Activity' => 'activity',
+        'Sanalkopru\Crm\Models\Tag' => 'tag',
         'Sanalkopru\Crm\Models\CrmExport' => 'crm_export',
     ];
 

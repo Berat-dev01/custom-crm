@@ -2,9 +2,9 @@
 
 namespace App\Crm\Actions\Tasks;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Models\Task;
 use App\Crm\Services\Notifications\CrmBusinessNotifier;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class UpsertTask
 {

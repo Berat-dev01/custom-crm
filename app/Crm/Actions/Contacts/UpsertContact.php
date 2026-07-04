@@ -2,12 +2,12 @@
 
 namespace App\Crm\Actions\Contacts;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Arr;
 use App\Crm\Events\ContactCreated;
 use App\Crm\Models\Contact;
 use App\Crm\Services\Audit\CrmAuditLogger;
 use App\Crm\Services\Webhooks\CrmWebhookDispatcher;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Arr;
 
 class UpsertContact
 {

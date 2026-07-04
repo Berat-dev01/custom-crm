@@ -2,14 +2,14 @@
 
 namespace App\Crm\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Http\Requests\Activities\StoreActivityRequest;
 use App\Crm\Http\Resources\Api\ActivityResource;
 use App\Crm\Models\Activity;
 use App\Crm\Services\Activities\ActivityLogger;
 use App\Crm\Services\Activities\ActivityQuery;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 
 class ActivitiesController extends Controller
 {

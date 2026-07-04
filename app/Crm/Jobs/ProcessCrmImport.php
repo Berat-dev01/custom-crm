@@ -2,14 +2,14 @@
 
 namespace App\Crm\Jobs;
 
+use App\Crm\Models\CrmImport;
+use App\Crm\Services\DataTransfer\CrmDataTransferService;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Crm\Models\CrmImport;
-use App\Crm\Services\DataTransfer\CrmDataTransferService;
 
 class ProcessCrmImport implements ShouldQueue
 {

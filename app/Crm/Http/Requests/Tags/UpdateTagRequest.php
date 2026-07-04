@@ -2,10 +2,10 @@
 
 namespace App\Crm\Http\Requests\Tags;
 
+use App\Crm\Models\Tag;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use App\Crm\Models\Tag;
 
 class UpdateTagRequest extends FormRequest
 {

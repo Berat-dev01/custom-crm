@@ -2,12 +2,12 @@
 
 namespace App\Crm\Notifications;
 
+use App\Crm\Models\Task;
+use App\Crm\Notifications\Concerns\RoutesEmailByPreference;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Crm\Models\Task;
-use App\Crm\Notifications\Concerns\RoutesEmailByPreference;
 
 class TaskReminderNotification extends Notification implements ShouldQueue
 {

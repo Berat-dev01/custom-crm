@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Crm\Database\Seeders\CrmPermissionSeeder;
+use App\Crm\Services\Security\TwoFactorService;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PragmaRX\Google2FA\Google2FA;
-use App\Crm\Database\Seeders\CrmPermissionSeeder;
-use App\Crm\Services\Security\TwoFactorService;
 use Tests\TestCase;
 
 class CrmTwoFactorAuthTest extends TestCase

@@ -2,12 +2,13 @@
 
 namespace App\Crm\Notifications;
 
+use App\Crm\Models\Quote;
+use App\Crm\Notifications\Concerns\RoutesEmailByPreference;
+use App\Crm\Support\CrmLabelCatalog;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Crm\Notifications\Concerns\RoutesEmailByPreference;
-use App\Crm\Models\Quote;
 
 class QuoteStatusChangedNotification extends Notification implements ShouldQueue
 {
@@ -38,7 +39,7 @@ class QuoteStatusChangedNotification extends Notification implements ShouldQueue
      */
     public function toArray(object $notifiable): array
     {
-        $statusLabel = app(\App\Crm\Support\CrmLabelCatalog::class)->status($this->status);
+        $statusLabel = app(CrmLabelCatalog::class)->status($this->status);
         $body = $this->quote->company?->name
             ? trans('crm::notifications.quote_status_changed.body_with_company', [
                 'quote' => $this->quote->quote_number,

@@ -2,10 +2,10 @@
 
 namespace App\Crm\Actions\Tasks;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Events\TaskCompleted;
 use App\Crm\Models\Task;
 use App\Crm\Services\Webhooks\CrmWebhookDispatcher;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class CompleteTask
 {

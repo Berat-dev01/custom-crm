@@ -2,10 +2,6 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Actions\DealStages\DeleteDealStage;
 use App\Crm\Actions\DealStages\ReorderDealStages;
 use App\Crm\Actions\DealStages\UpsertDealStage;
@@ -14,6 +10,10 @@ use App\Crm\Http\Requests\DealStages\ReorderDealStagesRequest;
 use App\Crm\Http\Requests\DealStages\StoreDealStageRequest;
 use App\Crm\Http\Requests\DealStages\UpdateDealStageRequest;
 use App\Crm\Models\DealStage;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 
 class DealStagesController extends Controller
 {

@@ -2,12 +2,6 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
-use App\Models\User;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Actions\Contacts\AddContactNote;
 use App\Crm\Actions\Contacts\UpsertContact;
 use App\Crm\Http\Requests\Contacts\BulkAssignContactTagsRequest;
@@ -24,6 +18,13 @@ use App\Crm\Services\Contacts\ContactCsvExporter;
 use App\Crm\Services\Contacts\ContactQuery;
 use App\Crm\Support\CrmExportSchema;
 use App\Crm\Support\CrmLabelCatalog;
+use App\Models\User;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ContactsController extends Controller
@@ -121,7 +122,7 @@ class ContactsController extends Controller
     {
         Contact::query()
             ->whereKey($request->validated('contact_ids'))
-            ->chunkById(200, function (\Illuminate\Support\Collection $contacts) use ($request): void {
+            ->chunkById(200, function (Collection $contacts) use ($request): void {
                 $contacts->each(function (Contact $contact) use ($request): void {
                     $this->audit->record('crm.contact.deleted', $contact, $request->user(), $contact->only($this->auditedFields()), null, [
                         'bulk' => true,

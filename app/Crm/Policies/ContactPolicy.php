@@ -2,8 +2,8 @@
 
 namespace App\Crm\Policies;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Models\Contact;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class ContactPolicy extends CrmPolicy
 {

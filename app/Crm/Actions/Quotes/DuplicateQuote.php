@@ -2,10 +2,10 @@
 
 namespace App\Crm\Actions\Quotes;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Facades\DB;
 use App\Crm\Models\Quote;
 use App\Crm\Services\Quotes\QuoteNumberGenerator;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class DuplicateQuote
 {

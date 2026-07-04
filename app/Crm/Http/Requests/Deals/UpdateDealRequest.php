@@ -2,8 +2,8 @@
 
 namespace App\Crm\Http\Requests\Deals;
 
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Http\Requests\Deals\Concerns\BuildsDealPayload;
+use Illuminate\Support\Facades\Gate;
 
 class UpdateDealRequest extends StoreDealRequest
 {

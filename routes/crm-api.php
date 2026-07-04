@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Crm\Http\Controllers\Api\ActivitiesController;
 use App\Crm\Http\Controllers\Api\CompaniesController;
 use App\Crm\Http\Controllers\Api\ContactsController;
@@ -11,6 +9,8 @@ use App\Crm\Http\Controllers\Api\HealthController;
 use App\Crm\Http\Controllers\Api\QuotesController;
 use App\Crm\Http\Controllers\Api\TagsController;
 use App\Crm\Http\Controllers\Api\TasksController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('crm/v1')
     ->name('crm.api.')

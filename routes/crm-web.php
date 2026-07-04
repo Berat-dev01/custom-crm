@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Crm\Http\Controllers\Admin\ActivitiesController;
 use App\Crm\Http\Controllers\Admin\AiController;
+use App\Crm\Http\Controllers\Admin\ApiTokensController;
+use App\Crm\Http\Controllers\Admin\AuditLogsController;
 use App\Crm\Http\Controllers\Admin\CompaniesController;
 use App\Crm\Http\Controllers\Admin\ContactsController;
 use App\Crm\Http\Controllers\Admin\DataTransferController;
@@ -12,16 +13,15 @@ use App\Crm\Http\Controllers\Admin\NotificationsController;
 use App\Crm\Http\Controllers\Admin\QuotesController;
 use App\Crm\Http\Controllers\Admin\SavedFiltersController;
 use App\Crm\Http\Controllers\Admin\SearchController;
-use App\Crm\Http\Controllers\Admin\ApiTokensController;
-use App\Crm\Http\Controllers\Admin\AuditLogsController;
 use App\Crm\Http\Controllers\Admin\SecurityController;
-use App\Crm\Http\Controllers\Admin\TrashController;
-use App\Crm\Http\Controllers\Admin\WebhooksController;
 use App\Crm\Http\Controllers\Admin\SettingsController;
 use App\Crm\Http\Controllers\Admin\TagsController;
 use App\Crm\Http\Controllers\Admin\TasksController;
+use App\Crm\Http\Controllers\Admin\TrashController;
 use App\Crm\Http\Controllers\Admin\UsersController;
+use App\Crm\Http\Controllers\Admin\WebhooksController;
 use App\Crm\Http\Controllers\DashboardController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware(config('crm.routes.middleware', ['web']))
     ->group(function () {

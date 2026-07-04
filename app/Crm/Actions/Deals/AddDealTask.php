@@ -2,9 +2,9 @@
 
 namespace App\Crm\Actions\Deals;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Models\Deal;
 use App\Crm\Models\Task;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class AddDealTask
 {

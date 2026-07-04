@@ -2,7 +2,6 @@
 
 namespace App\Crm\Services\Webhooks;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Crm\Jobs\SendCrmWebhook;
 use App\Crm\Models\Company;
 use App\Crm\Models\Contact;
@@ -10,6 +9,7 @@ use App\Crm\Models\CrmWebhook;
 use App\Crm\Models\Deal;
 use App\Crm\Models\Quote;
 use App\Crm\Models\Task;
+use Illuminate\Database\Eloquent\Model;
 
 class CrmWebhookDispatcher
 {

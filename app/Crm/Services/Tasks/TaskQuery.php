@@ -2,10 +2,10 @@
 
 namespace App\Crm\Services\Tasks;
 
+use App\Crm\Models\Task;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use App\Crm\Models\Task;
 
 class TaskQuery
 {

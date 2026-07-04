@@ -2,10 +2,10 @@
 
 namespace App\Crm\Services\Quotes;
 
-use Dompdf\Dompdf;
-use Dompdf\Options;
 use App\Crm\Models\Quote;
 use App\Crm\Services\Settings\CrmSettingsManager;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class QuotePdfRenderer
 {

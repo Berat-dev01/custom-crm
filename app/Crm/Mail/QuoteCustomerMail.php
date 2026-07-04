@@ -2,6 +2,9 @@
 
 namespace App\Crm\Mail;
 
+use App\Crm\Models\Quote;
+use App\Crm\Services\Quotes\QuotePdfRenderer;
+use App\Crm\Services\Settings\CrmSettingsManager;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -9,9 +12,6 @@ use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use App\Crm\Models\Quote;
-use App\Crm\Services\Quotes\QuotePdfRenderer;
-use App\Crm\Services\Settings\CrmSettingsManager;
 
 class QuoteCustomerMail extends Mailable implements ShouldQueue
 {

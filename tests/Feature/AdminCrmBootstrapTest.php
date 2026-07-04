@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use Tests\TestCase;
 
 class AdminCrmBootstrapTest extends TestCase
@@ -56,6 +56,4 @@ class AdminCrmBootstrapTest extends TestCase
         $this->assertContains('crm.dashboard.view', config('crm.permissions.permissions'));
         $this->assertSame('crm_owner', config('crm.permissions.roles.owner.name'));
     }
-
-
 }

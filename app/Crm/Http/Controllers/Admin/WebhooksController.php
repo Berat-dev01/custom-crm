@@ -2,6 +2,9 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
+use App\Crm\Models\CrmWebhook;
+use App\Crm\Models\CrmWebhookDelivery;
+use App\Crm\Services\Audit\CrmAuditLogger;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -9,9 +12,6 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use App\Crm\Models\CrmWebhook;
-use App\Crm\Models\CrmWebhookDelivery;
-use App\Crm\Services\Audit\CrmAuditLogger;
 
 class WebhooksController extends Controller
 {

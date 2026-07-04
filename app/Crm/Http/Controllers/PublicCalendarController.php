@@ -2,9 +2,9 @@
 
 namespace App\Crm\Http\Controllers;
 
+use App\Crm\Services\Calendar\TaskIcsFeed;
 use App\Models\User;
 use Illuminate\Routing\Controller;
-use App\Crm\Services\Calendar\TaskIcsFeed;
 use Symfony\Component\HttpFoundation\Response;
 
 class PublicCalendarController extends Controller

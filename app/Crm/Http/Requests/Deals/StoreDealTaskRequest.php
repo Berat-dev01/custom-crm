@@ -2,9 +2,9 @@
 
 namespace App\Crm\Http\Requests\Deals;
 
+use App\Crm\Models\Task;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
-use App\Crm\Models\Task;
 
 class StoreDealTaskRequest extends FormRequest
 {

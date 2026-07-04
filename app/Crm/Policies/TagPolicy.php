@@ -2,8 +2,8 @@
 
 namespace App\Crm\Policies;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Models\Tag;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class TagPolicy extends CrmPolicy
 {

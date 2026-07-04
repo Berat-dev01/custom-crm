@@ -2,9 +2,9 @@
 
 namespace App\Crm\Models;
 
+use App\Crm\Models\Concerns\HasPublicId;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Crm\Models\Concerns\HasPublicId;
 
 class CrmWebhookDelivery extends Model
 {

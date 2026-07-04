@@ -2,15 +2,15 @@
 
 namespace App\Crm\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Actions\Companies\UpsertCompany;
 use App\Crm\Http\Requests\Companies\StoreCompanyRequest;
 use App\Crm\Http\Requests\Companies\UpdateCompanyRequest;
 use App\Crm\Http\Resources\Api\CompanyResource;
 use App\Crm\Models\Company;
 use App\Crm\Services\Companies\CompanyQuery;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 
 class CompaniesController extends Controller
 {

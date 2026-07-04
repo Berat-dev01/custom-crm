@@ -2,13 +2,6 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
-use App\Models\User;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Actions\Deals\AddDealActivity;
 use App\Crm\Actions\Deals\AddDealTask;
 use App\Crm\Actions\Deals\CreateDealQuote;
@@ -21,18 +14,29 @@ use App\Crm\Http\Requests\Deals\StoreDealQuoteRequest;
 use App\Crm\Http\Requests\Deals\StoreDealRequest;
 use App\Crm\Http\Requests\Deals\StoreDealTaskRequest;
 use App\Crm\Http\Requests\Deals\UpdateDealRequest;
+use App\Crm\Models\Activity;
 use App\Crm\Models\Company;
 use App\Crm\Models\Contact;
 use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
+use App\Crm\Models\Quote;
 use App\Crm\Models\SavedFilter;
 use App\Crm\Models\Tag;
+use App\Crm\Models\Task;
 use App\Crm\Services\Ai\AiDriverManager;
 use App\Crm\Services\Configuration\MoneySettings;
 use App\Crm\Services\Deals\DealQuery;
 use App\Crm\Support\CrmExportSchema;
 use App\Crm\Support\CrmFormatter;
 use App\Crm\Support\CrmLabelCatalog;
+use App\Models\User;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Gate;
 
 class DealsController extends Controller
 {
@@ -169,7 +173,7 @@ class DealsController extends Controller
 
         Deal::query()
             ->whereKey($validated['record_ids'])
-            ->chunkById(200, function (\Illuminate\Support\Collection $deals): void {
+            ->chunkById(200, function (Collection $deals): void {
                 $deals->each(function (Deal $deal): void {
                     Gate::authorize('delete', $deal);
                     $deal->delete();
@@ -293,7 +297,7 @@ class DealsController extends Controller
     public function storeTask(StoreDealTaskRequest $request, Deal $deal, AddDealTask $addTask): JsonResponse|RedirectResponse
     {
         Gate::authorize('view', $deal);
-        Gate::authorize('create', \App\Crm\Models\Task::class);
+        Gate::authorize('create', Task::class);
 
         $addTask->handle($deal, $request->validated(), $request->user());
 
@@ -309,7 +313,7 @@ class DealsController extends Controller
     public function storeQuote(StoreDealQuoteRequest $request, Deal $deal, CreateDealQuote $createQuote): RedirectResponse
     {
         Gate::authorize('view', $deal);
-        Gate::authorize('create', \App\Crm\Models\Quote::class);
+        Gate::authorize('create', Quote::class);
 
         $createQuote->handle($deal, $request->validated(), $request->user());
 
@@ -321,7 +325,7 @@ class DealsController extends Controller
     public function storeActivity(StoreDealActivityRequest $request, Deal $deal, AddDealActivity $addActivity): JsonResponse|RedirectResponse
     {
         Gate::authorize('view', $deal);
-        Gate::authorize('create', \App\Crm\Models\Activity::class);
+        Gate::authorize('create', Activity::class);
 
         $addActivity->handle($deal, $request->validated(), $request->user());
 
@@ -357,5 +361,4 @@ class DealsController extends Controller
             'defaultTerms' => app(MoneySettings::class)->quoteTerms(),
         ];
     }
-
 }

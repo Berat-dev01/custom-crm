@@ -2,17 +2,17 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
+use App\Crm\Models\Activity;
+use App\Crm\Models\Deal;
+use App\Crm\Models\Quote;
+use App\Crm\Services\Ai\AiAssistant;
+use App\Crm\Support\Ai\AiResult;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use App\Crm\Models\Activity;
-use App\Crm\Models\Deal;
-use App\Crm\Models\Quote;
-use App\Crm\Services\Ai\AiAssistant;
-use App\Crm\Support\Ai\AiResult;
 
 class AiController extends Controller
 {

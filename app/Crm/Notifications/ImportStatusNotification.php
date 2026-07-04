@@ -2,12 +2,13 @@
 
 namespace App\Crm\Notifications;
 
+use App\Crm\Models\CrmImport;
+use App\Crm\Notifications\Concerns\RoutesEmailByPreference;
+use App\Crm\Support\CrmLabelCatalog;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Crm\Notifications\Concerns\RoutesEmailByPreference;
-use App\Crm\Models\CrmImport;
 
 class ImportStatusNotification extends Notification implements ShouldQueue
 {
@@ -38,7 +39,7 @@ class ImportStatusNotification extends Notification implements ShouldQueue
      */
     public function toArray(object $notifiable): array
     {
-        $module = app(\App\Crm\Support\CrmLabelCatalog::class)->moduleLabel((string) $this->import->module);
+        $module = app(CrmLabelCatalog::class)->moduleLabel((string) $this->import->module);
         $summary = trans('crm::notifications.import_status.completed_body', [
             'created' => (int) $this->import->processed_rows,
             'failed' => (int) $this->import->failed_rows,

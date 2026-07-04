@@ -2,12 +2,13 @@
 
 namespace App\Crm\Notifications;
 
+use App\Crm\Models\Deal;
+use App\Crm\Notifications\Concerns\RoutesEmailByPreference;
+use App\Crm\Services\Configuration\MoneySettings;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Crm\Models\Deal;
-use App\Crm\Notifications\Concerns\RoutesEmailByPreference;
 
 class DealClosedNotification extends Notification implements ShouldQueue
 {
@@ -46,7 +47,7 @@ class DealClosedNotification extends Notification implements ShouldQueue
             'title' => trans('crm::notifications.deal_closed.'.$key.'_title'),
             'body' => trans('crm::notifications.deal_closed.body', [
                 'deal' => $this->deal->title,
-                'value' => number_format((float) $this->deal->value, 2).' '.app(\App\Crm\Services\Configuration\MoneySettings::class)->defaultCurrency(),
+                'value' => number_format((float) $this->deal->value, 2).' '.app(MoneySettings::class)->defaultCurrency(),
             ]),
             'result' => $this->result,
             'url' => route('crm.deals.show', $this->deal),

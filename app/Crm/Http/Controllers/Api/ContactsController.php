@@ -2,15 +2,15 @@
 
 namespace App\Crm\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Actions\Contacts\UpsertContact;
 use App\Crm\Http\Requests\Contacts\StoreContactRequest;
 use App\Crm\Http\Requests\Contacts\UpdateContactRequest;
 use App\Crm\Http\Resources\Api\ContactResource;
 use App\Crm\Models\Contact;
 use App\Crm\Services\Contacts\ContactQuery;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 
 class ContactsController extends Controller
 {

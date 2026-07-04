@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Crm\Database\Seeders\CrmPermissionSeeder;
+use App\Crm\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use App\Crm\Database\Seeders\CrmPermissionSeeder;
-use App\Crm\Models\Task;
 use Tests\TestCase;
 
 class CrmCalendarFeedTest extends TestCase

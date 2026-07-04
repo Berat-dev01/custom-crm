@@ -2,10 +2,10 @@
 
 namespace App\Crm\Actions\Contacts;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Models\Activity;
 use App\Crm\Models\Contact;
 use App\Crm\Services\Activities\ActivityLogger;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class AddContactNote
 {

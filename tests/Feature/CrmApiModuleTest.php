@@ -2,9 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Route;
+use App\Crm\Database\Seeders\CrmDealStageSeeder;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Crm\Models\Company;
 use App\Crm\Models\Contact;
@@ -12,7 +10,11 @@ use App\Crm\Models\CrmApiToken;
 use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
 use App\Crm\Models\Quote;
+use App\Crm\Models\Tag;
 use App\Crm\Models\Task;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 class CrmApiModuleTest extends TestCase
@@ -261,8 +263,8 @@ class CrmApiModuleTest extends TestCase
 
     public function test_tags_and_deal_stages_read_endpoints(): void
     {
-        $this->seed(\App\Crm\Database\Seeders\CrmDealStageSeeder::class);
-        \App\Crm\Models\Tag::query()->create(['name' => 'VIP', 'slug' => 'vip', 'color' => '#ff0000']);
+        $this->seed(CrmDealStageSeeder::class);
+        Tag::query()->create(['name' => 'VIP', 'slug' => 'vip', 'color' => '#ff0000']);
 
         $this->withToken($this->ownerToken)
             ->getJson('/api/crm/v1/tags')

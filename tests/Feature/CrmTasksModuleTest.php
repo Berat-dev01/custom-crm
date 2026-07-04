@@ -2,10 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Notification;
 use App\Crm\Database\Seeders\CrmPermissionSeeder;
 use App\Crm\Models\Company;
 use App\Crm\Models\Deal;
@@ -13,6 +9,10 @@ use App\Crm\Models\DealStage;
 use App\Crm\Models\Task as CrmTask;
 use App\Crm\Notifications\TaskAssignmentNotification;
 use App\Crm\Notifications\TaskReminderNotification;
+use App\Models\User;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class CrmTasksModuleTest extends TestCase

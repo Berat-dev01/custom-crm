@@ -2,14 +2,14 @@
 
 namespace App\Crm\Actions\Quotes;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Facades\DB;
 use App\Crm\Actions\Deals\MoveDealToStage;
 use App\Crm\Models\DealStage;
 use App\Crm\Models\Quote;
 use App\Crm\Services\Audit\CrmAuditLogger;
 use App\Crm\Services\Notifications\CrmBusinessNotifier;
 use App\Crm\Services\Webhooks\CrmWebhookDispatcher;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class AcceptQuote
 {

@@ -2,13 +2,6 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
-use App\Models\User;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Actions\Tasks\CompleteTask;
 use App\Crm\Actions\Tasks\UpsertTask;
 use App\Crm\Http\Requests\Tasks\StoreTaskRequest;
@@ -21,6 +14,14 @@ use App\Crm\Models\SavedFilter;
 use App\Crm\Models\Task;
 use App\Crm\Services\Tasks\TaskQuery;
 use App\Crm\Support\CrmLabelCatalog;
+use App\Models\User;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Gate;
 
 class TasksController extends Controller
 {
@@ -114,7 +115,7 @@ class TasksController extends Controller
 
         Task::query()
             ->whereKey($validated['record_ids'])
-            ->chunkById(200, function (\Illuminate\Support\Collection $tasks): void {
+            ->chunkById(200, function (Collection $tasks): void {
                 $tasks->each(function (Task $task): void {
                     Gate::authorize('delete', $task);
                     $task->delete();

@@ -2,10 +2,10 @@
 
 namespace App\Crm\Http\Middleware;
 
+use App\Crm\Models\CrmApiToken;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Crm\Models\CrmApiToken;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthenticateCrmApi

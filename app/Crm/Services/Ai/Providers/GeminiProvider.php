@@ -2,11 +2,11 @@
 
 namespace App\Crm\Services\Ai\Providers;
 
-use Illuminate\Support\Facades\Http;
 use App\Crm\Contracts\AiProviderContract;
 use App\Crm\Services\Ai\AiDriverManager;
 use App\Crm\Services\Ai\Providers\Concerns\BuildsAiPrompts;
 use App\Crm\Support\Ai\AiDriver;
+use Illuminate\Support\Facades\Http;
 
 class GeminiProvider implements AiProviderContract
 {

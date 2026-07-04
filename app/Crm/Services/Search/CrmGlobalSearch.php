@@ -2,14 +2,14 @@
 
 namespace App\Crm\Services\Search;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Models\Company;
 use App\Crm\Models\Contact;
 use App\Crm\Models\Deal;
 use App\Crm\Models\Quote;
 use App\Crm\Support\CrmFormatter;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Gate;
 
 class CrmGlobalSearch
 {

@@ -2,10 +2,10 @@
 
 namespace App\Crm\Http\Controllers\Api;
 
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Http\Resources\Api\TagResource;
 use App\Crm\Models\Tag;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 
 class TagsController extends Controller
 {

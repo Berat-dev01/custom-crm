@@ -2,13 +2,13 @@
 
 namespace App\Crm\Services\Ai;
 
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use App\Crm\Contracts\AiProviderContract;
 use App\Crm\Models\Activity;
 use App\Crm\Models\Deal;
 use App\Crm\Models\Quote;
 use App\Crm\Support\Ai\AiResult;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Throwable;
 
 class AiAssistant

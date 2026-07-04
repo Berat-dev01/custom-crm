@@ -2,10 +2,10 @@
 
 namespace App\Crm\Http\Requests\Deals;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Http\Requests\Deals\Concerns\BuildsDealPayload;
 use App\Crm\Models\DealStage;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class StoreDealRequest extends FormRequest
 {

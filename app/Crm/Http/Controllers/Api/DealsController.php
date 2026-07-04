@@ -2,9 +2,6 @@
 
 namespace App\Crm\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Actions\Deals\MoveDealToStage;
 use App\Crm\Actions\Deals\UpsertDeal;
 use App\Crm\Http\Requests\Deals\MoveDealRequest;
@@ -14,6 +11,9 @@ use App\Crm\Http\Resources\Api\DealResource;
 use App\Crm\Models\Deal;
 use App\Crm\Models\DealStage;
 use App\Crm\Services\Deals\DealQuery;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 
 class DealsController extends Controller
 {

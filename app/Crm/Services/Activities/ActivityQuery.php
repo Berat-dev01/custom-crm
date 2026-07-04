@@ -2,14 +2,14 @@
 
 namespace App\Crm\Services\Activities;
 
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 use App\Crm\Models\Activity;
 use App\Crm\Models\Company;
 use App\Crm\Models\Contact;
 use App\Crm\Models\Deal;
 use App\Crm\Models\Quote;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 
 class ActivityQuery
 {

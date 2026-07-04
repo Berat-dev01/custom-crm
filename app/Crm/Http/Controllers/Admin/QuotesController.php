@@ -2,14 +2,6 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
-use App\Models\User;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\Rule;
 use App\Crm\Actions\Quotes\AcceptQuote;
 use App\Crm\Actions\Quotes\DuplicateQuote;
 use App\Crm\Actions\Quotes\ExpireQuote;
@@ -31,6 +23,15 @@ use App\Crm\Services\Quotes\QuotePdfRenderer;
 use App\Crm\Services\Quotes\QuoteQuery;
 use App\Crm\Support\CrmExportSchema;
 use App\Crm\Support\CrmLabelCatalog;
+use App\Models\User;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
 class QuotesController extends Controller
@@ -121,7 +122,7 @@ class QuotesController extends Controller
 
         Quote::query()
             ->whereKey($validated['record_ids'])
-            ->chunkById(200, function (\Illuminate\Support\Collection $quotes): void {
+            ->chunkById(200, function (Collection $quotes): void {
                 $quotes->each(function (Quote $quote): void {
                     Gate::authorize('delete', $quote);
                     $quote->delete();

@@ -28,12 +28,12 @@ return [
      * Available variants: primary, success, info, warning, danger, secondary
      */
     'roles' => [
-        'crm_owner'   => ['Owner',   'primary'],
+        'crm_owner' => ['Owner',   'primary'],
         'crm_manager' => ['Manager', 'success'],
-        'crm_sales'   => ['Sales',   'info'],
+        'crm_sales' => ['Sales',   'info'],
         'crm_support' => ['Support', 'warning'],
-        'crm_viewer'  => ['Viewer',  'secondary'],
-        'superadmin'  => ['Superadmin', 'primary'],
+        'crm_viewer' => ['Viewer',  'secondary'],
+        'superadmin' => ['Superadmin', 'primary'],
     ],
     'default_role' => ['Staff', 'secondary'],
 ];

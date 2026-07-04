@@ -2,6 +2,9 @@
 
 namespace App\Crm\Models;
 
+use App\Crm\Database\Factories\QuoteFactory;
+use App\Crm\Models\Concerns\HasPublicId;
+use App\Crm\Support\CrmLabelCatalog;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,8 +14,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Crm\Database\Factories\QuoteFactory;
-use App\Crm\Models\Concerns\HasPublicId;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class Quote extends Model
 {
@@ -52,9 +55,9 @@ class Quote extends Model
     public function assertCanTransitionTo(string $status): void
     {
         if (! $this->canTransitionTo($status)) {
-            $labels = app(\App\Crm\Support\CrmLabelCatalog::class)->quoteStatuses();
+            $labels = app(CrmLabelCatalog::class)->quoteStatuses();
 
-            throw \Illuminate\Validation\ValidationException::withMessages([
+            throw ValidationException::withMessages([
                 'status' => trans('crm::messages.quotes.invalid_status_transition', [
                     'from' => $labels[$this->status] ?? $this->status,
                     'to' => $labels[$status] ?? $status,
@@ -74,7 +77,7 @@ class Quote extends Model
     public function ensurePublicToken(): string
     {
         if (! $this->public_token) {
-            $this->forceFill(['public_token' => \Illuminate\Support\Str::random(64)])->save();
+            $this->forceFill(['public_token' => Str::random(64)])->save();
         }
 
         return $this->public_token;

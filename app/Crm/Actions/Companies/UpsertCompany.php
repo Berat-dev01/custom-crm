@@ -2,10 +2,10 @@
 
 namespace App\Crm\Actions\Companies;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Arr;
 use App\Crm\Models\Company;
 use App\Crm\Services\Webhooks\CrmWebhookDispatcher;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Arr;
 
 class UpsertCompany
 {

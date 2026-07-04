@@ -2,13 +2,13 @@
 
 namespace App\Crm\Models;
 
+use App\Crm\Database\Factories\DealStageFactory;
+use App\Crm\Models\Concerns\HasPublicId;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Crm\Database\Factories\DealStageFactory;
-use App\Crm\Models\Concerns\HasPublicId;
 
 class DealStage extends Model
 {

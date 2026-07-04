@@ -2,8 +2,8 @@
 
 namespace App\Crm\Policies;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Crm\Models\Company;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class CompanyPolicy extends CrmPolicy
 {

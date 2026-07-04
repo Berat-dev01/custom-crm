@@ -2,9 +2,6 @@
 
 namespace App\Crm\Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use App\Crm\Models\Activity;
 use App\Crm\Models\Company;
 use App\Crm\Models\Contact;
@@ -14,6 +11,9 @@ use App\Crm\Models\Quote;
 use App\Crm\Models\QuoteItem;
 use App\Crm\Models\Tag;
 use App\Crm\Models\Task;
+use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class CrmDemoSeeder extends Seeder
 {

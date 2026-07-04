@@ -2,11 +2,11 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
+use App\Crm\Services\Search\CrmGlobalSearch;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
-use App\Crm\Services\Search\CrmGlobalSearch;
 
 class SearchController extends Controller
 {

@@ -2,13 +2,13 @@
 
 namespace App\Crm\Http\Requests\Tasks;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Gate;
 use App\Crm\Http\Requests\Tasks\Concerns\BuildsTaskPayload;
 use App\Crm\Models\Company;
 use App\Crm\Models\Contact;
 use App\Crm\Models\Deal;
 use App\Crm\Models\Quote;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class StoreTaskRequest extends FormRequest
 {

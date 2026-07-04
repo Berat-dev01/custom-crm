@@ -2,10 +2,10 @@
 
 namespace App\Crm\Support;
 
+use App\Crm\Services\Configuration\MoneySettings;
 use Carbon\CarbonInterface;
 use DateTimeInterface;
 use Illuminate\Support\Carbon;
-use App\Crm\Services\Configuration\MoneySettings;
 
 class CrmFormatter
 {
