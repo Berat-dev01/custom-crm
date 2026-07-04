@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Crm\Console\CrmDoctorCommand;
 use App\Crm\Console\SeedCrmDemoCommand;
 use App\Crm\Console\SeedCrmPerformanceCommand;
 use App\Crm\Console\SendTaskRemindersCommand;
@@ -98,6 +99,7 @@ class CrmServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
+                CrmDoctorCommand::class,
                 SeedCrmDemoCommand::class,
                 SeedCrmPerformanceCommand::class,
                 SendTaskRemindersCommand::class,

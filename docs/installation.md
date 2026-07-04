@@ -175,6 +175,15 @@ Notlar:
 
 ## Kurulum Sonrasi Kontrol
 
+Tek komutla saglik kontrolu:
+
+```bash
+php artisan crm:doctor
+```
+
+DB baglantisi, migration durumu, cache, storage link, queue/mail konfigurasyonu, izin seed'i, aktif kullanici, route kaydi ve APP_KEY kontrol edilir; hata varsa komut sifir olmayan exit code doner (deploy pipeline'ina eklenebilir).
+
+
 ```bash
 make artisan CMD="route:list --path=admin/crm"
 make artisan CMD="route:list --path=api/crm"
