@@ -10,16 +10,19 @@ Designed for single-tenant deployments by default — each client gets their own
 
 | Area | Capabilities |
 |---|---|
-| **Contacts & Companies** | Full management, lifecycle stages, tagging, import/export |
-| **Deals** | Kanban pipeline, drag-and-drop, won/lost flows |
-| **Tasks** | Reminders, queue-backed scheduling, calendar view |
-| **Quotes** | VAT/discount calculation, PDF preview and download |
+| **Contacts & Companies** | Full management, lifecycle stages, tagging, import/export, trash & restore |
+| **Deals** | Kanban pipeline (window-function optimised), drag-and-drop, won/lost flows with owner notifications |
+| **Tasks** | Reminders, queue-backed scheduling, private ICS calendar feed |
+| **Quotes** | VAT/discount calculation, PDF, enforced status state machine, customer email with **public accept/decline link** |
+| **Email** | Queued notifications for assignments, reminders, quote status, deal results, imports; per-user opt-outs; weekly digest |
+| **Webhooks** | HMAC-signed deliveries with retries + delivery log (Zapier/Make ready) |
 | **Activities** | Timeline, automated system activities |
-| **Dashboard** | Reporting, performance-optimised aggregate queries |
-| **Settings** | Brand info, quote defaults, logo upload |
-| **API** | Token-protected `/api/crm` layer |
-| **Security** | Audit log, policy-based permissions, rate limiting |
+| **Dashboard** | Reporting with short-TTL caching, period filters |
+| **Settings** | Brand info, quote defaults, logo upload (GD re-encoded), notification switches |
+| **API** | Versioned `/api/crm/v1`, full CRUD, OpenAPI spec, in-app token management |
+| **Security** | TOTP 2FA + recovery codes, login lockout, password policy, security headers, audit log viewer |
 | **AI** | Driver-based: `openai`, `claude`, `gemini`, `null` |
+| **Ops** | `crm:doctor` health check, GitHub Actions CI, go-live checklist, backup & deploy guides |
 
 ---
 
