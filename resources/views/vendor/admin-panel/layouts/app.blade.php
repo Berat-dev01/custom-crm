@@ -182,29 +182,22 @@
                 @endif
 
 
-                {{-- Customers --}}
-                <div class="sidebar-section-label">{{ admin_trans('People') }}</div>
-                <x-admin-panel::sidebar-dropdown label="Customers" icon="users">
-                    <x-admin-panel::sidebar-item route="admin.users.index" label="Users" />
-                    @if(!in_array(config('kit.site_type'), ['blog', 'blank']))
-                        <x-admin-panel::sidebar-item route="admin.reviews.index" label="Reviews" />
-                    @endif
-                </x-admin-panel::sidebar-dropdown>
-
-                {{-- Content --}}
-                <div class="sidebar-section-label">{{ admin_trans('Content') }}</div>
-                <x-admin-panel::sidebar-dropdown label="Content" icon="file-text">
-                    @feature('cms.pages')
-                        <x-admin-panel::sidebar-item route="admin.pages.index" label="Pages" />
-                    @endfeature
-                    @feature('cms.banners')
-                        <x-admin-panel::sidebar-item route="admin.banners.index" label="Banners" />
-                    @endfeature
-                    @feature('blog.enabled')
-                        <x-admin-panel::sidebar-item route="admin.posts.index" label="Blog Posts" />
-                        <x-admin-panel::sidebar-item route="admin.tags.index" label="Tags" />
-                    @endfeature
-                </x-admin-panel::sidebar-dropdown>
+                {{-- Content: hidden unless a CMS/blog feature is enabled --}}
+                @if(data_get(config('features', []), 'cms.pages') || data_get(config('features', []), 'cms.banners') || data_get(config('features', []), 'blog.enabled'))
+                    <div class="sidebar-section-label">{{ admin_trans('Content') }}</div>
+                    <x-admin-panel::sidebar-dropdown label="Content" icon="file-text">
+                        @feature('cms.pages')
+                            <x-admin-panel::sidebar-item route="admin.pages.index" label="Pages" />
+                        @endfeature
+                        @feature('cms.banners')
+                            <x-admin-panel::sidebar-item route="admin.banners.index" label="Banners" />
+                        @endfeature
+                        @feature('blog.enabled')
+                            <x-admin-panel::sidebar-item route="admin.posts.index" label="Blog Posts" />
+                            <x-admin-panel::sidebar-item route="admin.tags.index" label="Tags" />
+                        @endfeature
+                    </x-admin-panel::sidebar-dropdown>
+                @endif
 
                 @feature('marketplace.enabled')
                     <div class="sidebar-section-label">{{ admin_trans('Marketplace') }}</div>
@@ -214,14 +207,7 @@
                     </x-admin-panel::sidebar-dropdown>
                 @endfeature
 
-                {{-- System --}}
-                <div class="sidebar-section-label">{{ admin_trans('System') }}</div>
-                <x-admin-panel::sidebar-dropdown label="System" icon="settings">
-                    @if(auth('admin')->check() && auth('admin')->user()->role === 'superadmin')
-                        <x-admin-panel::sidebar-item route="admin.staff.index" label="Staff" />
-                    @endif
-                    <x-admin-panel::sidebar-item route="admin.settings.index" label="Settings" />
-                </x-admin-panel::sidebar-dropdown>
+
             </nav>
         </aside>
 
