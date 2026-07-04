@@ -2,13 +2,13 @@
 
 namespace App\Crm\Http\Controllers\Admin;
 
+use App\Crm\Models\CrmSetting;
+use App\Crm\Models\DealStage;
+use App\Crm\Services\Settings\CrmSettingsManager;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
-use App\Crm\Models\CrmSetting;
-use App\Crm\Models\DealStage;
-use App\Crm\Services\Settings\CrmSettingsManager;
 
 class SetupController extends Controller
 {
