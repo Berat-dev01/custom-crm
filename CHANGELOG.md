@@ -3,6 +3,16 @@
 All notable changes to CRM Engine are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project uses semantic versioning.
 
+## [1.0.1] - 2026-07-04
+
+### Fixed
+- Dashboard 500 after first visit: report payload is no longer cached (Eloquent objects broke on unserialize from shared cache stores).
+- Deal-stage "Save Order" returned 404: nested per-row delete forms leaked `_method=DELETE` into the reorder submit; forms are now independent and deleting a stage with deals moved to a dedicated, tidy row.
+- Sidebar: removed the always-empty Content group and the duplicate People/System kit entries.
+
+### Changed
+- 2FA, webhooks and the ICS calendar feed are now optional features, **disabled by default** (`CRM_FEATURE_2FA`, `CRM_FEATURE_WEBHOOKS`, `CRM_FEATURE_CALENDAR_FEED`). Disabled features hide their menus and return 404.
+
 ## [1.0.0] - 2026-07-04
 
 First production-ready, sellable release.
