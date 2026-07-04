@@ -245,3 +245,22 @@ Kontrol et:
 - Buyuk veri icin Kanban limitleri uygun mu?
 
 Detay: [performance.md](performance.md)
+
+
+## Hata İzleme (Opsiyonel Sentry)
+
+Production'da uygulama hatalarını merkezi izlemek için:
+
+```bash
+composer require sentry/sentry-laravel
+php artisan sentry:publish --dsn=YOUR_DSN
+```
+
+`.env`:
+
+```env
+SENTRY_LARAVEL_DSN=https://...@sentry.io/...
+SENTRY_TRACES_SAMPLE_RATE=0.1
+```
+
+Paket eklenmediği sürece hiçbir etkisi yoktur; çekirdek ürün bilinçli olarak bağımlılıksız bırakılmıştır. Alternatif: Flare (`spatie/laravel-ignition` zaten kurulu, yalnızca FLARE_KEY gerekir).

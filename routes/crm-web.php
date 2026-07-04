@@ -14,6 +14,7 @@ use App\Crm\Http\Controllers\Admin\QuotesController;
 use App\Crm\Http\Controllers\Admin\SavedFiltersController;
 use App\Crm\Http\Controllers\Admin\SearchController;
 use App\Crm\Http\Controllers\Admin\SecurityController;
+use App\Crm\Http\Controllers\Admin\SetupController;
 use App\Crm\Http\Controllers\Admin\SettingsController;
 use App\Crm\Http\Controllers\Admin\TagsController;
 use App\Crm\Http\Controllers\Admin\TasksController;
@@ -99,6 +100,7 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::post('saved-filters', [SavedFiltersController::class, 'store'])->name('saved-filters.store');
                 Route::get('saved-filters/{savedFilter}/apply', [SavedFiltersController::class, 'apply'])->name('saved-filters.apply');
                 Route::delete('saved-filters/{savedFilter}', [SavedFiltersController::class, 'destroy'])->name('saved-filters.destroy');
+                Route::get('setup', [SetupController::class, 'index'])->name('setup.index');
                 Route::get('security', [SecurityController::class, 'index'])->name('security.index');
                 Route::post('security/2fa/enable', [SecurityController::class, 'enable'])->name('security.2fa.enable');
                 Route::post('security/2fa/confirm', [SecurityController::class, 'confirm'])->name('security.2fa.confirm');

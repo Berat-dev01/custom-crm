@@ -1357,3 +1357,41 @@
         }
     }
 }
+
+@layer components {
+    .crm-setup-step {
+        align-items: center;
+        display: flex;
+        gap: 16px;
+    }
+
+    .crm-setup-step-status {
+        color: #94a3b8;
+        flex-shrink: 0;
+    }
+
+    .crm-setup-step.is-done .crm-setup-step-status {
+        color: #047857;
+    }
+
+    .crm-setup-step-body {
+        flex: 1;
+    }
+
+    .crm-setup-step-body p {
+        margin: 4px 0 0;
+    }
+
+    .crm-setup-step-action {
+        flex-shrink: 0;
+    }
+}
+
+@media (max-width: 760px) {
+    @layer components {
+        .crm-setup-step {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+}

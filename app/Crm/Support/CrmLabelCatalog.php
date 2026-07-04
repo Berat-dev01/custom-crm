@@ -56,6 +56,7 @@ class CrmLabelCatalog
                 'label' => __('System'),
                 'icon' => 'settings',
                 'items' => [
+                    ['label' => __('Setup'), 'route' => 'crm.setup.index', 'permission' => 'crm.settings.manage'],
                     ['label' => __('Users'), 'route' => 'crm.users.index', 'permission' => 'crm.users.manage'],
                     ['label' => __('Settings'), 'route' => 'crm.settings.index', 'permission' => 'crm.settings.manage'],
                     ['label' => __('API Tokens'), 'route' => 'crm.api-tokens.index', 'permission' => 'crm.settings.manage'],
