@@ -26,16 +26,24 @@ class DealQuery
     {
         $perStageLimit = $this->kanbanPerStageLimit($request);
         $stages = DealStage::query()->ordered()->get();
-        $deals = $stages->mapWithKeys(function (DealStage $stage) use ($request, $perStageLimit): array {
-            $stageDeals = $this->baseQuery($request)
-                ->where('stage_id', $stage->id)
-                ->orderBy('position')
-                ->orderBy('id')
-                ->limit($perStageLimit)
-                ->get();
 
-            return [$stage->id => $stageDeals];
-        });
+        // Rank deals per stage in one window-function query, then load the
+        // visible cards (with relations) in a single second query.
+        $ranked = $this->applyFilters(Deal::query(), $request)
+            ->select('id')
+            ->selectRaw('ROW_NUMBER() OVER (PARTITION BY stage_id ORDER BY position, id) as stage_rank');
+
+        $visibleIds = \Illuminate\Support\Facades\DB::query()
+            ->fromSub($ranked->toBase(), 'ranked')
+            ->where('stage_rank', '<=', $perStageLimit)
+            ->pluck('id');
+
+        $deals = $this->baseQuery($request)
+            ->whereKey($visibleIds->all())
+            ->orderBy('position')
+            ->orderBy('id')
+            ->get()
+            ->groupBy('stage_id');
         $counts = $this->applyFilters(
             Deal::query()->selectRaw('stage_id, COUNT(*) as deals_count, COALESCE(SUM(value), 0) as pipeline_value'),
             $request
@@ -49,7 +57,7 @@ class DealQuery
                 $aggregate = $counts->get($stage->id);
                 $dealsCount = (int) ($aggregate?->deals_count ?? 0);
 
-                $stage->setRelation('deals', $deals->get($stage->id, collect()));
+                $stage->setRelation('deals', ($deals[$stage->id] ?? collect())->values());
                 $stage->setAttribute('deals_count', $dealsCount);
                 $stage->setAttribute('pipeline_value', (float) ($aggregate?->pipeline_value ?? 0));
                 $stage->setAttribute('kanban_limit', $perStageLimit);

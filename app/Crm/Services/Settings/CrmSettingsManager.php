@@ -263,8 +263,10 @@ class CrmSettingsManager
         };
     }
 
-    private function cacheKey(): string
+    private function cacheKey(?int $organizationId = null): string
     {
-        return 'crm_settings_default';
+        // Tenant-ready: settings are cached per organization scope. The
+        // single-tenant default uses the null/default bucket.
+        return 'crm_settings_'.($organizationId ?? 'default');
     }
 }

@@ -30,7 +30,15 @@ class DashboardReport
         $range = $this->dateRange($filters);
         $canViewAll = $this->canViewAll($user);
 
-        return [
+        $ttl = (int) config('crm.performance.dashboard_cache_seconds', 60);
+        $cacheKey = sprintf(
+            'crm_dashboard:%s:%s:%s',
+            $user->getAuthIdentifier(),
+            $canViewAll ? 'all' : 'own',
+            md5(json_encode([$filters, $range['start']->toDateTimeString(), $range['end']->toDateTimeString()]))
+        );
+
+        $compute = fn (): array => [
             'filters' => $filters,
             'range' => $range,
             'canViewAll' => $canViewAll,
@@ -42,6 +50,12 @@ class DashboardReport
             'topOpenDeals' => $this->topOpenDeals($user, $canViewAll),
             'quoteStatusDistribution' => $this->quoteStatusDistribution($user, $canViewAll, $range),
         ];
+
+        if ($ttl <= 0) {
+            return $compute();
+        }
+
+        return \Illuminate\Support\Facades\Cache::remember($cacheKey, $ttl, $compute);
     }
 
     /**
