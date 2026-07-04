@@ -1395,3 +1395,22 @@
         }
     }
 }
+
+@layer components {
+    .crm-stage-delete-row td {
+        background: #fef2f2;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .crm-stage-delete-form {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .crm-stage-delete-form .form-control {
+        max-width: 240px;
+    }
+}

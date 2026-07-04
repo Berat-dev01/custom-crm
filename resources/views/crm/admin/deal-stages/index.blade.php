@@ -22,9 +22,14 @@
         <x-admin-panel::card>
             <x-slot:header>{{ __('Pipeline Order') }}</x-slot:header>
 
-            <form id="reorder-form" method="POST" action="{{ route('crm.deal-stages.reorder') }}" class="crm-stack">
+            {{-- Standalone form target: row inputs reference it via form="reorder-form".
+                 Never wrap the table with it — per-row delete forms would nest and
+                 their _method=DELETE inputs would hijack the reorder submit. --}}
+            <form id="reorder-form" method="POST" action="{{ route('crm.deal-stages.reorder') }}">
                 @csrf
+            </form>
 
+            <div class="crm-stack">
                 <x-admin-panel::table :headers="[
                     ['label' => __('Stage')],
                     ['label' => __('Position'), 'width' => '120px'],
@@ -43,16 +48,19 @@
                             <td>
                                 <input
                                     type="hidden"
+                                    form="reorder-form"
                                     name="stages[{{ $loop->index }}][id]"
                                     value="{{ $stage->id }}"
                                 >
                                 <input
                                     type="number"
+                                    form="reorder-form"
                                     name="stages[{{ $loop->index }}][position]"
                                     value="{{ old('stages.'.$loop->index.'.position', $stage->position) }}"
                                     min="1"
                                     max="1000"
                                     class="form-control crm-compact-input"
+                                    aria-label="{{ __(':name position', ['name' => $stage->name]) }}"
                                 >
                             </td>
                             <td>{{ $stage->probability }}%</td>
@@ -68,31 +76,43 @@
                             <td>{{ $stage->deals_count }}</td>
                             <td>
                                 <div class="crm-row-actions">
-                                    <x-admin-panel::button :href="route('crm.deal-stages.edit', $stage)" size="sm" variant="ghost" icon="pencil" />
+                                    <x-admin-panel::button :href="route('crm.deal-stages.edit', $stage)" size="sm" variant="ghost" icon="pencil" aria-label="{{ __('Edit :name', ['name' => $stage->name]) }}" />
 
-                                    <form method="POST" action="{{ route('crm.deal-stages.destroy', $stage) }}" class="crm-inline-form" data-crm-confirm="{{ __('Delete this deal stage?') }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        @if($stage->deals_count > 0)
-                                            <select
-                                                name="replacement_stage_id"
-                                                class="form-control"
-                                                aria-label="{{ __('Replacement stage') }}"
-                                            >
-                                                <option value="">{{ __('Move to...') }}</option>
-                                                @foreach($stages as $replacementStage)
-                                                    @continue($replacementStage->is($stage))
-                                                    <option value="{{ $replacementStage->id }}">
-                                                        {{ $replacementStage->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        @endif
-                                        <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash" />
-                                    </form>
+                                    @if($stage->deals_count === 0)
+                                        <form method="POST" action="{{ route('crm.deal-stages.destroy', $stage) }}" class="crm-inline-form" data-crm-confirm="{{ __('Delete this deal stage?') }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash" aria-label="{{ __('Delete :name', ['name' => $stage->name]) }}" />
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
+                        @if($stage->deals_count > 0)
+                            <tr class="crm-stage-delete-row">
+                                <td colspan="6">
+                                    <form method="POST" action="{{ route('crm.deal-stages.destroy', $stage) }}" class="crm-stage-delete-form" data-crm-confirm="{{ __('Delete this deal stage?') }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <span class="crm-muted">{{ __('To delete :name, first pick a stage for its :count deal(s):', ['name' => $stage->name, 'count' => $stage->deals_count]) }}</span>
+                                        <select
+                                            name="replacement_stage_id"
+                                            class="form-control"
+                                            aria-label="{{ __('Replacement stage') }}"
+                                        >
+                                            <option value="">{{ __('Move to...') }}</option>
+                                            @foreach($stages as $replacementStage)
+                                                @continue($replacementStage->is($stage))
+                                                <option value="{{ $replacementStage->id }}">
+                                                    {{ $replacementStage->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <x-admin-panel::button type="submit" size="sm" variant="danger" icon="trash">{{ __('Delete stage') }}</x-admin-panel::button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endif
                     @empty
                         <tr>
                             <td colspan="6" class="crm-empty">{{ __('No deal stages found.') }}</td>
@@ -110,7 +130,7 @@
                 <div class="crm-form-actions">
                     <x-admin-panel::button type="submit" form="reorder-form" icon="save">{{ __('Save Order') }}</x-admin-panel::button>
                 </div>
-            </form>
+            </div>
         </x-admin-panel::card>
     </section>
 @endsection
