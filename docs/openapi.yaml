@@ -1,0 +1,351 @@
+openapi: 3.0.3
+info:
+  title: CRM Engine API
+  version: "1.0.0"
+  description: |
+    Token-protected REST API for the CRM Engine.
+    All endpoints require a Bearer token issued from CRM > System > API Tokens.
+    Unversioned `/api/crm/*` paths permanently redirect (308) to `/api/crm/v1/*`.
+servers:
+  - url: /api/crm/v1
+security:
+  - bearerAuth: []
+paths:
+  /health:
+    get:
+      summary: Health check
+      security: []
+      responses:
+        "200":
+          description: Service is up
+  /contacts:
+    get:
+      summary: List contacts
+      parameters:
+        - $ref: "#/components/parameters/Search"
+        - $ref: "#/components/parameters/PerPage"
+        - { name: lifecycle_stage, in: query, schema: { type: string } }
+        - { name: company_id, in: query, schema: { type: integer } }
+        - { name: owner_id, in: query, schema: { type: integer } }
+        - { name: tag_id, in: query, schema: { type: integer } }
+      responses:
+        "200": { $ref: "#/components/responses/PaginatedList" }
+    post:
+      summary: Create contact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ContactInput" }
+      responses:
+        "201": { $ref: "#/components/responses/Created" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+  /contacts/{id}:
+    parameters: [ { $ref: "#/components/parameters/Id" } ]
+    get:
+      summary: Show contact
+      responses:
+        "200": { $ref: "#/components/responses/Single" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      summary: Update contact
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ContactInput" }
+      responses:
+        "200": { $ref: "#/components/responses/Single" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+    delete:
+      summary: Delete contact (soft delete)
+      responses:
+        "200": { $ref: "#/components/responses/Deleted" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+  /companies:
+    get:
+      summary: List companies
+      parameters:
+        - $ref: "#/components/parameters/Search"
+        - $ref: "#/components/parameters/PerPage"
+      responses:
+        "200": { $ref: "#/components/responses/PaginatedList" }
+    post:
+      summary: Create company
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CompanyInput" }
+      responses:
+        "201": { $ref: "#/components/responses/Created" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+  /companies/{id}:
+    parameters: [ { $ref: "#/components/parameters/Id" } ]
+    get: { summary: Show company, responses: { "200": { $ref: "#/components/responses/Single" } } }
+    put:
+      summary: Update company
+      responses: { "200": { $ref: "#/components/responses/Single" } }
+    delete:
+      summary: Delete company (soft delete)
+      responses: { "200": { $ref: "#/components/responses/Deleted" } }
+  /deals:
+    get:
+      summary: List deals
+      parameters:
+        - $ref: "#/components/parameters/Search"
+        - $ref: "#/components/parameters/PerPage"
+        - { name: stage_id, in: query, schema: { type: integer } }
+        - { name: status, in: query, schema: { type: string, enum: [open, won, lost] } }
+      responses:
+        "200": { $ref: "#/components/responses/PaginatedList" }
+    post:
+      summary: Create deal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DealInput" }
+      responses:
+        "201": { $ref: "#/components/responses/Created" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+  /deals/{id}:
+    parameters: [ { $ref: "#/components/parameters/Id" } ]
+    get: { summary: Show deal, responses: { "200": { $ref: "#/components/responses/Single" } } }
+    put:
+      summary: Update deal
+      responses: { "200": { $ref: "#/components/responses/Single" } }
+    delete:
+      summary: Delete deal (soft delete)
+      responses: { "200": { $ref: "#/components/responses/Deleted" } }
+  /deals/{id}/move:
+    parameters: [ { $ref: "#/components/parameters/Id" } ]
+    post:
+      summary: Move deal to another stage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [stage_id]
+              properties:
+                stage_id: { type: integer }
+                position: { type: integer }
+                lost_reason: { type: string }
+      responses:
+        "200": { $ref: "#/components/responses/Single" }
+  /deal-stages:
+    get:
+      summary: List pipeline stages
+      responses:
+        "200": { $ref: "#/components/responses/PaginatedList" }
+  /tasks:
+    get:
+      summary: List tasks
+      parameters:
+        - $ref: "#/components/parameters/Search"
+        - $ref: "#/components/parameters/PerPage"
+        - { name: status, in: query, schema: { type: string } }
+        - { name: assigned_to, in: query, schema: { type: integer } }
+      responses:
+        "200": { $ref: "#/components/responses/PaginatedList" }
+    post:
+      summary: Create task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TaskInput" }
+      responses:
+        "201": { $ref: "#/components/responses/Created" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+  /tasks/{id}:
+    parameters: [ { $ref: "#/components/parameters/Id" } ]
+    get: { summary: Show task, responses: { "200": { $ref: "#/components/responses/Single" } } }
+    put:
+      summary: Update task
+      responses: { "200": { $ref: "#/components/responses/Single" } }
+    delete:
+      summary: Delete task (soft delete)
+      responses: { "200": { $ref: "#/components/responses/Deleted" } }
+  /tasks/{id}/complete:
+    parameters: [ { $ref: "#/components/parameters/Id" } ]
+    post:
+      summary: Mark task as completed
+      responses:
+        "200": { $ref: "#/components/responses/Single" }
+  /quotes:
+    get:
+      summary: List quotes
+      parameters:
+        - $ref: "#/components/parameters/Search"
+        - $ref: "#/components/parameters/PerPage"
+        - { name: status, in: query, schema: { type: string, enum: [draft, sent, accepted, rejected, expired] } }
+      responses:
+        "200": { $ref: "#/components/responses/PaginatedList" }
+    post:
+      summary: Create quote (totals are always recalculated server-side)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/QuoteInput" }
+      responses:
+        "201": { $ref: "#/components/responses/Created" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+  /quotes/{id}:
+    parameters: [ { $ref: "#/components/parameters/Id" } ]
+    get: { summary: Show quote, responses: { "200": { $ref: "#/components/responses/Single" } } }
+    put:
+      summary: Update quote (invalid status transitions return 422)
+      responses:
+        "200": { $ref: "#/components/responses/Single" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+    delete:
+      summary: Delete quote (soft delete)
+      responses: { "200": { $ref: "#/components/responses/Deleted" } }
+  /activities:
+    get:
+      summary: List activities
+      parameters:
+        - $ref: "#/components/parameters/Search"
+        - $ref: "#/components/parameters/PerPage"
+        - { name: type, in: query, schema: { type: string, enum: [note, call, email, meeting] } }
+      responses:
+        "200": { $ref: "#/components/responses/PaginatedList" }
+    post:
+      summary: Log an activity on a contact, company, deal or quote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [activityable_type, activityable_id, type, subject]
+              properties:
+                activityable_type: { type: string, enum: [contact, company, deal, quote] }
+                activityable_id: { type: integer }
+                type: { type: string, enum: [note, call, email, meeting] }
+                subject: { type: string, maxLength: 255 }
+                body: { type: string, maxLength: 10000 }
+                occurred_at: { type: string, format: date-time }
+      responses:
+        "201": { $ref: "#/components/responses/Created" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+  /tags:
+    get:
+      summary: List tags
+      responses:
+        "200": { $ref: "#/components/responses/PaginatedList" }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Token issued from CRM > System > API Tokens (crm_live_...)
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer }
+    Search:
+      name: search
+      in: query
+      schema: { type: string, maxLength: 120 }
+    PerPage:
+      name: per_page
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100 }
+  responses:
+    PaginatedList:
+      description: Paginated resource collection ({ data, links, meta })
+    Single:
+      description: Single resource ({ data, message? })
+    Created:
+      description: Resource created ({ data, message })
+    Deleted:
+      description: Resource deleted ({ message })
+    NotFound:
+      description: Resource not found ({ message })
+    Forbidden:
+      description: Missing permission ({ message })
+    ValidationError:
+      description: Validation failed ({ message, errors })
+  schemas:
+    ContactInput:
+      type: object
+      required: [first_name, last_name, lifecycle_stage]
+      properties:
+        first_name: { type: string }
+        last_name: { type: string }
+        email: { type: string, format: email }
+        phone: { type: string }
+        title: { type: string }
+        company_id: { type: integer }
+        lifecycle_stage: { type: string, enum: [lead, prospect, customer, inactive] }
+        source: { type: string }
+        owner_id: { type: integer }
+        tag_ids: { type: array, items: { type: integer } }
+    CompanyInput:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string }
+        email: { type: string, format: email }
+        phone: { type: string }
+        website: { type: string }
+        sector: { type: string }
+        city: { type: string }
+        owner_id: { type: integer }
+        tag_ids: { type: array, items: { type: integer } }
+    DealInput:
+      type: object
+      required: [title, stage_id]
+      properties:
+        title: { type: string }
+        value: { type: number }
+        stage_id: { type: integer }
+        company_id: { type: integer }
+        contact_id: { type: integer }
+        owner_id: { type: integer }
+        expected_close_date: { type: string, format: date }
+        lost_reason: { type: string }
+        tag_ids: { type: array, items: { type: integer } }
+    TaskInput:
+      type: object
+      required: [title]
+      properties:
+        title: { type: string }
+        description: { type: string }
+        priority: { type: string, enum: [low, medium, high] }
+        assigned_to: { type: integer }
+        due_at: { type: string, format: date-time }
+        reminder_at: { type: string, format: date-time }
+        taskable_type: { type: string, enum: [contact, company, deal, quote] }
+        taskable_id: { type: integer }
+    QuoteInput:
+      type: object
+      required: [currency, items]
+      properties:
+        contact_id: { type: integer }
+        company_id: { type: integer }
+        deal_id: { type: integer }
+        status: { type: string, enum: [draft, sent, accepted, rejected, expired] }
+        currency: { type: string, minLength: 3, maxLength: 3 }
+        discount_type: { type: string, enum: [percent, fixed] }
+        discount_value: { type: number }
+        tax_rate: { type: number }
+        valid_until: { type: string, format: date }
+        notes: { type: string }
+        terms: { type: string }
+        items:
+          type: array
+          items:
+            type: object
+            required: [name, quantity, unit_price]
+            properties:
+              name: { type: string }
+              description: { type: string }
+              quantity: { type: number }
+              unit_price: { type: number }

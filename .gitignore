@@ -32,8 +32,8 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 
-# Internal development docs
-/docs
+# Internal development docs (product docs in /docs are versioned)
+/docs/internal
 
 # Claude Code project files
 /.claude
