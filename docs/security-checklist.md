@@ -117,3 +117,14 @@ Ilgili mevcut testler:
 - `CrmApiModuleTest`
 - `CrmDataTransferModuleTest`
 - `CrmSettingsModuleTest`
+
+## Eklenen Korumalar (2026-07-03)
+
+- Global security header'ları: `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` (`App\Http\Middleware\SecurityHeaders`).
+- Login brute-force koruması: `throttle:crm-login` (varsayılan 5 deneme/dk, `crm.security.login_attempts_per_minute`).
+- Parola politikası: en az 10 karakter, harf + rakam (`crm.security.password_min_length`).
+- Opsiyonel TOTP 2FA + tek kullanımlık kurtarma kodları (`/admin/crm/security`).
+- Logo yüklemeleri GD ile yeniden kodlanır; EXIF/eklenmiş payload'lar temizlenir.
+- API yalnızca Bearer token; token'lar hash'li saklanır, UI'dan iptal edilebilir.
+- Webhook teslimatları HMAC-SHA256 imzalı.
+- `composer audit` temiz (guzzle, psr7, framework güncellendi — 2026-07-03).

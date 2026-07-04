@@ -28,7 +28,7 @@ Route::prefix('admin')
     ->middleware('web')
     ->group(function () {
         Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('login');
-        Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post');
+        Route::post('/login', [AdminAuthController::class, 'login'])->middleware('throttle:crm-login')->name('login.post');
         Route::get('/login/2fa', [AdminAuthController::class, 'showTwoFactorChallenge'])->name('login.2fa');
         Route::post('/login/2fa', [AdminAuthController::class, 'verifyTwoFactor'])->middleware('throttle:10,1')->name('login.2fa.post');
         Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');

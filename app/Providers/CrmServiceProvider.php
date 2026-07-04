@@ -176,6 +176,13 @@ class CrmServiceProvider extends ServiceProvider
 
             return Limit::perMinute($limit)->by('crm-ai:'.$key);
         });
+
+        RateLimiter::for('crm-login', function (Request $request): Limit {
+            $limit = (int) config('crm.security.login_attempts_per_minute', 5);
+            $email = strtolower((string) $request->input('email'));
+
+            return Limit::perMinute($limit)->by('crm-login:'.$email.'|'.$request->ip());
+        });
     }
 
     private function loadWebRoutes(): void

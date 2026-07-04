@@ -164,4 +164,36 @@ class CrmSecurityBoundaryTest extends TestCase
         $response->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->assertHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
     }
+
+    // --- Login brute-force lockout ---
+
+    public function test_login_attempts_are_rate_limited(): void
+    {
+        for ($i = 0; $i < 5; $i++) {
+            $this->post('/admin/login', [
+                'email' => 'bruteforce@example.test',
+                'password' => 'wrong-password',
+            ])->assertRedirect();
+        }
+
+        $this->post('/admin/login', [
+            'email' => 'bruteforce@example.test',
+            'password' => 'wrong-password',
+        ])->assertStatus(429);
+    }
+
+    // --- Password policy ---
+
+    public function test_weak_passwords_are_rejected_for_new_users(): void
+    {
+        $this->actingAs($this->owner)
+            ->post(route('crm.users.store'), [
+                'name' => 'Weak Password User',
+                'email' => 'weak@example.test',
+                'password' => 'short1',
+                'password_confirmation' => 'short1',
+                'role' => 'crm_sales',
+            ])
+            ->assertSessionHasErrors('password');
+    }
 }
