@@ -31,15 +31,10 @@ class DashboardReport
         $range = $this->dateRange($filters);
         $canViewAll = $this->canViewAll($user);
 
-        $ttl = (int) config('crm.performance.dashboard_cache_seconds', 60);
-        $cacheKey = sprintf(
-            'crm_dashboard:%s:%s:%s',
-            $user->getAuthIdentifier(),
-            $canViewAll ? 'all' : 'own',
-            md5(json_encode([$filters, $range['start']->toDateTimeString(), $range['end']->toDateTimeString()]))
-        );
-
-        $compute = fn (): array => [
+        // Intentionally not cached: the payload carries Eloquent models and
+        // collections, which break on unserialize from shared cache stores.
+        // The underlying queries are aggregate-optimised instead.
+        return [
             'filters' => $filters,
             'range' => $range,
             'canViewAll' => $canViewAll,
@@ -51,12 +46,6 @@ class DashboardReport
             'topOpenDeals' => $this->topOpenDeals($user, $canViewAll),
             'quoteStatusDistribution' => $this->quoteStatusDistribution($user, $canViewAll, $range),
         ];
-
-        if ($ttl <= 0) {
-            return $compute();
-        }
-
-        return Cache::remember($cacheKey, $ttl, $compute);
     }
 
     /**
