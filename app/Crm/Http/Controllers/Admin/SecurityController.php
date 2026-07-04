@@ -79,6 +79,19 @@ class SecurityController extends Controller
             ->with('crm_status', trans('crm::messages.security.enabled'));
     }
 
+    public function regenerateCalendarToken(Request $request): RedirectResponse
+    {
+        Gate::authorize('crm.dashboard.view');
+
+        $request->user('admin')->forceFill([
+            'calendar_token' => \Illuminate\Support\Str::random(48),
+        ])->save();
+
+        return redirect()
+            ->route('crm.security.index')
+            ->with('crm_status', trans('crm::messages.security.calendar_token_regenerated'));
+    }
+
     public function disable(Request $request): RedirectResponse
     {
         Gate::authorize('crm.dashboard.view');

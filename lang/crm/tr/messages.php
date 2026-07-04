@@ -96,6 +96,7 @@ return [
         'enabled' => 'İki faktörlü doğrulama etkinleştirildi. Kurtarma kodlarınızı güvenle saklayın.',
         'disabled' => 'İki faktörlü doğrulama kapatıldı.',
         'invalid_code' => 'Girilen doğrulama kodu geçersiz.',
+        'calendar_token_regenerated' => 'Takvim bağlantısı güncellendi. Önceki bağlantılar artık çalışmaz.',
     ],
     'trash' => [
         'restored' => 'Kayıt geri yüklendi.',

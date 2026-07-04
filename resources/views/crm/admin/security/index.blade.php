@@ -87,5 +87,21 @@
                 </form>
             @endif
         </x-admin-panel::card>
+        <x-admin-panel::card>
+            <x-slot:header>{{ __('Calendar feed') }}</x-slot:header>
+
+            <p class="crm-muted">{{ __('Subscribe to your open tasks from Google Calendar or Outlook with this private URL. Regenerating the link invalidates the old one.') }}</p>
+
+            @if($user->calendar_token)
+                <pre class="crm-token-plain"><code>{{ route('crm.public.calendar.tasks', $user->calendar_token) }}</code></pre>
+            @endif
+
+            <form method="POST" action="{{ route('crm.security.calendar-token') }}">
+                @csrf
+                <x-admin-panel::button type="submit" variant="outline" icon="calendar-plus">
+                    {{ $user->calendar_token ? __('Regenerate link') : __('Create calendar link') }}
+                </x-admin-panel::button>
+            </form>
+        </x-admin-panel::card>
     </section>
 @endsection

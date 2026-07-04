@@ -3,11 +3,16 @@
 use App\Http\Controllers\AdminAuthController;
 use Illuminate\Support\Facades\Route;
 
+use App\Crm\Http\Controllers\PublicCalendarController;
 use App\Crm\Http\Controllers\PublicQuoteController;
 
 Route::get('/', function () {
     return redirect('/admin');
 });
+
+Route::get('/calendar/{token}/tasks.ics', [PublicCalendarController::class, 'tasks'])
+    ->middleware(['throttle:60,1'])
+    ->name('crm.public.calendar.tasks');
 
 Route::prefix('quote')
     ->name('crm.public.quote.')

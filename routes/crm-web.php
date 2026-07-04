@@ -103,6 +103,7 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::post('security/2fa/enable', [SecurityController::class, 'enable'])->name('security.2fa.enable');
                 Route::post('security/2fa/confirm', [SecurityController::class, 'confirm'])->name('security.2fa.confirm');
                 Route::delete('security/2fa', [SecurityController::class, 'disable'])->name('security.2fa.disable');
+                Route::post('security/calendar-token', [SecurityController::class, 'regenerateCalendarToken'])->name('security.calendar-token');
                 Route::get('trash', [TrashController::class, 'index'])->name('trash.index');
                 Route::post('trash/{module}/{id}/restore', [TrashController::class, 'restore'])->name('trash.restore');
                 Route::delete('trash/{module}/{id}', [TrashController::class, 'destroy'])->name('trash.destroy');

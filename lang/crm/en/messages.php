@@ -96,6 +96,7 @@ return [
         'enabled' => 'Two-factor authentication enabled. Store your recovery codes safely.',
         'disabled' => 'Two-factor authentication disabled.',
         'invalid_code' => 'The provided authentication code is invalid.',
+        'calendar_token_regenerated' => 'Calendar link updated. Previous links no longer work.',
     ],
     'trash' => [
         'restored' => 'Record restored.',
