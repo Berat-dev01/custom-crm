@@ -159,9 +159,9 @@
                 </form>
             @else
                 <div class="crm-kanban-scroll">
-                    <div class="crm-kanban-board" data-crm-kanban-board>
+                    <div class="crm-kanban-board" data-crm-kanban-board role="list" aria-label="{{ __('Deal pipeline. Drag cards between stages, or open a deal and change its stage from the edit form.') }}">
                     @foreach($pipeline as $stage)
-                        <section class="crm-kanban-column" data-crm-kanban-column="{{ $stage->id }}">
+                        <section class="crm-kanban-column" data-crm-kanban-column="{{ $stage->id }}" role="listitem" aria-label="{{ $stage->name }}">
                             <header class="crm-kanban-column-header">
                                 <div class="crm-kanban-column-title">
                                     <h2>

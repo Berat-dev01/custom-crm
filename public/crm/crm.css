@@ -1237,3 +1237,123 @@
         }
     }
 }
+
+/* --- Productization pass (tokens, security, audit, trash, a11y, mobile) --- */
+@layer components {
+    .crm-token-plain {
+        background: #0f172a;
+        border-radius: 8px;
+        color: #e2e8f0;
+        font-size: 13px;
+        margin: 12px 0;
+        overflow-x: auto;
+        padding: 14px 16px;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+
+    .crm-filter-row {
+        align-items: end;
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .crm-filter-row .crm-form-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .crm-field-error {
+        color: #b91c1c;
+        font-size: 13px;
+        margin-top: 4px;
+    }
+
+    .crm-audit-diff {
+        font-size: 13px;
+        margin: 8px 0 0;
+    }
+
+    .crm-audit-diff dt {
+        color: #64748b;
+        font-weight: 600;
+        margin-top: 6px;
+    }
+
+    .crm-audit-diff dd {
+        margin: 0;
+        word-break: break-word;
+    }
+
+    .crm-audit-old {
+        color: #b91c1c;
+        text-decoration: line-through;
+    }
+
+    .crm-audit-new {
+        color: #047857;
+    }
+
+    .crm-2fa-setup {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin: 16px 0;
+    }
+
+    .crm-2fa-qr svg {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        display: block;
+    }
+
+    .crm-truncate {
+        max-width: 260px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Visible focus for keyboard navigation across CRM controls. */
+    .crm-admin-page a:focus-visible,
+    .crm-admin-page button:focus-visible,
+    .crm-admin-page input:focus-visible,
+    .crm-admin-page select:focus-visible,
+    .crm-admin-page textarea:focus-visible,
+    .crm-admin-page summary:focus-visible {
+        outline: 2px solid #2563eb;
+        outline-offset: 2px;
+    }
+
+    .crm-kanban-card:focus-visible {
+        outline: 2px solid #2563eb;
+        outline-offset: 2px;
+    }
+}
+
+@media (max-width: 760px) {
+    @layer components {
+        .crm-filter-row {
+            grid-template-columns: 1fr;
+        }
+
+        .crm-admin-actions {
+            flex-wrap: wrap;
+        }
+
+        .crm-truncate {
+            max-width: 160px;
+        }
+
+        .crm-2fa-setup {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .crm-form-actions {
+            flex-wrap: wrap;
+        }
+    }
+}
