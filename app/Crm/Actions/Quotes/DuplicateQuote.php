@@ -16,6 +16,7 @@ class DuplicateQuote
         return DB::transaction(function () use ($quote, $user): Quote {
             $newQuote = $quote->replicate([
                 'public_id',
+                'public_token',
                 'quote_number',
                 'status',
                 'sent_at',
