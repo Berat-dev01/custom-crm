@@ -61,9 +61,9 @@ class CrmLabelCatalog
                     ['label' => __('Settings'), 'route' => 'crm.settings.index', 'permission' => 'crm.settings.manage'],
                     ['label' => __('API Tokens'), 'route' => 'crm.api-tokens.index', 'permission' => 'crm.settings.manage'],
                     ['label' => __('Audit Log'), 'route' => 'crm.audit-logs.index', 'permission' => 'crm.settings.manage'],
-                    ['label' => __('Webhooks'), 'route' => 'crm.webhooks.index', 'permission' => 'crm.settings.manage'],
+                    ...(config('crm.features.webhooks') ? [['label' => __('Webhooks'), 'route' => 'crm.webhooks.index', 'permission' => 'crm.settings.manage']] : []),
                     ['label' => __('Trash'), 'route' => 'crm.trash.index', 'permission' => 'crm.settings.manage'],
-                    ['label' => __('Security'), 'route' => 'crm.security.index', 'permission' => 'crm.dashboard.view'],
+                    ...((config('crm.features.two_factor') || config('crm.features.calendar_feed')) ? [['label' => __('Security'), 'route' => 'crm.security.index', 'permission' => 'crm.dashboard.view']] : []),
                 ],
             ],
         ];

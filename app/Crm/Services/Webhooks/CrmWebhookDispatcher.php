@@ -18,6 +18,10 @@ class CrmWebhookDispatcher
      */
     public function dispatch(string $event, Model $subject): void
     {
+        if (! config('crm.features.webhooks')) {
+            return;
+        }
+
         $webhooks = CrmWebhook::query()
             ->active()
             ->subscribedTo($event)

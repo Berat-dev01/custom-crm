@@ -1,6 +1,7 @@
 # CRM User Guide
 
 This guide is for sales and operations teams using the CRM day to day. For technical setup see `installation.md`.
+> **Note:** Two-factor authentication, webhooks and the calendar feed are optional features; if you do not see them, they are not enabled for your installation.
 
 ## 1. Signing In and Account Security
 

@@ -25,6 +25,7 @@
             </x-admin-panel::card>
         @endif
 
+        @if(config('crm.features.two_factor'))
         <x-admin-panel::card>
             <x-slot:header>{{ __('Two-factor authentication') }}</x-slot:header>
 
@@ -87,6 +88,9 @@
                 </form>
             @endif
         </x-admin-panel::card>
+        @endif
+
+        @if(config('crm.features.calendar_feed'))
         <x-admin-panel::card>
             <x-slot:header>{{ __('Calendar feed') }}</x-slot:header>
 
@@ -103,5 +107,6 @@
                 </x-admin-panel::button>
             </form>
         </x-admin-panel::card>
+        @endif
     </section>
 @endsection

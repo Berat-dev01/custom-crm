@@ -19,6 +19,8 @@ class CrmTwoFactorAuthTest extends TestCase
     {
         parent::setUp();
 
+        config(['crm.features.two_factor' => true]);
+
         $this->seed(CrmPermissionSeeder::class);
         $this->user = User::factory()->create(['password' => 'secret-password'])->assignRole('crm_owner');
     }

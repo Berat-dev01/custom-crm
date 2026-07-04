@@ -1,6 +1,7 @@
 # CRM Kullanıcı Kılavuzu
 
 Bu kılavuz, CRM'i günlük işinde kullanan satış ve operasyon ekipleri içindir. Teknik kurulum için `installation.md`'ye bakın.
+> **Not:** İki faktörlü doğrulama, webhook ve takvim aboneliği opsiyonel özelliklerdir; kurulumunuzda görünmüyorsa yöneticiniz tarafından etkinleştirilmemiştir.
 
 ## 1. Giriş ve Hesap Güvenliği
 

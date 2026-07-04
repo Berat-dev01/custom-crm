@@ -24,6 +24,14 @@ return [
         'ai' => env('CRM_MODULE_AI', true),
     ],
 
+    // Optional add-on features. All default OFF so a fresh customer
+    // install exposes only the core CRM; enable per deployment via .env.
+    'features' => [
+        'two_factor' => (bool) env('CRM_FEATURE_2FA', false),
+        'webhooks' => (bool) env('CRM_FEATURE_WEBHOOKS', false),
+        'calendar_feed' => (bool) env('CRM_FEATURE_CALENDAR_FEED', false),
+    ],
+
     'money' => [
         'default_currency' => env('CRM_CURRENCY', 'TRY'),
         'supported_currencies' => array_values(array_filter(array_map(

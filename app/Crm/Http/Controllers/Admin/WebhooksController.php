@@ -19,6 +19,7 @@ class WebhooksController extends Controller
 
     public function index(): View
     {
+        abort_unless(config('crm.features.webhooks'), 404);
         Gate::authorize('crm.settings.manage');
 
         return view('crm::admin.webhooks.index', [
@@ -37,6 +38,7 @@ class WebhooksController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        abort_unless(config('crm.features.webhooks'), 404);
         Gate::authorize('crm.settings.manage');
 
         $validated = $request->validate([
@@ -71,6 +73,7 @@ class WebhooksController extends Controller
 
     public function toggle(Request $request, CrmWebhook $webhook): RedirectResponse
     {
+        abort_unless(config('crm.features.webhooks'), 404);
         Gate::authorize('crm.settings.manage');
 
         $webhook->forceFill(['is_active' => ! $webhook->is_active])->save();
@@ -88,6 +91,7 @@ class WebhooksController extends Controller
 
     public function destroy(Request $request, CrmWebhook $webhook): RedirectResponse
     {
+        abort_unless(config('crm.features.webhooks'), 404);
         Gate::authorize('crm.settings.manage');
 
         $webhook->delete();

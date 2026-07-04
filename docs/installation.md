@@ -151,6 +151,18 @@ OPENAI_MODEL=gpt-4o-mini
 
 `CRM_AI_DRIVER` degeri `openai`, `claude`, `gemini` veya `null` olabilir.
 
+## Opsiyonel Ozellikler (Feature Flags)
+
+2FA, webhook ve takvim aboneligi cekirdek kurulumda kapalidir; musteri istedikce `.env` uzerinden acilir:
+
+```env
+CRM_FEATURE_2FA=true            # TOTP iki faktorlu dogrulama + Security ekrani
+CRM_FEATURE_WEBHOOKS=true       # HMAC imzali webhook'lar + yonetim ekrani
+CRM_FEATURE_CALENDAR_FEED=true  # Gorevler icin ICS takvim aboneligi
+```
+
+Kapaliyken ilgili menu ogeleri gizlenir, ekranlar ve public endpoint'ler 404 doner, webhook dispatcher hicbir teslimat uretmez.
+
 ## E-posta (SMTP) Ayarlari
 
 Bildirim e-postalari (gorev atama/hatirlatma, teklif durumu, import sonucu) icin SMTP yapilandirin:

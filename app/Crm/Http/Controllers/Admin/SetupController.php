@@ -45,7 +45,7 @@ class SetupController extends Controller
             && ! str_contains((string) config('mail.mailers.smtp.host', ''), 'mailpit');
         $twoFactorAdopted = User::query()->whereNotNull('two_factor_confirmed_at')->exists();
 
-        return [
+        $steps = [
             [
                 'key' => 'company',
                 'title' => __('Company profile'),
@@ -86,14 +86,19 @@ class SetupController extends Controller
                 'url' => route('crm.users.index'),
                 'action' => __('Manage users'),
             ],
-            [
+        ];
+
+        if (config('crm.features.two_factor')) {
+            $steps[] = [
                 'key' => '2fa',
                 'title' => __('Two-factor authentication'),
                 'description' => __('Protect at least the owner account with TOTP two-factor authentication.'),
                 'done' => $twoFactorAdopted,
                 'url' => route('crm.security.index'),
                 'action' => __('Open Security'),
-            ],
-        ];
+            ];
+        }
+
+        return $steps;
     }
 }

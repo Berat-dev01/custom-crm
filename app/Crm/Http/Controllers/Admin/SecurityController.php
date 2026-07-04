@@ -22,6 +22,7 @@ class SecurityController extends Controller
     public function index(Request $request): View
     {
         Gate::authorize('crm.dashboard.view');
+        abort_unless(config('crm.features.two_factor') || config('crm.features.calendar_feed'), 404);
 
         $user = $request->user('admin');
         $pendingSecret = $request->session()->get('crm_2fa_pending_secret');
@@ -37,6 +38,7 @@ class SecurityController extends Controller
     public function enable(Request $request): RedirectResponse
     {
         Gate::authorize('crm.dashboard.view');
+        abort_unless(config('crm.features.two_factor'), 404);
 
         $request->session()->put('crm_2fa_pending_secret', $this->twoFactor->generateSecret());
 
@@ -46,6 +48,7 @@ class SecurityController extends Controller
     public function confirm(Request $request): RedirectResponse
     {
         Gate::authorize('crm.dashboard.view');
+        abort_unless(config('crm.features.two_factor'), 404);
 
         $validated = $request->validate([
             'code' => ['required', 'string', 'max:10'],
@@ -83,6 +86,7 @@ class SecurityController extends Controller
     public function regenerateCalendarToken(Request $request): RedirectResponse
     {
         Gate::authorize('crm.dashboard.view');
+        abort_unless(config('crm.features.calendar_feed'), 404);
 
         $request->user('admin')->forceFill([
             'calendar_token' => Str::random(48),
@@ -96,6 +100,7 @@ class SecurityController extends Controller
     public function disable(Request $request): RedirectResponse
     {
         Gate::authorize('crm.dashboard.view');
+        abort_unless(config('crm.features.two_factor'), 404);
 
         $request->validate([
             'password' => ['required', 'string'],

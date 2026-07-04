@@ -26,6 +26,8 @@ class CrmWebhooksModuleTest extends TestCase
     {
         parent::setUp();
 
+        config(['crm.features.webhooks' => true]);
+
         $this->seed(CrmPermissionSeeder::class);
         $this->seed(CrmDealStageSeeder::class);
         $this->owner = User::factory()->create()->assignRole('crm_owner');

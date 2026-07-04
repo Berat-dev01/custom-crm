@@ -11,6 +11,7 @@ class PublicCalendarController extends Controller
 {
     public function tasks(string $token, TaskIcsFeed $feed): Response
     {
+        abort_unless(config('crm.features.calendar_feed'), 404);
         abort_unless(strlen($token) >= 32, 404);
 
         $user = User::query()

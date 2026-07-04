@@ -19,6 +19,8 @@ class CrmCalendarFeedTest extends TestCase
     {
         parent::setUp();
 
+        config(['crm.features.calendar_feed' => true]);
+
         $this->seed(CrmPermissionSeeder::class);
         $this->user = User::factory()->create()->assignRole('crm_sales');
         $this->user->forceFill(['calendar_token' => Str::random(48)])->save();
