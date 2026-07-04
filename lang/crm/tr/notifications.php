@@ -36,6 +36,7 @@ return [
         'intro' => ':company sizin için bir teklif hazırladı.',
         'total' => 'Toplam: :value',
         'valid_until' => 'Geçerlilik: :date',
+        'view_online' => 'Teklifi çevrimiçi görüntüle',
         'attachment_note' => 'Teklifin tamamını ekteki PDF dosyasında bulabilirsiniz.',
         'outro' => 'Sorularınız için bu e-postayı yanıtlamanız yeterli.',
     ],

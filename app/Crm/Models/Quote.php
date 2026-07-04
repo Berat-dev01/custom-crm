@@ -68,6 +68,23 @@ class Quote extends Model
         return in_array($this->status, [self::STATUS_ACCEPTED, self::STATUS_REJECTED], true);
     }
 
+    /**
+     * Generate the customer-facing token on first use.
+     */
+    public function ensurePublicToken(): string
+    {
+        if (! $this->public_token) {
+            $this->forceFill(['public_token' => \Illuminate\Support\Str::random(64)])->save();
+        }
+
+        return $this->public_token;
+    }
+
+    public function publicUrl(): string
+    {
+        return route('crm.public.quote.show', $this->ensurePublicToken());
+    }
+
     protected function casts(): array
     {
         return [

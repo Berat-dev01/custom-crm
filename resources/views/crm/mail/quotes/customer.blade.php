@@ -12,6 +12,10 @@
 @endif
 </x-mail::panel>
 
+<x-mail::button :url="$quote->publicUrl()">
+{{ trans('crm::notifications.quote_customer.view_online') }}
+</x-mail::button>
+
 {{ trans('crm::notifications.quote_customer.attachment_note') }}
 
 {{ trans('crm::notifications.quote_customer.outro') }}

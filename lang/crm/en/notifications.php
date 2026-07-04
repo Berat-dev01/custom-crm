@@ -36,6 +36,7 @@ return [
         'intro' => ':company has prepared a quote for you.',
         'total' => 'Total: :value',
         'valid_until' => 'Valid until: :date',
+        'view_online' => 'View quote online',
         'attachment_note' => 'You can find the full quote attached as a PDF.',
         'outro' => 'If you have any questions, simply reply to this email.',
     ],

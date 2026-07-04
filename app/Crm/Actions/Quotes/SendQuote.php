@@ -37,7 +37,8 @@ class SendQuote
             'updated_by' => $user?->getAuthIdentifier(),
         ])->save();
 
-        event(new QuoteSent($quote->refresh(), $user));
+        $quote->refresh()->ensurePublicToken();
+        event(new QuoteSent($quote, $user));
         $this->mailQuoteToCustomer($quote);
         $this->audit->record('crm.quote.sent', $quote, $user, $before, $quote->only(['status', 'sent_at']));
 
