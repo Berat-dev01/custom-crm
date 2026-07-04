@@ -92,6 +92,11 @@ return [
         'cannot_deactivate_own' => 'You cannot deactivate your own account.',
         'cannot_deactivate_last_owner' => 'Cannot deactivate the last owner account.',
     ],
+    'security' => [
+        'enabled' => 'Two-factor authentication enabled. Store your recovery codes safely.',
+        'disabled' => 'Two-factor authentication disabled.',
+        'invalid_code' => 'The provided authentication code is invalid.',
+    ],
     'trash' => [
         'restored' => 'Record restored.',
         'purged' => 'Record permanently deleted.',

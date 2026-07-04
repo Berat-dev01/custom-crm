@@ -8,13 +8,15 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "fakerphp/faker": "^1.23",
         "php": "^8.3",
+        "bacon/bacon-qr-code": "^3.1",
         "dompdf/dompdf": "^3.1",
+        "fakerphp/faker": "^1.23",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10",
         "openai-php/laravel": "^0.19.1",
         "openspout/openspout": "^5.3",
+        "pragmarx/google2fa": "^9.0",
         "spatie/laravel-permission": "^7.3"
     },
     "require-dev": {

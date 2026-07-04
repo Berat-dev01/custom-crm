@@ -14,6 +14,7 @@ use App\Crm\Http\Controllers\Admin\SavedFiltersController;
 use App\Crm\Http\Controllers\Admin\SearchController;
 use App\Crm\Http\Controllers\Admin\ApiTokensController;
 use App\Crm\Http\Controllers\Admin\AuditLogsController;
+use App\Crm\Http\Controllers\Admin\SecurityController;
 use App\Crm\Http\Controllers\Admin\TrashController;
 use App\Crm\Http\Controllers\Admin\WebhooksController;
 use App\Crm\Http\Controllers\Admin\SettingsController;
@@ -98,6 +99,10 @@ Route::middleware(config('crm.routes.middleware', ['web']))
                 Route::post('saved-filters', [SavedFiltersController::class, 'store'])->name('saved-filters.store');
                 Route::get('saved-filters/{savedFilter}/apply', [SavedFiltersController::class, 'apply'])->name('saved-filters.apply');
                 Route::delete('saved-filters/{savedFilter}', [SavedFiltersController::class, 'destroy'])->name('saved-filters.destroy');
+                Route::get('security', [SecurityController::class, 'index'])->name('security.index');
+                Route::post('security/2fa/enable', [SecurityController::class, 'enable'])->name('security.2fa.enable');
+                Route::post('security/2fa/confirm', [SecurityController::class, 'confirm'])->name('security.2fa.confirm');
+                Route::delete('security/2fa', [SecurityController::class, 'disable'])->name('security.2fa.disable');
                 Route::get('trash', [TrashController::class, 'index'])->name('trash.index');
                 Route::post('trash/{module}/{id}/restore', [TrashController::class, 'restore'])->name('trash.restore');
                 Route::delete('trash/{module}/{id}', [TrashController::class, 'destroy'])->name('trash.destroy');

@@ -92,6 +92,11 @@ return [
         'cannot_deactivate_own' => 'Kendi hesabınızı devre dışı bırakamazsınız.',
         'cannot_deactivate_last_owner' => 'Son sahip hesabı devre dışı bırakılamaz.',
     ],
+    'security' => [
+        'enabled' => 'İki faktörlü doğrulama etkinleştirildi. Kurtarma kodlarınızı güvenle saklayın.',
+        'disabled' => 'İki faktörlü doğrulama kapatıldı.',
+        'invalid_code' => 'Girilen doğrulama kodu geçersiz.',
+    ],
     'trash' => [
         'restored' => 'Kayıt geri yüklendi.',
         'purged' => 'Kayıt kalıcı olarak silindi.',

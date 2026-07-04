@@ -62,6 +62,7 @@ class CrmLabelCatalog
                     ['label' => __('Audit Log'), 'route' => 'crm.audit-logs.index', 'permission' => 'crm.settings.manage'],
                     ['label' => __('Webhooks'), 'route' => 'crm.webhooks.index', 'permission' => 'crm.settings.manage'],
                     ['label' => __('Trash'), 'route' => 'crm.trash.index', 'permission' => 'crm.settings.manage'],
+                    ['label' => __('Security'), 'route' => 'crm.security.index', 'permission' => 'crm.dashboard.view'],
                 ],
             ],
         ];
